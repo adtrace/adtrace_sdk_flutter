@@ -1,0 +1,16 @@
+name: adtrace_example
+description: Example app which demonstrates how to use the adtrace_sdk Flutter plugin.
+
+dependencies:
+  flutter:
+    sdk: flutter
+  adtrace_sdk:
+    path: ../
+  cupertino_icons: ^0.1.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
