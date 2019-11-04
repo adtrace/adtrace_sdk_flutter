@@ -912,34 +912,10 @@ Upon receiving this information, AdTrace will erase the user's data and the AdTr
 [callbacks-guide]:                https://docs.adtrace.io/en/callbacks
 [ios-deeplinking]:                https://github.com/adtrace/ios_sdk/#deep-linking
 [new-referrer-api]:               https://developer.android.com/google/play/installreferrer/library.html
-[special-partners]:               https://docs.adtrace.com/en/special-partners
+[special-partners]:               https://docs.adtrace.io/en/special-partners
 [attribution-data]:               https://github.com/adtrace/sdks/blob/master/doc/attribution-data.md
 [currency-conversion]:            https://docs.adtrace.io/en/event-tracking/#tracking-purchases-in-different-currencies
 [android-deeplinking]:            https://github.com/adtrace/android_sdk#deep-linking
 [android-launch-modes]:           https://developer.android.com/guide/topics/manifest/activity-element.html
 [google-play-services]:           http://developer.android.com/google/play-services/setup.html
 [reattribution-with-deeplinks]:   https://docs.adtrace.io/en/deeplinking/#manually-appending-attribution-data-to-a-deep-link
-
-## <a id="license"></a>License
-
-The Adtrace SDK is licensed under the MIT License.
-
-Copyright (c) 2018-2019 AdTrace, http://www.adtrace.io
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is furnished to do
-so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
