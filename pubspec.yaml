@@ -1,6 +1,6 @@
 name: adtrace_sdk
 description: This is the Flutter SDK of AdTrace. You can read more about AdTrace at adtrace.io.
-version: 0.0.1
+version: 0.0.2
 author: AdTrace <info@adtrace.io>
 homepage: https://github.com/adtrace/adtrace_sdk_flutter
 
