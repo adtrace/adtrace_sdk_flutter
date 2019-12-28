@@ -57,7 +57,7 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         case AppLifecycleState.paused:
           AdTrace.onPause();
           break;
-        case AppLifecycleState.suspending:
+        case AppLifecycleState.detached:
           break;
       }
     });
@@ -65,7 +65,7 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   initPlatformState() async {
-    AdTraceConfig config = new AdTraceConfig('ab801sbhzwgt', AdTraceEnvironment.sandbox);
+    AdTraceConfig config = new AdTraceConfig('{appToken}', AdTraceEnvironment.sandbox);
     config.logLevel = AdTraceLogLevel.verbose;
     config.isDeviceKnown = false;
     // config.defaultTracker = 'abc123';
@@ -74,6 +74,7 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     // config.eventBufferingEnabled = true;
     // config.delayStart = 6.0;
     // config.setAppSecret(1000, 1, 2, 3, 4);
+    // config.enableInstalledApps = true;
 
     config.attributionCallback = (AdTraceAttribution attributionChangedData) {
       print('[AdTrace]: Attribution changed!');
