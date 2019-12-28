@@ -39,6 +39,7 @@ class AdTraceConfig {
   double delayStart;
   bool isDeviceKnown;
   bool sendInBackground;
+  bool enableInstalledApps;
   bool eventBufferingEnabled;
   bool launchDeferredDeeplink;
   String sdkPrefix;
@@ -138,6 +139,9 @@ class AdTraceConfig {
     }
     if (sendInBackground != null) {
       configMap['sendInBackground'] = sendInBackground.toString();
+    }
+    if (enableInstalledApps != null) {
+      configMap['enableInstalledApps'] = enableInstalledApps.toString();
     }
     if (eventBufferingEnabled != null) {
       configMap['eventBufferingEnabled'] = eventBufferingEnabled.toString();

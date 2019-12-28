@@ -236,6 +236,13 @@ public class AdTraceSdk implements MethodCallHandler {
             adTraceConfig.setSendInBackground(sendInBackground);
         }
 
+        // Enable installed apps.
+        if (configMap.containsKey("enableInstalledApps")) {
+            String strEnableInstalledApps = (String) configMap.get("enableInstalledApps");
+            boolean enableInstalledApps = Boolean.valueOf(strEnableInstalledApps);
+            adTraceConfig.enableSendInstalledApps(enableInstalledApps);
+        }
+
         // Set device known.
         if (configMap.containsKey("isDeviceKnown")) {
             String strIsDeviceKnown = (String) configMap.get("isDeviceKnown");
