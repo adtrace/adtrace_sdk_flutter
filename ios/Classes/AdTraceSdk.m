@@ -196,7 +196,7 @@ static NSString * const CHANNEL_API_NAME = @"com.adtrace.sdk/api";
         || dartEventFailureCallback != nil
         || dartDeferredDeeplinkCallback != nil) {
         [adTraceConfig setDelegate:
-         [ADTSdkDelegate getInstanceWithSwizzleOfAttributionCallback:dartAttributionCallback
+         [AdTraceSdkDelegate getInstanceWithSwizzleOfAttributionCallback:dartAttributionCallback
                                               sessionSuccessCallback:dartSessionSuccessCallback
                                               sessionFailureCallback:dartSessionFailureCallback
                                                 eventSuccessCallback:dartEventSuccessCallback
@@ -397,7 +397,7 @@ static NSString * const CHANNEL_API_NAME = @"com.adtrace.sdk/api";
     if ([self isFieldValid:teardown]) {
         testOptions.teardown = [teardown boolValue];
         if (testOptions.teardown) {
-            [ADTSdkDelegate teardown];
+            [AdTraceSdkDelegate teardown];
         }
     }
     if ([self isFieldValid:deleteState]) {

@@ -1,3 +1,7 @@
+## 0.1.0
+
+* Fix iOS SDK delegate.
+
 ## 0.0.9
 
 * Fix iOS test option.
