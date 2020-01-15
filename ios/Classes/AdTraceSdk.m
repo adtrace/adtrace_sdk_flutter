@@ -4,7 +4,7 @@
 
 #import "AdTraceSdk.h"
 #import "AdTraceSdkDelegate.h"
-#import <AdTrace/AdTrace.h>
+#import <Adtrace/Adtrace.h>
 
 static NSString * const CHANNEL_API_NAME = @"com.adtrace.sdk/api";
 
@@ -33,9 +33,9 @@ static NSString * const CHANNEL_API_NAME = @"com.adtrace.sdk/api";
     if ([@"start" isEqualToString:call.method]) {
         [self start:call withResult:result];
     } else if ([@"onResume" isEqualToString:call.method]) {
-        [AdTrace trackSubsessionStart];
+        [Adtrace trackSubsessionStart];
     } else if ([@"onPause" isEqualToString:call.method]) {
-        [AdTrace trackSubsessionEnd];
+        [Adtrace trackSubsessionEnd];
     } else if ([@"trackEvent" isEqualToString:call.method]) {
         [self trackEvent:call withResult:result];
     } else if ([@"setEnabled" isEqualToString:call.method]) {
@@ -66,32 +66,32 @@ static NSString * const CHANNEL_API_NAME = @"com.adtrace.sdk/api";
         if (!([self isFieldValid:key]) || !([self isFieldValid:value])) {
             return;
         }
-        [AdTrace addSessionCallbackParameter:key value:value];
+        [Adtrace addSessionCallbackParameter:key value:value];
     } else if ([@"removeSessionCallbackParameter" isEqualToString:call.method]) {
         NSString *key = call.arguments[@"key"];
         if (!([self isFieldValid:key])) {
             return;
         }
-        [AdTrace removeSessionCallbackParameter:key];
+        [Adtrace removeSessionCallbackParameter:key];
     } else if ([@"resetSessionCallbackParameters" isEqualToString:call.method]) {
-        [AdTrace resetSessionCallbackParameters];
+        [Adtrace resetSessionCallbackParameters];
     } else if ([@"addSessionPartnerParameter" isEqualToString:call.method]) {
         NSString *key = call.arguments[@"key"];
         NSString *value = call.arguments[@"value"];
         if (!([self isFieldValid:key]) || !([self isFieldValid:value])) {
             return;
         }
-        [AdTrace addSessionPartnerParameter:key value:value];
+        [Adtrace addSessionPartnerParameter:key value:value];
     } else if ([@"removeSessionPartnerParameter" isEqualToString:call.method]) {
         NSString *key = call.arguments[@"key"];
         if (!([self isFieldValid:key])) {
             return;
         }
-        [AdTrace removeSessionPartnerParameter:key];
+        [Adtrace removeSessionPartnerParameter:key];
     } else if ([@"resetSessionPartnerParameters" isEqualToString:call.method]) {
-        [AdTrace resetSessionPartnerParameters];
+        [Adtrace resetSessionPartnerParameters];
     } else if ([@"isEnabled" isEqualToString:call.method]) {
-        BOOL isEnabled = [AdTrace isEnabled];
+        BOOL isEnabled = [Adtrace isEnabled];
         result(@(isEnabled));
     } else {
         result(FlutterMethodNotImplemented);
@@ -125,13 +125,13 @@ static NSString * const CHANNEL_API_NAME = @"com.adtrace.sdk/api";
 
     // Suppress log level.
     if ([self isFieldValid:logLevel]) {
-        if ([AdTraceLogger logLevelFromString:[logLevel lowercaseString]] == AdTraceLogLevelSuppress) {
+        if ([ADTLogger logLevelFromString:[logLevel lowercaseString]] == ADTLogLevelSuppress) {
             allowSuppressLogLevel = YES;
         }
     }
 
     // Create config object.
-    AdTraceConfig *adTraceConfig = [AdTraceConfig configWithAppToken:appToken
+    ADTConfig *adTraceConfig = [ADTConfig configWithAppToken:appToken
                                                 environment:environment
                                       allowSuppressLogLevel:allowSuppressLogLevel];
 
@@ -142,7 +142,7 @@ static NSString * const CHANNEL_API_NAME = @"com.adtrace.sdk/api";
 
     // Log level.
     if ([self isFieldValid:logLevel]) {
-        [adTraceConfig setLogLevel:[AdTraceLogger logLevelFromString:[logLevel lowercaseString]]];
+        [adTraceConfig setLogLevel:[ADTLogger logLevelFromString:[logLevel lowercaseString]]];
     }
 
     // Event buffering.
@@ -196,7 +196,7 @@ static NSString * const CHANNEL_API_NAME = @"com.adtrace.sdk/api";
         || dartEventFailureCallback != nil
         || dartDeferredDeeplinkCallback != nil) {
         [adTraceConfig setDelegate:
-         [AdTraceSdkDelegate getInstanceWithSwizzleOfAttributionCallback:dartAttributionCallback
+         [ADTSdkDelegate getInstanceWithSwizzleOfAttributionCallback:dartAttributionCallback
                                               sessionSuccessCallback:dartSessionSuccessCallback
                                               sessionFailureCallback:dartSessionFailureCallback
                                                 eventSuccessCallback:dartEventSuccessCallback
@@ -207,8 +207,8 @@ static NSString * const CHANNEL_API_NAME = @"com.adtrace.sdk/api";
     }
 
     // Start SDK.
-    [AdTrace appDidLaunch:adTraceConfig];
-    [AdTrace trackSubsessionStart];
+    [Adtrace appDidLaunch:adTraceConfig];
+    [Adtrace trackSubsessionStart];
     result(nil);
 }
 
@@ -222,7 +222,7 @@ static NSString * const CHANNEL_API_NAME = @"com.adtrace.sdk/api";
     NSString *strPartnerParametersJson = call.arguments[@"partnerParameters"];
 
     // Create event object.
-    AdTraceEvent *adTraceEvent = [AdTraceEvent eventWithEventToken:eventToken];
+    ADTEvent *adTraceEvent = [ADTEvent eventWithEventToken:eventToken];
 
     // Revenue.
     if ([self isFieldValid:revenue]) {
@@ -265,32 +265,32 @@ static NSString * const CHANNEL_API_NAME = @"com.adtrace.sdk/api";
     }
 
     // Track event.
-    [AdTrace trackEvent:adTraceEvent];
+    [Adtrace trackEvent:adTraceEvent];
     result(nil);
 }
 
 - (void)setEnabled:(FlutterMethodCall *)call withResult:(FlutterResult)result {
     NSString *isEnabled = call.arguments[@"isEnabled"];
     if ([self isFieldValid:isEnabled]) {
-        [AdTrace setEnabled:[isEnabled boolValue]];
+        [Adtrace setEnabled:[isEnabled boolValue]];
     }
     result(nil);
 }
 
 - (void)sendFirstPackages:(FlutterMethodCall *)call withResult:(FlutterResult)result {
-    [AdTrace sendFirstPackages];
+    [Adtrace sendFirstPackages];
     result(nil);
 }
 
 - (void)gdprForgetMe:(FlutterMethodCall *)call withResult:(FlutterResult)result {
-    [AdTrace gdprForgetMe];
+    [Adtrace gdprForgetMe];
     result(nil);
 }
 
 - (void)setOfflineMode:(FlutterMethodCall *)call withResult:(FlutterResult)result {
     NSString *isOffline = call.arguments[@"isOffline"];
     if ([self isFieldValid:isOffline]) {
-        [AdTrace setOfflineMode:[isOffline boolValue]];
+        [Adtrace setOfflineMode:[isOffline boolValue]];
     }
     result(nil);
 }
@@ -298,7 +298,7 @@ static NSString * const CHANNEL_API_NAME = @"com.adtrace.sdk/api";
 - (void)setPushToken:(FlutterMethodCall *)call withResult:(FlutterResult)result {
     NSString *pushToken = call.arguments[@"pushToken"];
     if ([self isFieldValid:pushToken]) {
-        [AdTrace setPushToken:pushToken];
+        [Adtrace setPushToken:pushToken];
     }
     result(nil);
 }
@@ -318,11 +318,11 @@ static NSString * const CHANNEL_API_NAME = @"com.adtrace.sdk/api";
         url = [NSURL URLWithString:[urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     }
 #pragma clang diagnostic pop
-    [AdTrace appWillOpenUrl:url];
+    [Adtrace appWillOpenUrl:url];
 }
 
 - (void)getAttribution:(FlutterMethodCall *)call withResult:(FlutterResult)result {
-    AdTraceAttribution *attribution = [AdTrace attribution];
+    ADTAttribution *attribution = [Adtrace attribution];
     NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
     if (attribution == nil) {
         result(dictionary);
@@ -340,7 +340,7 @@ static NSString * const CHANNEL_API_NAME = @"com.adtrace.sdk/api";
 }
 
 - (void)getIdfa:(FlutterMethodCall *)call withResult:(FlutterResult)result {
-    NSString *idfa = [AdTrace idfa];
+    NSString *idfa = [Adtrace idfa];
     result(idfa);
 }
 
@@ -351,12 +351,12 @@ static NSString * const CHANNEL_API_NAME = @"com.adtrace.sdk/api";
 }
 
 - (void)getSdkVersion:(FlutterMethodCall *)call withResult:(FlutterResult)result {
-    NSString *sdkVersion = [AdTrace sdkVersion];
+    NSString *sdkVersion = [Adtrace sdkVersion];
     result(sdkVersion);
 }
 
 - (void)setTestOptions:(FlutterMethodCall *)call withResult:(FlutterResult)result {
-    AdTraceTestOptions *testOptions = [[AdTraceTestOptions alloc] init];
+    ADTTestOptions *testOptions = [[ADTTestOptions alloc] init];
     NSString *baseUrl = call.arguments[@"baseUrl"];
     NSString *gdprUrl = call.arguments[@"gdprUrl"];
     NSString *basePath = call.arguments[@"basePath"];
@@ -397,7 +397,7 @@ static NSString * const CHANNEL_API_NAME = @"com.adtrace.sdk/api";
     if ([self isFieldValid:teardown]) {
         testOptions.teardown = [teardown boolValue];
         if (testOptions.teardown) {
-            [AdTraceSdkDelegate teardown];
+            [ADTSdkDelegate teardown];
         }
     }
     if ([self isFieldValid:deleteState]) {
@@ -410,7 +410,7 @@ static NSString * const CHANNEL_API_NAME = @"com.adtrace.sdk/api";
         testOptions.iAdFrameworkEnabled = [iAdFrameworkEnabled boolValue];
     }
 
-    [AdTrace setTestOptions:testOptions];
+    [Adtrace setTestOptions:testOptions];
 }
 
 - (BOOL)isFieldValid:(NSObject *)field {

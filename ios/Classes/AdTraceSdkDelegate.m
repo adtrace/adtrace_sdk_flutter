@@ -53,7 +53,7 @@ static NSString *dartDeferredDeeplinkCallback;
         }
         if (swizzleSessionFailureCallback != nil) {
             [defaultInstance swizzleCallbackMethod:@selector(adTraceSessionTrackingFailed:)
-                                  swizzledSelector:@selector(adTraceSessionTrackingFailedWananbe:)];
+                                  swizzledSelector:@selector(adTraceSessionTrackingFailedWannabe:)];
             dartSessionFailureCallback = swizzleSessionFailureCallback;
         }
         if (swizzleEventSuccessCallback != nil) {
@@ -86,7 +86,7 @@ static NSString *dartDeferredDeeplinkCallback;
 
 #pragma mark - Private & helper methods
 
-- (void)adTraceAttributionChangedWannabe:(AdTraceAttribution *)attribution {
+- (void)adTraceAttributionChangedWannabe:(ADTAttribution *)attribution {
     if (attribution == nil) {
         return;
     }
@@ -109,7 +109,7 @@ static NSString *dartDeferredDeeplinkCallback;
     [self.channel invokeMethod:dartAttributionCallback arguments:attributionMap];
 }
 
-- (void)adTraceSessionTrackingSucceededWannabe:(AdTraceSessionSuccess *)sessionSuccessResponseData {
+- (void)adTraceSessionTrackingSucceededWannabe:(ADTSessionSuccess *)sessionSuccessResponseData {
     if (nil == sessionSuccessResponseData) {
         return;
     }
@@ -128,7 +128,7 @@ static NSString *dartDeferredDeeplinkCallback;
     [self.channel invokeMethod:dartSessionSuccessCallback arguments:sessionSuccessMap];
 }
 
-- (void)adTraceSessionTrackingFailedWananbe:(AdTraceSessionFailure *)sessionFailureResponseData {
+- (void)adTraceSessionTrackingFailedWannabe:(ADTSessionFailure *)sessionFailureResponseData {
     if (nil == sessionFailureResponseData) {
         return;
     }
@@ -149,7 +149,7 @@ static NSString *dartDeferredDeeplinkCallback;
     [self.channel invokeMethod:dartSessionFailureCallback arguments:sessionFailureMap];
 }
 
-- (void)adTraceEventTrackingSucceededWannabe:(AdTraceEventSuccess *)eventSuccessResponseData {
+- (void)adTraceEventTrackingSucceededWannabe:(ADTEventSuccess *)eventSuccessResponseData {
     if (nil == eventSuccessResponseData) {
         return;
     }
@@ -170,7 +170,7 @@ static NSString *dartDeferredDeeplinkCallback;
     [self.channel invokeMethod:dartEventSuccessCallback arguments:eventSuccessMap];
 }
 
-- (void)adTraceEventTrackingFailedWannabe:(AdTraceEventFailure *)eventFailureResponseData {
+- (void)adTraceEventTrackingFailedWannabe:(ADTEventFailure *)eventFailureResponseData {
     if (nil == eventFailureResponseData) {
         return;
     }

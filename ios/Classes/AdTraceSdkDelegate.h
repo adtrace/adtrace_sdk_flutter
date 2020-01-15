@@ -3,7 +3,7 @@
 //
 
 #import <Flutter/Flutter.h>
-#import <AdTrace/AdTrace.h>
+#import <Adtrace/Adtrace.h>
 
 @interface AdTraceSdkDelegate : NSObject<AdTraceDelegate>
 
