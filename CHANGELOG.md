@@ -1,3 +1,7 @@
+## 0.0.4
+
+* Fix iOS bugs.
+
 ## 0.0.3
 
 * Add enable installed apps to config.
