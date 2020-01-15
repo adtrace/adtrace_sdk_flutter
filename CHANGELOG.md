@@ -1,3 +1,7 @@
+## 0.0.9
+
+* Fix iOS test option.
+
 ## 0.0.8
 
 * Fix iOS naming library.

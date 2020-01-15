@@ -356,7 +356,7 @@ static NSString * const CHANNEL_API_NAME = @"com.adtrace.sdk/api";
 }
 
 - (void)setTestOptions:(FlutterMethodCall *)call withResult:(FlutterResult)result {
-    ADTTestOptions *testOptions = [[ADTTestOptions alloc] init];
+    AdtraceTestOptions *testOptions = [[AdtraceTestOptions alloc] init];
     NSString *baseUrl = call.arguments[@"baseUrl"];
     NSString *gdprUrl = call.arguments[@"gdprUrl"];
     NSString *basePath = call.arguments[@"basePath"];

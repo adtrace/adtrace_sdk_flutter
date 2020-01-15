@@ -3,7 +3,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'adtrace_sdk'
-  s.version          = '0.0.8'
+  s.version          = '0.0.9'
   s.summary          = 'This is the Flutter SDK of AdTrace. You can read more about AdTrace at adtrace.io.'
   s.description      = <<-DESC
 This is the Flutter SDK of AdTrace. You can read more about AdTrace at adtrace.io.
