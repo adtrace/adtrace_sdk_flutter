@@ -1,3 +1,7 @@
+## 0.1.1
+
+* Fix iOS method channel.
+
 ## 0.1.0
 
 * Fix iOS SDK delegate.

@@ -6,7 +6,7 @@
 #import "AdTraceSdkDelegate.h"
 #import <Adtrace/Adtrace.h>
 
-static NSString * const CHANNEL_API_NAME = @"com.adtrace.sdk/api";
+static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
 
 @interface AdTraceSdk ()
 

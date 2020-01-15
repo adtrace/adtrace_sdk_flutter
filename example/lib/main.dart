@@ -69,7 +69,7 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     config.logLevel = AdTraceLogLevel.verbose;
     config.isDeviceKnown = false;
     // config.defaultTracker = 'abc123';
-    // config.processName = 'com.adtrace.examples';
+    // config.processName = 'io.adtrace.examples';
     // config.sendInBackground = true;
     // config.eventBufferingEnabled = true;
     // config.delayStart = 6.0;
