@@ -11,7 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 class AdTrace {
-  static const String _sdkPrefix = 'flutter0.0.4';
+  static const String _sdkPrefix = 'flutter0.0.5';
   static const MethodChannel _channel = const MethodChannel('io.adtrace.sdk/api');
 
   static void start(AdTraceConfig config) {

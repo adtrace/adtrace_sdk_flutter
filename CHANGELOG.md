@@ -1,3 +1,7 @@
+## 0.0.5
+
+* Fix iOS integration.
+
 ## 0.0.4
 
 * Fix iOS bugs.

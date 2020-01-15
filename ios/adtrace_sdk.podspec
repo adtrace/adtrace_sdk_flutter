@@ -3,7 +3,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'adtrace_sdk'
-  s.version          = '0.0.4'
+  s.version          = '0.0.5'
   s.summary          = 'This is the Flutter SDK of AdTrace. You can read more about AdTrace at adtrace.io.'
   s.description      = <<-DESC
 This is the Flutter SDK of AdTrace. You can read more about AdTrace at adtrace.io.
@@ -15,7 +15,7 @@ This is the Flutter SDK of AdTrace. You can read more about AdTrace at adtrace.i
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
-  s.dependency 'AdTrace', '~> 1.0.1'
+  s.dependency 'Adtrace', '~> 1.0.1'
 
   s.ios.deployment_target = '8.0'
 end
