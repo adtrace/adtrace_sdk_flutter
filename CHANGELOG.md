@@ -1,3 +1,7 @@
+## 0.0.7
+
+* Fix iOS delegate.
+
 ## 0.0.6
 
 * Fix iOS listeners.
