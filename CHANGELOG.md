@@ -1,3 +1,7 @@
+## 0.0.8
+
+* Fix iOS naming library.
+
 ## 0.0.7
 
 * Fix iOS delegate.
