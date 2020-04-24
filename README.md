@@ -86,7 +86,7 @@ You can add AdTrace SDK to your Flutter app by adding following to your `pubspec
 
 ```yaml
 dependencies:
-  adtrace_sdk: ^0.1.1
+  adtrace_sdk: ^0.1.3
 ```
 
 Then navigate to your project in the terminal and run:
@@ -102,7 +102,7 @@ flutter packages get
 Since the 1st of August of 2014, apps in the Google Play Store must use the [Google Advertising ID][google-ad-id] to uniquely identify devices. To allow the AdTrace SDK to use the Google Advertising ID, you must integrate the [Google Play Services][google-play-services]. If you haven't done this yet, please add dependency to Google Play Services library by adding following dependency to your `dependencies` block of app's `build.gradle` file for Android platform:
 
 ```gradle
-implementation 'com.google.android.gms:play-services-analytics:16.0.4'
+implementation 'com.google.android.gms:play-services-ads-identifier:17.0.0'
 ```
 
 **Note**: The AdTrace SDK is not tied to any specific version of the `play-services-analytics` part of the Google Play Services library, so feel free to always use the latest version of it (or whichever you might need).
@@ -158,7 +158,7 @@ In order to correctly attribute an install of your app to its source, AdTrace ne
 In order to support this in your app, please make sure to add following dependency to your app's `build.gradle` file for Android platform:
 
 ```
-implementation 'com.android.installreferrer:installreferrer:1.0'
+implementation 'com.android.installreferrer:installreferrer:1.1.2'
 ```
 
 Also, make sure that you have paid attention to the [Proguard settings](#qs-proguard) chapter and that you have added all the rules mentioned in it, especially the one needed for this feature:
