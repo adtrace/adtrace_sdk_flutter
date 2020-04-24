@@ -13,6 +13,7 @@ class AdTraceEvent {
 
   String transactionId;
   String callbackId;
+  String eventValue;
 
   AdTraceEvent(this._eventToken) {
     _callbackParameters = new Map<String, String>();
@@ -48,6 +49,9 @@ class AdTraceEvent {
     }
     if (callbackId != null) {
       eventMap['callbackId'] = callbackId;
+    }
+    if (eventValue != null) {
+      eventMap['eventValue'] = eventValue;
     }
     if (_callbackParameters.length > 0) {
       eventMap['callbackParameters'] = json.encode(_callbackParameters);
