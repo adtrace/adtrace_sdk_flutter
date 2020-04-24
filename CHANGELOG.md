@@ -1,3 +1,11 @@
+## 0.1.3
+
+* Migrate to AndroidX.
+
+## 0.1.2
+
+* Add Event Value.
+
 ## 0.1.1
 
 * Fix iOS method channel.
