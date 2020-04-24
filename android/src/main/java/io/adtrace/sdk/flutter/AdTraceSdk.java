@@ -444,6 +444,12 @@ public class AdTraceSdk implements MethodCallHandler {
             event.setCallbackId(callbackId);
         }
 
+        // Event value.
+        if (eventMap.containsKey("eventValue")) {
+            String eventValue = (String) eventMap.get("eventValue");
+            event.setEventValue(eventValue);
+        }
+
         // Callback parameters.
         if (eventMap.containsKey("callbackParameters")) {
             String strCallbackParametersJson = (String) eventMap.get("callbackParameters");
