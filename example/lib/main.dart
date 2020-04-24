@@ -65,7 +65,7 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   initPlatformState() async {
-    AdTraceConfig config = new AdTraceConfig('{appToken}', AdTraceEnvironment.sandbox);
+    AdTraceConfig config = new AdTraceConfig('4rywkulodp9y', AdTraceEnvironment.sandbox);
     config.logLevel = AdTraceLogLevel.verbose;
     config.isDeviceKnown = false;
     // config.defaultTracker = 'abc123';
