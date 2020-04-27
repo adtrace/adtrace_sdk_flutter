@@ -592,8 +592,6 @@ In this case, this will make the AdTrace SDK not send the initial install sessio
 
 ## Additional features
 
-### <a id="af"></a> Additional features
-
 Once you have integrated the AdTrace SDK into your project, you can take advantage of the following features.
 
 ### <a id="af-push-token"></a>Push token (uninstall tracking)
