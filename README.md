@@ -67,9 +67,6 @@ This is the Flutter SDK of AdTrace™. You can read more about AdTrace™ at [ad
    * [Background tracking](#af-background-tracking)
    * [GDPR right to be forgotten](#af-gdpr-forget-me)
 
-### License
-
-
 ## Quick start
 
 ### <a id="qs-example-apps"></a>Example apps
@@ -608,8 +605,6 @@ AdTrace.setPushToken('{PushNotificationsToken}');
 
 You can register a callback to be notified of tracker attribution changes. Due to the different sources considered for attribution, this information can not be provided synchronously.
 
-Please make sure to consider our [applicable attribution data policies][attribution-data].
-
 With the config instance, before starting the SDK, add the attribution callback:
 
 ```dart
@@ -911,7 +906,6 @@ Upon receiving this information, AdTrace will erase the user's data and the AdTr
 [ios-deeplinking]:                https://github.com/adtrace/ios_sdk/#deep-linking
 [new-referrer-api]:               https://developer.android.com/google/play/installreferrer/library.html
 [special-partners]:               https://docs.adtrace.io/en/special-partners
-[attribution-data]:               https://github.com/adtrace/sdks/blob/master/doc/attribution-data.md
 [currency-conversion]:            https://docs.adtrace.io/en/event-tracking/#tracking-purchases-in-different-currencies
 [android-deeplinking]:            https://github.com/adtrace/android_sdk#deep-linking
 [android-launch-modes]:           https://developer.android.com/guide/topics/manifest/activity-element.html
