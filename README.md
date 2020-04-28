@@ -44,6 +44,7 @@ This is the Flutter SDK of AdTrace™. You can read more about AdTrace™ at [ad
       * [Event callback parameters](#cp-event-callback-parameters)
       * [Event partner parameters](#cp-event-partner-parameters)
       * [Event callback identifier](#cp-event-callback-id)
+      * [Event value](#cp-event-value)
    * [Session parameters](#cp-session-parameters)
       * [Session callback parameters](#cp-session-callback-parameters)
       * [Session partner parameters](#cp-session-partner-parameters)
@@ -55,6 +56,7 @@ This is the Flutter SDK of AdTrace™. You can read more about AdTrace™ at [ad
    * [Attribution callback](#af-attribution-callback)
    * [Session and event callbacks](#af-session-event-callbacks)
    * [User attribution](#af-user-attribution)
+   * [Send installed apps](#af-send-installed-apps)
    * [Device IDs](#af-device-ids)
       * [iOS advertising identifier](#af-idfa)
       * [Google Play Services advertising identifier](#af-gps-adid)
@@ -196,7 +198,7 @@ AdTraceConfig config = new AdTraceConfig('{YourAppToken}', AdTraceEnvironment.sa
 AdTrace.start(config);
 ```
 
-Replace `{YourAppToken}` with your app token. You can find this in your [dashboard].
+Replace `{YourAppToken}` with your app token. You can find this in your [panel].
 
 Depending on whether you are building your app for testing or for production, you must set `environment` with one of these values:
 
@@ -273,7 +275,7 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
 An account manager must activate the AdTrace SDK signature. Contact AdTrace support (support@AdTrace.com) if you are interested in using this feature.
 
-If the SDK signature has already been enabled on your account and you have access to App Secrets in your AdTrace Dashboard, please use the method below to integrate the SDK signature into your app.
+If the SDK signature has already been enabled on your account and you have access to App Secrets in your AdTrace panel, please use the method below to integrate the SDK signature into your app.
 
 An App Secret is set by calling `setAppSecret` on your config instance:
 
@@ -353,7 +355,7 @@ To set up your iOS app (`Runner` project) to handle deep linking on native level
 
 ### <a id="dl-reattribution"></a>Reattribution via deep links
 
-AdTrace enables you to run re-engagement campaigns through deep links. For more information on how to do that, please check our [official docs][reattribution-with-deeplinks].
+AdTrace enables you to run re-engagement campaigns through deep links.
 
 If you are using this feature, in order for your user to be properly reattributed, you need to make one additional call to the AdTrace SDK in your app.
 
@@ -422,7 +424,7 @@ Once everything set up, inside of your native iOS app delegate make a call to `a
 
 ### <a id="et-tracking"></a>Track event
 
-You can use adTrace to track any event in your app. Suppose you want to track every tap on a button. You would have to create a new event token in your [dashboard]. Let's say that event token is `abc123`. In your button's click handler method you could then add the following lines to track the click:
+You can use adTrace to track any event in your app. Suppose you want to track every tap on a button. You would have to create a new event token in your [panel]. Let's say that event token is `abc123`. In your button's click handler method you could then add the following lines to track the click:
 
 ```dart
 AdTraceEvent adTraceEvent = new AdTraceEvent('abc123');
@@ -441,9 +443,7 @@ AdTrace.trackEvent(adTraceEvent);
 
 This can be combined with callback parameters of course.
 
-When you set a currency token, AdTrace will automatically convert the incoming revenues into a reporting revenue of your choice. Read more about [currency conversion here][currency-conversion].
-
-You can read more about revenue and event tracking in the [event tracking guide][event-tracking].
+When you set a currency token, AdTrace will automatically convert the incoming revenues into a reporting revenue of your choice.
 
 ### <a id="et-revenue-deduplication"></a>Revenue deduplication
 
@@ -461,7 +461,7 @@ AdTrace.trackEvent(adTraceEvent);
 
 ### <a id="cp"></a>Custom parameters
 
-In addition to the data points that AdTrace SDK collects by default, you can use the AdTrace SDK to track and add to the event/session as many custom values as you need (user IDs, product IDs, etc.). Custom parameters are only available as raw data (i.e., they won't appear in the AdTrace dashboard).
+In addition to the data points that AdTrace SDK collects by default, you can use the AdTrace SDK to track and add to the event/session as many custom values as you need (user IDs, product IDs, etc.). Custom parameters are only available as raw data (i.e., they won't appear in the AdTrace panel).
 
 You should use **callback parameters** for the values that you collect for your own internal use, and **partner parameters** for those that you wish to share with external partners. If a value (e.g. product ID) is tracked both for internal use and to forward it to external partners, the best practice would be to track it both as callback and partner parameters.
 
@@ -470,7 +470,7 @@ You should use **callback parameters** for the values that you collect for your 
 
 ### <a id="cp-event-callback-parameters"></a>Event callback parameters
 
-You can register a callback URL for your events in your [dashboard]. We will send a GET request to that URL whenever the event is tracked. You can add callback parameters to that event by calling `addCallbackParameter` to the event instance before tracking it. We will then append these parameters to your callback URL.
+You can register a callback URL for your events in your [panel]. We will send a GET request to that URL whenever the event is tracked. You can add callback parameters to that event by calling `addCallbackParameter` to the event instance before tracking it. We will then append these parameters to your callback URL.
 
 For example, suppose you have registered the URL `http://www.adtrace.io/callback` then track an event like this:
 
@@ -489,11 +489,9 @@ http://www.adtrace.io/callback?key=value&foo=bar
 
 It should be mentioned that we support a variety of placeholders like `{gps_adid}` that can be used as parameter values. In the resulting callback this placeholder would be replaced with the Google Play Services ID of the current device. Also note that we don't store any of your custom parameters, but only append them to your callbacks. If you haven't registered a callback for an event, these parameters won't even be read.
 
-You can read more about using URL callbacks, including a full list of available values, in our [callbacks guide][callbacks-guide].
-
 ### <a id="cp-event-partner-parameters"></a>Event partner parameters
 
-You can also add parameters to be transmitted to network partners, which have been activated in your AdTrace dashboard.
+You can also add parameters to be transmitted to network partners, which have been activated in your AdTrace panel.
 
 This works similarly to the callback parameters mentioned above, but can be added by calling the `addPartnerParameter` method on your event instance.
 
@@ -504,8 +502,6 @@ adTraceEvent.addPartnerParameter('foo', 'bar');
 AdTrace.trackEvent(adTraceEvent);
 ```
 
-You can read more about special partners and these integrations in our [guide to special partners][special-partners].
-
 ### <a id="cp-event-callback-id"></a>Event callback identifier
 
 You can also add custom string identifier to each event you want to track. This identifier will later be reported in event success and/or event failure callbacks to enable you to keep track on which event was successfully tracked or not. You can set this identifier by assigning the `callbackId` member of your event instance:
@@ -513,6 +509,16 @@ You can also add custom string identifier to each event you want to track. This 
 ```dart
 AdTraceEvent adTraceEvent = new AdTraceEvent('abc123');
 adTraceEvent.callbackId = '{CallbackId}';
+AdTrace.trackEvent(adTraceEvent);
+```
+
+### <a id="cp-event-value"></a>Event value
+
+You can also add custom string value to event. You can set this value by calling the `setEventValue` method on your `AdTraceEvent` instance:
+
+```dart
+AdTraceEvent adTraceEvent = new AdTraceEvent('abc123');
+adTraceEvent.eventValue = '{eventValue}';
 AdTrace.trackEvent(adTraceEvent);
 ```
 
@@ -550,7 +556,7 @@ AdTrace.resetSessionCallbackParameters();
 
 In the same way that there are [session callback parameters](#session-callback-parameters) sent in every event or session of the AdTrace SDK, there is also session partner parameters.
 
-These will be transmitted to network partners, for the integrations that have been activated in your AdTrace [dashboard].
+These will be transmitted to network partners, for the integrations that have been activated in your AdTrace [panel].
 
 The session partner parameters have a similar interface to the event partner parameters. Instead of adding the key and it's value to an event, it's added through a call to `AdTrace.addSessionPartnerParameter(String key, String value)`:
 
@@ -777,6 +783,14 @@ AdTraceAttribution attribution = AdTrace.getAttribution();
 
 **Note**: Information about current attribution is available after app installation has been tracked by the AdTrace backend and attribution callback has been initially triggered. From that moment on, AdTrace SDK has information about your user's attribution and you can access it with this method. So, **it is not possible** to access user's attribution value before the SDK has been initialized and attribution callback has been initially triggered.
 
+### <a id="af-send-installed-apps"></a>Send installed apps
+
+To increase the accuracy and security in fraud detection, you can enable the sending of installed applications on user's device as follows:
+
+```dart
+adtraceConfig.enableInstalledApps = true;
+```
+
 ### <a id="af-device-ids"></a>Device IDs
 
 The AdTrace SDK offers you possibility to obtain some of the device identifiers.
@@ -829,13 +843,13 @@ AdTrace.getAdid().then((adid) {
 
 If you want to use the AdTrace SDK to recognize users whose devices came with your app pre-installed, follow these steps.
 
-- Create a new tracker in your [dashboard].
+- Create a new tracker in your [panel].
 - Set the default tracker of your config object:
 
   ```dart
   adTraceConfig.defaultTracker = '{TrackerToken}';
   ```
-  Replace `{TrackerToken}` with the tracker token you created in step 1. Please note that the Dashboard displays a tracker URL (including `http://app.adtrace.io/`). In your source code, you should specify only the six-character token and not the entire URL.
+  Replace `{TrackerToken}` with the tracker token you created in step 1. Please note that the panel displays a tracker URL (including `http://app.adtrace.io/`). In your source code, you should specify only the six-character token and not the entire URL.
 
 - Build and run your app. You should see a line like the following in your LogCat:
 
@@ -894,20 +908,15 @@ AdTrace.gdprForgetMe();
 Upon receiving this information, AdTrace will erase the user's data and the AdTrace SDK will stop tracking the user. No requests from this device will be sent to AdTrace in the future.
 
 
-[dashboard]:  http://adtrace.io
+[panel]:  http://panel.adtrace.io
 [adtrace.io]: http://adtrace.io
 
 [example-app]: example
 
-[multiple-receivers]:             https://github.com/adtrace/android_sdk/blob/master/doc/english/referrer.md
+[multiple-receivers]:             https://github.com/adtrace/adtrace_sdk_android/blob/master/doc/english/multiple-receivers.md
 [google-ad-id]:                   https://support.google.com/googleplay/android-developer/answer/6048248?hl=en
-[event-tracking]:                 https://docs.adtrace.io/en/event-tracking
-[callbacks-guide]:                https://docs.adtrace.io/en/callbacks
-[ios-deeplinking]:                https://github.com/adtrace/ios_sdk/#deep-linking
+[ios-deeplinking]:                https://github.com/adtrace/adtrace_sdk_ios/#deep-linking
 [new-referrer-api]:               https://developer.android.com/google/play/installreferrer/library.html
-[special-partners]:               https://docs.adtrace.io/en/special-partners
-[currency-conversion]:            https://docs.adtrace.io/en/event-tracking/#tracking-purchases-in-different-currencies
-[android-deeplinking]:            https://github.com/adtrace/android_sdk#deep-linking
+[android-deeplinking]:            https://github.com/adtrace/adtrace_sdk_android#deep-linking
 [android-launch-modes]:           https://developer.android.com/guide/topics/manifest/activity-element.html
 [google-play-services]:           http://developer.android.com/google/play-services/setup.html
-[reattribution-with-deeplinks]:   https://docs.adtrace.io/en/deeplinking/#manually-appending-attribution-data-to-a-deep-link
