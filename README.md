@@ -1,3 +1,10 @@
+<p align="center"><a href="https://adtrace.io" target="_blank" rel="noopener noreferrer"><img width="100" src="http://adtrace.io/fa/wp-content/uploads/2019/02/logo.png" alt="Adtrace logo"></a></p>
+
+<p align="center">
+  <a href='https://pub.dev/packages/adtrace_sdk'><img src='https://img.shields.io/badge/pub-0.1.3-blue.svg'></a>
+  <a href='https://opensource.org/licenses/MIT'><img src='https://img.shields.io/badge/License-MIT-green.svg'></a>
+</p>
+
 ## Summary
 
 This is the Flutter SDK of AdTrace™. You can read more about AdTrace™ at [adtrace.io].
