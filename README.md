@@ -13,15 +13,16 @@ This is the Flutter SDK of AdTrace™. You can read more about AdTrace™ at [ad
 
 ### Quick start
 
-   * [Example apps](#qs-example-apps)
+   * [Example app](#qs-example-app)
    * [Getting started](#qs-getting-started)
       * [Add the SDK to your project](#qs-add-sdk)
-      * [[Android] Add Google Play Services](#qs-gps)
-      * [[Android] Add permissions](#qs-permissions)
-      * [[Android] Proguard settings](#qs-proguard)
-      * [[Android] Install referrer](#qs-install-referrer)
-         * [[Android] Google Play Referrer API](#qs-gpr-api)
-         * [[Android] Google Play Store intent](#qs-gps-intent)
+      * [AdTrace project settings](#qs-adtrace-project-settings)
+        * [Add permissions](#qs-android-permissions)
+        * [Add Google Play Services](#qs-android-gps)
+        * [Proguard settings](#qs-android-proguard)
+        * [Install referrer](#qs-android-referrer)
+           * [Google Play Referrer API](#qs-android-referrer-gpr-api)
+           * [Google Play Store intent](#qs-android-referrer-gps-intent)
    * [Integrate the SDK into your app](#qs-integrate-sdk)
       * [Basic setup](#qs-basic-setup)
       * [Session tracking](#qs-session-tracking)
@@ -32,7 +33,7 @@ This is the Flutter SDK of AdTrace™. You can read more about AdTrace™ at [ad
 
 ### Deep linking
 
-   * [Deep linking](#dl)
+   * [Deep linking overview](#dl-overview)
    * [Standard deep linking scenario](#dl-standard)
    * [Deferred deep linking scenario](#dl-deferred)
    * [Deep linking handling in Android app](#dl-app-android)
@@ -41,20 +42,21 @@ This is the Flutter SDK of AdTrace™. You can read more about AdTrace™ at [ad
 
 ### Event tracking
 
-   * [Track event](#et-tracking)
-   * [Track revenue](#et-revenue)
-   * [Revenue deduplication](#et-revenue-deduplication)
+   * [Track event](#et-track-event)
+   * [Track revenue](#et-track-revenue)
+   * [Revenue deduplication](#et-track-deduplicate)
 
 ### Custom parameters
 
-   * [Event parameters](#cp-event-parameters)
-      * [Event callback parameters](#cp-event-callback-parameters)
-      * [Event partner parameters](#cp-event-partner-parameters)
-      * [Event callback identifier](#cp-event-callback-id)
+   * [Custom parameters overview](#cp-overview)
+   * [Event parameters](#cp-event)
+      * [Event callback parameters](#cp-event-callback)
+      * [Event partner parameters](#cp-event-partner)
+      * [Event callback identifier](#cp-event-identifier)
       * [Event value](#cp-event-value)
-   * [Session parameters](#cp-session-parameters)
-      * [Session callback parameters](#cp-session-callback-parameters)
-      * [Session partner parameters](#cp-session-partner-parameters)
+   * [Session parameters](#cp-session)
+      * [Session callback parameters](#cp-session-callback)
+      * [Session partner parameters](#cp-session-partner)
       * [Delay start](#cp-delay-start)
 
 ### Additional features
@@ -78,9 +80,9 @@ This is the Flutter SDK of AdTrace™. You can read more about AdTrace™ at [ad
 
 ## Quick start
 
-### <a id="qs-example-apps"></a>Example apps
+### <a id="qs-example-app"></a>Example apps
 
-There are example Flutter app inside the [`example` directory][example-app]. In there you can check how the AdTrace SDK can be integrated.
+There is an example Flutter app inside the [`example` directory][example-app]. In there you can check how the AdTrace SDK can be integrated.
 
 ### <a id="qs-getting-started"></a>Getting started
 
@@ -103,17 +105,12 @@ flutter packages get
 
 **Note**: If you are using Visual Studio Code to develop your app, upon editing `pubspec.yaml`, it will automatically run this command, so you don't need to run it manually.
 
-### <a id="qs-gps"></a>[Android] Add Google Play Services
+### <a id="qs-adtrace-project-settings"></a>AdTrace project settings
 
-Since the 1st of August of 2014, apps in the Google Play Store must use the [Google Advertising ID][google-ad-id] to uniquely identify devices. To allow the AdTrace SDK to use the Google Advertising ID, you must integrate the [Google Play Services][google-play-services]. If you haven't done this yet, please add dependency to Google Play Services library by adding following dependency to your `dependencies` block of app's `build.gradle` file for Android platform:
+Once the AdTrace SDK has been added to your app, certain tweaks are going to be performed so that the AdTrace SDK can work properly. Below you can find a description of every additional thing that the AdTrace SDK performs after you've added it to your app and what needs to be done by you in order for AdTrace SDK to work properly.
 
-```gradle
-implementation 'com.google.android.gms:play-services-ads-identifier:17.0.0'
-```
 
-**Note**: The AdTrace SDK is not tied to any specific version of the `play-services-analytics` part of the Google Play Services library, so feel free to always use the latest version of it (or whichever you might need).
-
-### <a id="qs-permissions"></a>[Android] Add permissions
+### <a id="qs-android-permissions"></a>Add permissions
 
 Please add the following permissions, which the AdTrace SDK needs, if they are not already present in your `AndroidManifest.xml` file for Android platform:
 
@@ -128,7 +125,18 @@ If you are **not targeting the Google Play Store**, please also add the followin
 <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 ```
 
-### <a id="qs-proguard"></a>[Android] Proguard settings
+### <a id="qs-android-gps"></a>Add Google Play Services
+
+Since the 1st of August of 2014, apps in the Google Play Store must use the [Google Advertising ID][google-ad-id] to uniquely identify devices. To allow the AdTrace SDK to use the Google Advertising ID, you must integrate the [Google Play Services][google-play-services]. If you haven't done this yet, please add dependency to Google Play Services library by adding following dependency to your `dependencies` block of app's `build.gradle` file for Android platform:
+
+```gradle
+implementation 'com.google.android.gms:play-services-ads-identifier:17.0.0'
+```
+
+**Note**: The AdTrace SDK is not tied to any specific version of the `play-services-ads-identifier` part of the Google Play Services library, so feel free to always use the latest version of it (or whichever you might need).
+
+
+### <a id="qs-android-proguard"></a>Proguard settings
 
 If you are using Proguard, add these lines to your Proguard file:
 
@@ -153,13 +161,13 @@ If you are **not publishing your app in the Google Play Store**, you can leave j
 -keep public class io.adtrace.sdk.** { *; }
 ```
 
-### <a id="qs-install-referrer"></a>[Android] Install referrer
+### <a id="qs-android-referrer"></a>Install referrer
 
 In order to correctly attribute an install of your app to its source, AdTrace needs information about the **install referrer**. This can be obtained by using the **Google Play Referrer API** or by catching the **Google Play Store intent** with a broadcast receiver.
 
 **Important**: The Google Play Referrer API is newly introduced by Google with the express purpose of providing a more reliable and secure way of obtaining install referrer information and to aid attribution providers in the fight against click injection. It is **strongly advised** that you support this in your application. The Google Play Store intent is a less secure way of obtaining install referrer information. It will continue to exist in parallel with the new Google Play Referrer API temporarily, but it is set to be deprecated in future.
 
-### <a id="qs-gpr-api"></a>[Android] Google Play Referrer API
+### <a id="qs-android-referrer-gpr-api"></a>Google Play Referrer API
 
 In order to support this in your app, please make sure to add following dependency to your app's `build.gradle` file for Android platform:
 
@@ -173,7 +181,7 @@ Also, make sure that you have paid attention to the [Proguard settings](#qs-prog
 -keep public class com.android.installreferrer.** { *; }
 ```
 
-### <a id="qs-gps-intent"></a>[Android] Google Play Store intent
+### <a id="qs-android-referrer-gps-intent"></a>Google Play Store intent
 
 The Google Play Store `INSTALL_REFERRER` intent should be captured with a broadcast receiver. If you are **not using your own broadcast receiver** to receive the `INSTALL_REFERRER` intent, add the following `receiver` tag inside the `application` tag in your `AndroidManifest.xml` file for Android platform.
 
@@ -198,7 +206,7 @@ To start with, we'll set up basic session tracking.
 
 ### <a id="qs-basic-setup"></a>Basic setup
 
-Make sure to initialise AdTrace SDK as soon as possible in your Flutter app (upon loading first widget in your app). You can initialise AdTrace SDK like described below:
+Make sure to initialize AdTrace SDK as soon as possible in your Flutter app (upon loading first widget in your app). You can initialize AdTrace SDK like described below:
 
 ```dart
 AdTraceConfig config = new AdTraceConfig('{YourAppToken}', AdTraceEnvironment.sandbox);
@@ -249,7 +257,7 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    initPlatformState(); // <-- Initialise SDK in here.
+    initPlatformState(); // <-- Initialize SDK in here.
   }
 
   @override
@@ -311,7 +319,7 @@ Build and run your Flutter app. In your Android/iOS log you can check for logs c
 
 ## Deep linking
 
-### <a id="dl"></a>Deep linking
+### <a id="dl-overview"></a>Deep linking overview
 
 If you are using an AdTrace tracker URL with the option to deep link into your app, there is the possibility to get information about the deep link URL and its content. Hitting the URL can happen when the user has your app already installed (standard deep linking scenario) or if they don't have the app on their device (deferred deep linking scenario). In the standard deep linking scenario, the Android platform natively offers the possibility for you to get the information about the deep link content. The deferred deep linking scenario is something which the Android platform doesn't support out of the box, and, in this case, the AdTrace SDK will offer you the mechanism you need to get the information about the deep link content.
 
@@ -319,7 +327,7 @@ You need to set up deep linking handling in your app **on native level** - in yo
 
 ### <a id="dl-standard"></a>Standard deep linking scenario
 
-Unfortunately, in this scenario the information about the deep link can not be delivered to you in your Dart code. Once you enable your app to handle deep linking, you will get information about the deep link on native level. For more information check our chapters below on how to enable deep linking for Android and iOS apps.
+Unfortunately, in this scenario the information about the deep link can not be delivered to you in your Dart code. Once you enable your app to handle deep linking, you will get information about the deep link on native level. For more information check our chapters below on how to enable deep linking for [Android](#dl-app-android) and [iOS](#dl-app-ios) apps.
 
 ### <a id="dl-deferred"></a>Deferred deep linking scenario
 
@@ -429,7 +437,7 @@ Once everything set up, inside of your native iOS app delegate make a call to `a
 
 ## Event tracking
 
-### <a id="et-tracking"></a>Track event
+### <a id="et-track-event"></a>Track event
 
 You can use adTrace to track any event in your app. Suppose you want to track every tap on a button. You would have to create a new event token in your [panel]. Let's say that event token is `abc123`. In your button's click handler method you could then add the following lines to track the click:
 
@@ -438,7 +446,7 @@ AdTraceEvent adTraceEvent = new AdTraceEvent('abc123');
 AdTrace.trackEvent(adTraceEvent);
 ```
 
-### <a id="et-revenue"></a>Track revenue
+### <a id="et-track-revenue"></a>Track revenue
 
 If your users can generate revenue by tapping on advertisements or making in-app purchases you can track those revenues with events. Lets say a tap is worth one Euro cent. You could then track the revenue event like this:
 
@@ -452,7 +460,7 @@ This can be combined with callback parameters of course.
 
 When you set a currency token, AdTrace will automatically convert the incoming revenues into a reporting revenue of your choice.
 
-### <a id="et-revenue-deduplication"></a>Revenue deduplication
+### <a id="et-track-deduplicate"></a>Revenue deduplication
 
 You can also add an optional transaction ID to avoid tracking duplicated revenues. The last ten transaction IDs are remembered, and revenue events with duplicated transaction IDs are skipped. This is especially useful for In-App Purchase tracking. You can see an example below.
 
@@ -466,16 +474,16 @@ AdTrace.trackEvent(adTraceEvent);
 
 ## Custom parameters
 
-### <a id="cp"></a>Custom parameters
+### <a id="cp-overview"></a>Custom parameters overview
 
 In addition to the data points that AdTrace SDK collects by default, you can use the AdTrace SDK to track and add to the event/session as many custom values as you need (user IDs, product IDs, etc.). Custom parameters are only available as raw data (i.e., they won't appear in the AdTrace panel).
 
 You should use **callback parameters** for the values that you collect for your own internal use, and **partner parameters** for those that you wish to share with external partners. If a value (e.g. product ID) is tracked both for internal use and to forward it to external partners, the best practice would be to track it both as callback and partner parameters.
 
 
-### <a id="cp-event-parameters"></a>Event parameters
+### <a id="cp-event"></a>Event parameters
 
-### <a id="cp-event-callback-parameters"></a>Event callback parameters
+### <a id="cp-event-callback"></a>Event callback parameters
 
 You can register a callback URL for your events in your [panel]. We will send a GET request to that URL whenever the event is tracked. You can add callback parameters to that event by calling `addCallbackParameter` to the event instance before tracking it. We will then append these parameters to your callback URL.
 
@@ -496,7 +504,7 @@ http://www.adtrace.io/callback?key=value&foo=bar
 
 It should be mentioned that we support a variety of placeholders like `{gps_adid}` that can be used as parameter values. In the resulting callback this placeholder would be replaced with the Google Play Services ID of the current device. Also note that we don't store any of your custom parameters, but only append them to your callbacks. If you haven't registered a callback for an event, these parameters won't even be read.
 
-### <a id="cp-event-partner-parameters"></a>Event partner parameters
+### <a id="cp-event-partner"></a>Event partner parameters
 
 You can also add parameters to be transmitted to network partners, which have been activated in your AdTrace panel.
 
@@ -509,7 +517,7 @@ adTraceEvent.addPartnerParameter('foo', 'bar');
 AdTrace.trackEvent(adTraceEvent);
 ```
 
-### <a id="cp-event-callback-id"></a>Event callback identifier
+### <a id="cp-event-identifier"></a>Event callback identifier
 
 You can also add custom string identifier to each event you want to track. This identifier will later be reported in event success and/or event failure callbacks to enable you to keep track on which event was successfully tracked or not. You can set this identifier by assigning the `callbackId` member of your event instance:
 
@@ -529,13 +537,13 @@ adTraceEvent.eventValue = '{eventValue}';
 AdTrace.trackEvent(adTraceEvent);
 ```
 
-### <a id="cp-session-parameters"></a>Session parameters
+### <a id="cp-session"></a>Session parameters
 
 Some parameters are saved to be sent in every **event** and **session** of the AdTrace SDK. Once you have added any of these parameters, you don't need to add them every time, since they will be saved locally. If you add the same parameter twice, there will be no effect.
 
 These session parameters can be called before the AdTrace SDK is launched to make sure they are sent even on install. If you need to send them with an install, but can only obtain the needed values after launch, it's possible to [delay](#delay-start) the first launch of the AdTrace SDK to allow this behaviour.
 
-### <a id="cp-session-callback-parameters"></a>Session callback parameters
+### <a id="cp-session-callback"></a>Session callback parameters
 
 The same callback parameters that are registered for [events](#event-callback-parameters) can be also saved to be sent in every  event or session of the AdTrace SDK.
 
@@ -559,7 +567,7 @@ If you wish to remove all keys and their corresponding values from the session c
 AdTrace.resetSessionCallbackParameters();
 ```
 
-### <a id="cp-session-partner-parameters"></a>Session partner parameters
+### <a id="cp-session-partner"></a>Session partner parameters
 
 In the same way that there are [session callback parameters](#session-callback-parameters) sent in every event or session of the AdTrace SDK, there is also session partner parameters.
 
@@ -844,7 +852,7 @@ AdTrace.getAdid().then((adid) {
 });
 ```
 
-**Note**: Information about **adid** is available after app installation has been tracked by the AdTrace backend. From that moment on, AdTrace SDK has information about your device **adid** and you can access it with this method. So, **it is not possible** to access **adid** value before the SDK has been initialised and installation of your app was tracked successfully.
+**Note**: Information about **adid** is available after app installation has been tracked by the AdTrace backend. From that moment on, AdTrace SDK has information about your device **adid** and you can access it with this method. So, **it is not possible** to access **adid** value before the SDK has been initialized and installation of your app was tracked successfully.
 
 ### <a id="af-pre-installed-trackers"></a>Pre-installed trackers
 
