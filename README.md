@@ -13,7 +13,7 @@ This is the Flutter SDK of AdTrace™. You can read more about AdTrace™ at [ad
 
 ### Quick start
 
-   * [Example apps](#qs-example-apps)
+   * [Example app](#qs-example-app)
    * [Getting started](#qs-getting-started)
       * [Add the SDK to your project](#qs-add-sdk)
       * [AdTrace project settings](#qs-adtrace-project-settings)
@@ -79,9 +79,9 @@ This is the Flutter SDK of AdTrace™. You can read more about AdTrace™ at [ad
 
 ## Quick start
 
-### <a id="qs-example-apps"></a>Example apps
+### <a id="qs-example-app"></a>Example apps
 
-There are example Flutter app inside the [`example` directory][example-app]. In there you can check how the AdTrace SDK can be integrated.
+There is an example Flutter app inside the [`example` directory][example-app]. In there you can check how the AdTrace SDK can be integrated.
 
 ### <a id="qs-getting-started"></a>Getting started
 
