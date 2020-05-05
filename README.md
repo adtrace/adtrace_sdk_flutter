@@ -206,7 +206,7 @@ To start with, we'll set up basic session tracking.
 
 ### <a id="qs-basic-setup"></a>Basic setup
 
-Make sure to initialise AdTrace SDK as soon as possible in your Flutter app (upon loading first widget in your app). You can initialise AdTrace SDK like described below:
+Make sure to initialize AdTrace SDK as soon as possible in your Flutter app (upon loading first widget in your app). You can initialize AdTrace SDK like described below:
 
 ```dart
 AdTraceConfig config = new AdTraceConfig('{YourAppToken}', AdTraceEnvironment.sandbox);
@@ -257,7 +257,7 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    initPlatformState(); // <-- Initialise SDK in here.
+    initPlatformState(); // <-- Initialize SDK in here.
   }
 
   @override
@@ -852,7 +852,7 @@ AdTrace.getAdid().then((adid) {
 });
 ```
 
-**Note**: Information about **adid** is available after app installation has been tracked by the AdTrace backend. From that moment on, AdTrace SDK has information about your device **adid** and you can access it with this method. So, **it is not possible** to access **adid** value before the SDK has been initialised and installation of your app was tracked successfully.
+**Note**: Information about **adid** is available after app installation has been tracked by the AdTrace backend. From that moment on, AdTrace SDK has information about your device **adid** and you can access it with this method. So, **it is not possible** to access **adid** value before the SDK has been initialized and installation of your app was tracked successfully.
 
 ### <a id="af-pre-installed-trackers"></a>Pre-installed trackers
 
