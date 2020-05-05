@@ -327,7 +327,7 @@ You need to set up deep linking handling in your app **on native level** - in yo
 
 ### <a id="dl-standard"></a>Standard deep linking scenario
 
-Unfortunately, in this scenario the information about the deep link can not be delivered to you in your Dart code. Once you enable your app to handle deep linking, you will get information about the deep link on native level. For more information check our chapters below on how to enable deep linking for Android and iOS apps.
+Unfortunately, in this scenario the information about the deep link can not be delivered to you in your Dart code. Once you enable your app to handle deep linking, you will get information about the deep link on native level. For more information check our chapters below on how to enable deep linking for [Android](#dl-app-android) and [iOS](#dl-app-ios) apps.
 
 ### <a id="dl-deferred"></a>Deferred deep linking scenario
 
