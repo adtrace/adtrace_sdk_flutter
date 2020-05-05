@@ -16,12 +16,13 @@ This is the Flutter SDK of AdTrace™. You can read more about AdTrace™ at [ad
    * [Example apps](#qs-example-apps)
    * [Getting started](#qs-getting-started)
       * [Add the SDK to your project](#qs-add-sdk)
-      * [[Android] Add Google Play Services](#qs-gps)
-      * [[Android] Add permissions](#qs-permissions)
-      * [[Android] Proguard settings](#qs-proguard)
-      * [[Android] Install referrer](#qs-install-referrer)
-         * [[Android] Google Play Referrer API](#qs-gpr-api)
-         * [[Android] Google Play Store intent](#qs-gps-intent)
+      * [AdTrace project settings](#qs-adtrace-project-settings)
+        * [[Android] Add Google Play Services](#qs-gps)
+        * [[Android] Add permissions](#qs-permissions)
+        * [[Android] Proguard settings](#qs-proguard)
+        * [[Android] Install referrer](#qs-install-referrer)
+           * [[Android] Google Play Referrer API](#qs-gpr-api)
+           * [[Android] Google Play Store intent](#qs-gps-intent)
    * [Integrate the SDK into your app](#qs-integrate-sdk)
       * [Basic setup](#qs-basic-setup)
       * [Session tracking](#qs-session-tracking)
@@ -32,7 +33,7 @@ This is the Flutter SDK of AdTrace™. You can read more about AdTrace™ at [ad
 
 ### Deep linking
 
-   * [Deep linking](#dl)
+   * [Deep linking overview](#dl-overview)
    * [Standard deep linking scenario](#dl-standard)
    * [Deferred deep linking scenario](#dl-deferred)
    * [Deep linking handling in Android app](#dl-app-android)
@@ -102,6 +103,11 @@ flutter packages get
 ```
 
 **Note**: If you are using Visual Studio Code to develop your app, upon editing `pubspec.yaml`, it will automatically run this command, so you don't need to run it manually.
+
+### <a id="qs-adtrace-project-settings"></a>AdTrace project settings
+
+Once the AdTrace SDK has been added to your app, certain tweaks are going to be performed so that the AdTrace SDK can work properly. Below you can find a description of every additional thing that the AdTrace SDK performs after you've added it to your app and what needs to be done by you in order for AdTrace SDK to work properly.
+
 
 ### <a id="qs-gps"></a>[Android] Add Google Play Services
 
@@ -311,7 +317,7 @@ Build and run your Flutter app. In your Android/iOS log you can check for logs c
 
 ## Deep linking
 
-### <a id="dl"></a>Deep linking
+### <a id="dl-overview"></a>Deep linking overview
 
 If you are using an AdTrace tracker URL with the option to deep link into your app, there is the possibility to get information about the deep link URL and its content. Hitting the URL can happen when the user has your app already installed (standard deep linking scenario) or if they don't have the app on their device (deferred deep linking scenario). In the standard deep linking scenario, the Android platform natively offers the possibility for you to get the information about the deep link content. The deferred deep linking scenario is something which the Android platform doesn't support out of the box, and, in this case, the AdTrace SDK will offer you the mechanism you need to get the information about the deep link content.
 
