@@ -133,7 +133,7 @@ Since the 1st of August of 2014, apps in the Google Play Store must use the [Goo
 implementation 'com.google.android.gms:play-services-ads-identifier:17.0.0'
 ```
 
-**Note**: The AdTrace SDK is not tied to any specific version of the `play-services-analytics` part of the Google Play Services library, so feel free to always use the latest version of it (or whichever you might need).
+**Note**: The AdTrace SDK is not tied to any specific version of the `play-services-ads-identifier` part of the Google Play Services library, so feel free to always use the latest version of it (or whichever you might need).
 
 
 ### <a id="qs-android-proguard"></a>Proguard settings
