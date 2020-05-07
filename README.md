@@ -454,7 +454,7 @@ If your users can generate revenue by tapping on advertisements or making in-app
 
 ```dart
 AdTraceEvent adTraceEvent = new AdTraceEvent('abc123');
-adTraceEvent.setRevenue(6, 'EUR');
+adTraceEvent.setRevenue(0.01, 'EUR');
 AdTrace.trackEvent(adTraceEvent);
 ```
 
