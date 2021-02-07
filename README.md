@@ -280,7 +280,7 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         case AppLifecycleState.paused:
           AdTrace.onPause();
           break;
-        case AppLifecycleState.suspending:
+        case AppLifecycleState.detached:
           break;
       }
     });
