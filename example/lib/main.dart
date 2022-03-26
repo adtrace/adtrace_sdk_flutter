@@ -1,3 +1,4 @@
+
 import 'package:adtrace_sdk/adtrace.dart';
 import 'package:adtrace_sdk/adtrace_attribution.dart';
 import 'package:adtrace_sdk/adtrace_config.dart';
@@ -5,103 +6,137 @@ import 'package:adtrace_sdk/adtrace_event_failure.dart';
 import 'package:adtrace_sdk/adtrace_event_success.dart';
 import 'package:adtrace_sdk/adtrace_session_failure.dart';
 import 'package:adtrace_sdk/adtrace_session_success.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'util.dart';
 
 void main() {
-  runApp(new AdTraceExampleApp());
+  runApp(MyApp());
 }
 
-class AdTraceExampleApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'AdTrace Flutter Example App',
-      home: new MainScreen(),
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        // This is the theme of your application.
+        //
+        // Try running your application with "flutter run". You'll see the
+        // application has a blue toolbar. Then, without quitting the app, try
+        // changing the primarySwatch below to Colors.green and then invoke
+        // "hot reload" (press "r" in the console where you ran "flutter run",
+        // or simply save your changes to "hot reload" in a Flutter IDE).
+        // Notice that the counter didn't reset back to zero; the application
+        // is not restarted.
+        primarySwatch: Colors.blue,
+        // This makes the visual density adapt to the platform that you run
+        // the app on. For desktop platforms, the controls will be smaller and
+        // closer together (more dense) than on mobile platforms.
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MainScreen extends StatefulWidget {
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key? key, this.title}) : super(key: key);
+
+  // This widget is the home page of your application. It is stateful, meaning
+  // that it has a State object (defined below) that contains fields that affect
+  // how it looks.
+
+  // This class is the configuration for the state. It holds the values (in this
+  // case the title) provided by the parent (in this case the App widget) and
+  // used by the build method of the State. Fields in a Widget subclass are
+  // always marked "final".
+
+  final String? title;
+
   @override
-  State createState() => new MainScreenState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
-class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   bool _isSdkEnabled = true;
 
   @override
   initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
     initPlatformState();
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    setState(() {
-      switch (state) {
-        case AppLifecycleState.inactive:
-          break;
-        case AppLifecycleState.resumed:
-          AdTrace.onResume();
-          break;
-        case AppLifecycleState.paused:
-          AdTrace.onPause();
-          break;
-        case AppLifecycleState.detached:
-          break;
-      }
-    });
+    switch (state) {
+      case AppLifecycleState.inactive:
+        break;
+      case AppLifecycleState.resumed:
+        AdTrace.onResume();
+        break;
+      case AppLifecycleState.paused:
+        AdTrace.onPause();
+        break;
+      case AppLifecycleState.detached:
+        break;
+    }
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
   initPlatformState() async {
-    AdTraceConfig config = new AdTraceConfig('4rywkulodp9y', AdTraceEnvironment.sandbox);
+    AdTraceConfig config =
+        new AdTraceConfig('2fm9gkqubvpc', AdTraceEnvironment.sandbox);
     config.logLevel = AdTraceLogLevel.verbose;
-    config.isDeviceKnown = false;
-    // config.defaultTracker = 'abc123';
-    // config.processName = 'io.adtrace.examples';
-    // config.sendInBackground = true;
-    // config.eventBufferingEnabled = true;
-    // config.delayStart = 6.0;
-    // config.setAppSecret(1000, 1, 2, 3, 4);
-    // config.enableInstalledApps = true;
 
     config.attributionCallback = (AdTraceAttribution attributionChangedData) {
       print('[AdTrace]: Attribution changed!');
 
       if (attributionChangedData.trackerToken != null) {
-        print('[AdTrace]: Tracker token: ' + attributionChangedData.trackerToken);
+        print(
+            '[AdTrace]: Tracker token: ' + attributionChangedData.trackerToken!);
       }
       if (attributionChangedData.trackerName != null) {
-        print('[AdTrace]: Tracker name: ' + attributionChangedData.trackerName);
+        print('[AdTrace]: Tracker name: ' + attributionChangedData.trackerName!);
       }
       if (attributionChangedData.campaign != null) {
-        print('[AdTrace]: Campaign: ' + attributionChangedData.campaign);
+        print('[AdTrace]: Campaign: ' + attributionChangedData.campaign!);
       }
       if (attributionChangedData.network != null) {
-        print('[AdTrace]: Network: ' + attributionChangedData.network);
+        print('[AdTrace]: Network: ' + attributionChangedData.network!);
       }
       if (attributionChangedData.creative != null) {
-        print('[AdTrace]: Creative: ' + attributionChangedData.creative);
+        print('[AdTrace]: Creative: ' + attributionChangedData.creative!);
       }
       if (attributionChangedData.adgroup != null) {
-        print('[AdTrace]: Adgroup: ' + attributionChangedData.adgroup);
+        print('[AdTrace]: Adgroup: ' + attributionChangedData.adgroup!);
       }
       if (attributionChangedData.clickLabel != null) {
-        print('[AdTrace]: Click label: ' + attributionChangedData.clickLabel);
+        print('[AdTrace]: Click label: ' + attributionChangedData.clickLabel!);
       }
       if (attributionChangedData.adid != null) {
-        print('[AdTrace]: Adid: ' + attributionChangedData.adid);
+        print('[AdTrace]: Adid: ' + attributionChangedData.adid!);
+      }
+      if (attributionChangedData.costType != null) {
+        print('[AdTrace]: Cost type: ' + attributionChangedData.costType!);
+      }
+      if (attributionChangedData.costAmount != null) {
+        print('[AdTrace]: Cost amount: ' +
+            attributionChangedData.costAmount!.toString());
+      }
+      if (attributionChangedData.costCurrency != null) {
+        print(
+            '[AdTrace]: Cost currency: ' + attributionChangedData.costCurrency!);
       }
     };
 
@@ -109,16 +144,16 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       print('[AdTrace]: Session tracking success!');
 
       if (sessionSuccessData.message != null) {
-        print('[AdTrace]: Message: ' + sessionSuccessData.message);
+        print('[AdTrace]: Message: ' + sessionSuccessData.message!);
       }
       if (sessionSuccessData.timestamp != null) {
-        print('[AdTrace]: Timestamp: ' + sessionSuccessData.timestamp);
+        print('[AdTrace]: Timestamp: ' + sessionSuccessData.timestamp!);
       }
       if (sessionSuccessData.adid != null) {
-        print('[AdTrace]: Adid: ' + sessionSuccessData.adid);
+        print('[AdTrace]: Adid: ' + sessionSuccessData.adid!);
       }
       if (sessionSuccessData.jsonResponse != null) {
-        print('[AdTrace]: JSON response: ' + sessionSuccessData.jsonResponse);
+        print('[AdTrace]: JSON response: ' + sessionSuccessData.jsonResponse!);
       }
     };
 
@@ -126,19 +161,20 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       print('[AdTrace]: Session tracking failure!');
 
       if (sessionFailureData.message != null) {
-        print('[AdTrace]: Message: ' + sessionFailureData.message);
+        print('[AdTrace]: Message: ' + sessionFailureData.message!);
       }
       if (sessionFailureData.timestamp != null) {
-        print('[AdTrace]: Timestamp: ' + sessionFailureData.timestamp);
+        print('[AdTrace]: Timestamp: ' + sessionFailureData.timestamp!);
       }
       if (sessionFailureData.adid != null) {
-        print('[AdTrace]: Adid: ' + sessionFailureData.adid);
+        print('[AdTrace]: Adid: ' + sessionFailureData.adid!);
       }
       if (sessionFailureData.willRetry != null) {
-        print('[AdTrace]: Will retry: ' + sessionFailureData.willRetry.toString());
+        print(
+            '[AdTrace]: Will retry: ' + sessionFailureData.willRetry.toString());
       }
       if (sessionFailureData.jsonResponse != null) {
-        print('[AdTrace]: JSON response: ' + sessionFailureData.jsonResponse);
+        print('[AdTrace]: JSON response: ' + sessionFailureData.jsonResponse!);
       }
     };
 
@@ -146,22 +182,22 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       print('[AdTrace]: Event tracking success!');
 
       if (eventSuccessData.eventToken != null) {
-        print('[AdTrace]: Event token: ' + eventSuccessData.eventToken);
+        print('[AdTrace]: Event token: ' + eventSuccessData.eventToken!);
       }
       if (eventSuccessData.message != null) {
-        print('[AdTrace]: Message: ' + eventSuccessData.message);
+        print('[AdTrace]: Message: ' + eventSuccessData.message!);
       }
       if (eventSuccessData.timestamp != null) {
-        print('[AdTrace]: Timestamp: ' + eventSuccessData.timestamp);
+        print('[AdTrace]: Timestamp: ' + eventSuccessData.timestamp!);
       }
       if (eventSuccessData.adid != null) {
-        print('[AdTrace]: Adid: ' + eventSuccessData.adid);
+        print('[AdTrace]: Adid: ' + eventSuccessData.adid!);
       }
       if (eventSuccessData.callbackId != null) {
-        print('[AdTrace]: Callback ID: ' + eventSuccessData.callbackId);
+        print('[AdTrace]: Callback ID: ' + eventSuccessData.callbackId!);
       }
       if (eventSuccessData.jsonResponse != null) {
-        print('[AdTrace]: JSON response: ' + eventSuccessData.jsonResponse);
+        print('[AdTrace]: JSON response: ' + eventSuccessData.jsonResponse!);
       }
     };
 
@@ -169,30 +205,35 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       print('[AdTrace]: Event tracking failure!');
 
       if (eventFailureData.eventToken != null) {
-        print('[AdTrace]: Event token: ' + eventFailureData.eventToken);
+        print('[AdTrace]: Event token: ' + eventFailureData.eventToken!);
       }
       if (eventFailureData.message != null) {
-        print('[AdTrace]: Message: ' + eventFailureData.message);
+        print('[AdTrace]: Message: ' + eventFailureData.message!);
       }
       if (eventFailureData.timestamp != null) {
-        print('[AdTrace]: Timestamp: ' + eventFailureData.timestamp);
+        print('[AdTrace]: Timestamp: ' + eventFailureData.timestamp!);
       }
       if (eventFailureData.adid != null) {
-        print('[AdTrace]: Adid: ' + eventFailureData.adid);
+        print('[AdTrace]: Adid: ' + eventFailureData.adid!);
       }
       if (eventFailureData.callbackId != null) {
-        print('[AdTrace]: Callback ID: ' + eventFailureData.callbackId);
+        print('[AdTrace]: Callback ID: ' + eventFailureData.callbackId!);
       }
       if (eventFailureData.willRetry != null) {
         print('[AdTrace]: Will retry: ' + eventFailureData.willRetry.toString());
       }
       if (eventFailureData.jsonResponse != null) {
-        print('[AdTrace]: JSON response: ' + eventFailureData.jsonResponse);
+        print('[AdTrace]: JSON response: ' + eventFailureData.jsonResponse!);
       }
     };
 
-    config.deferredDeeplinkCallback = (String uri) {
-      print('[AdTrace]: Received deferred deeplink: ' + uri);
+    config.deferredDeeplinkCallback = (String? uri) {
+      print('[AdTrace]: Received deferred deeplink: ' + uri!);
+    };
+
+    config.conversionValueUpdatedCallback = (num? conversionValue) {
+      print('[AdTrace]: Received conversion value update: ' +
+          conversionValue!.toString());
     };
 
     // Add session callback parameters.
@@ -213,19 +254,35 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     // Clear all session partner parameters.
     AdTrace.resetSessionPartnerParameters();
 
+    // Ask for tracking consent.
+    AdTrace.requestTrackingAuthorizationWithCompletionHandler().then((status) {
+      print('[AdTrace]: Authorization status update!');
+      switch (status) {
+        case 0:
+          print(
+              '[AdTrace]: Authorization status update: ATTrackingManagerAuthorizationStatusNotDetermined');
+          break;
+        case 1:
+          print(
+              '[AdTrace]: Authorization status update: ATTrackingManagerAuthorizationStatusRestricted');
+          break;
+        case 2:
+          print(
+              '[AdTrace]: Authorization status update: ATTrackingManagerAuthorizationStatusDenied');
+          break;
+        case 3:
+          print(
+              '[AdTrace]: Authorization status update: ATTrackingManagerAuthorizationStatusAuthorized');
+          break;
+      }
+    });
+
     // Start SDK.
     AdTrace.start(config);
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(title: new Text('AdTrace Flutter Example App')),
-      body: _buildMainContent(),
-    );
-  }
-
-  _buildMainContent() {
     return new CustomScrollView(
       shrinkWrap: true,
       slivers: <Widget>[
@@ -241,47 +298,58 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                 const Padding(padding: const EdgeInsets.all(7.0)),
 
                 // Track simple event button.
-                Util.buildCupertinoButton('Track Sample Event',
-                        () => AdTrace.trackEvent(Util.buildSimpleEvent())),
+                Util.buildCupertinoButton('Track Simple Event',
+                    () => AdTrace.trackEvent(Util.buildSimpleEvent())),
                 const Padding(padding: const EdgeInsets.all(7.0)),
 
                 // Track revenue event button.
                 Util.buildCupertinoButton('Track Revenue Event',
-                        () => AdTrace.trackEvent(Util.buildRevenueEvent())),
+                    () => AdTrace.trackEvent(Util.buildRevenueEvent())),
+                const Padding(padding: const EdgeInsets.all(7.0)),
+
+                // Track callback event button.
+                Util.buildCupertinoButton('Track Callback Event',
+                    () => AdTrace.trackEvent(Util.buildCallbackEvent())),
+                const Padding(padding: const EdgeInsets.all(7.0)),
+
+                // Track partner event button.
+                Util.buildCupertinoButton('Track Partner Event',
+                    () => AdTrace.trackEvent(Util.buildPartnerEvent())),
                 const Padding(padding: const EdgeInsets.all(7.0)),
 
                 // Get Google Advertising Id.
                 Util.buildCupertinoButton(
                     'Get Google AdId',
-                        () => AdTrace.getGoogleAdId().then((googleAdid) {
-                      _showDialogMessage('Get Google Advertising Id',
-                          'Received Google Advertising Id: $googleAdid');
-                    })),
+                    () => AdTrace.getGoogleAdId().then((googleAdid) {
+                          _showDialogMessage('Get Google Advertising Id',
+                              'Received Google Advertising Id: $googleAdid');
+                        })),
                 const Padding(padding: const EdgeInsets.all(7.0)),
 
                 // Get AdTrace identifier.
                 Util.buildCupertinoButton(
                     'Get AdTrace identifier',
-                        () => AdTrace.getAdid().then((adid) {
-                      _showDialogMessage('AdTrace identifier', 'Received AdTrace identifier: $adid');
-                    })),
+                    () => AdTrace.getAdid().then((adid) {
+                          _showDialogMessage('AdTrace identifier',
+                              'Received AdTrace identifier: $adid');
+                        })),
                 const Padding(padding: const EdgeInsets.all(7.0)),
 
                 // Get IDFA.
                 Util.buildCupertinoButton(
                     'Get IDFA',
-                        () => AdTrace.getIdfa().then((idfa) {
-                      _showDialogMessage('IDFA', 'Received IDFA: $idfa');
-                    })),
+                    () => AdTrace.getIdfa().then((idfa) {
+                          _showDialogMessage('IDFA', 'Received IDFA: $idfa');
+                        })),
                 const Padding(padding: const EdgeInsets.all(7.0)),
 
                 // Get attribution.
                 Util.buildCupertinoButton(
                     'Get attribution',
-                        () => AdTrace.getAttribution().then((attribution) {
-                      _showDialogMessage('Attribution',
-                          'Received attribution: ${attribution.toString()}');
-                    })),
+                    () => AdTrace.getAttribution().then((attribution) {
+                          _showDialogMessage('Attribution',
+                              'Received attribution: ${attribution.toString()}');
+                        })),
                 const Padding(padding: const EdgeInsets.all(7.0)),
 
                 // Enable / disable SDK.
@@ -328,7 +396,7 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       });
     } on PlatformException {
       _showDialogMessage(
-          'SDK Enabled?', 'no such method found im plugin: isEnabled');
+          'SDK Enabled?', 'No such method found in plugin: isEnabled');
     }
   }
 

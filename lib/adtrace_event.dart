@@ -1,23 +1,20 @@
-//
-//  Created by Aref Hosseini on 7th October 2019.
-//
+
 
 import 'dart:convert';
 
 class AdTraceEvent {
-  num _revenue;
-  String _currency;
   String _eventToken;
-  Map<String, String> _callbackParameters;
-  Map<String, String> _partnerParameters;
+  num? _revenue;
+  String? _currency;
+  Map<String, String>? _callbackParameters;
+  Map<String, String>? _eventParameters;
 
-  String transactionId;
-  String callbackId;
-  String eventValue;
+  String? transactionId;
+  String? callbackId;
 
   AdTraceEvent(this._eventToken) {
     _callbackParameters = new Map<String, String>();
-    _partnerParameters = new Map<String, String>();
+    _eventParameters = new Map<String, String>();
   }
 
   void setRevenue(num revenue, String currency) {
@@ -26,17 +23,15 @@ class AdTraceEvent {
   }
 
   void addCallbackParameter(String key, String value) {
-    _callbackParameters[key] = value;
+    _callbackParameters![key] = value;
   }
 
-  void addPartnerParameter(String key, String value) {
-    _partnerParameters[key] = value;
+  void addEventParameter(String key, String value) {
+    _eventParameters![key] = value;
   }
 
-  Map<String, String> get toMap {
-    Map<String, String> eventMap = {
-      'eventToken': _eventToken
-    };
+  Map<String, String?> get toMap {
+    Map<String, String?> eventMap = {'eventToken': _eventToken};
 
     if (_revenue != null) {
       eventMap['revenue'] = _revenue.toString();
@@ -50,14 +45,11 @@ class AdTraceEvent {
     if (callbackId != null) {
       eventMap['callbackId'] = callbackId;
     }
-    if (eventValue != null) {
-      eventMap['eventValue'] = eventValue;
-    }
-    if (_callbackParameters.length > 0) {
+    if (_callbackParameters!.length > 0) {
       eventMap['callbackParameters'] = json.encode(_callbackParameters);
     }
-    if (_partnerParameters.length > 0) {
-      eventMap['partnerParameters'] = json.encode(_partnerParameters);
+    if (_eventParameters!.length > 0) {
+      eventMap['eventParameters'] = json.encode(_eventParameters);
     }
 
     return eventMap;

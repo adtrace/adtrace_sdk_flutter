@@ -1,21 +1,19 @@
 group 'io.adtrace.sdk.flutter'
-version '1.0'
-
+version '1.0-SNAPSHOT'
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.1'
+        classpath('com.android.tools.build:gradle:7.1.1')
     }
 }
-
 rootProject.allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 
     gradle.projectsEvaluated {
@@ -24,11 +22,9 @@ rootProject.allprojects {
         }
     }
 }
-
 apply plugin: 'com.android.library'
-
 android {
-    compileSdkVersion 28
+    compileSdkVersion 32
 
     defaultConfig {
         minSdkVersion 16
@@ -40,5 +36,6 @@ android {
 }
 
 dependencies {
-    implementation 'io.adtrace:android-sdk:1.0.3'
+    api 'io.adtrace:android-sdk:2.0.2'
+//    implementation files('libs/flutter.jar')
 }

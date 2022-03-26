@@ -1,3 +1,10 @@
+## 1.0.2
+
+* AdTrace android sdk version 2.0.2 integration
+* AdTrace iOS sdk version 2.0.5 DEV mode (**TEST**) integration (**STABLE will be published ASAP**)
+* `null-safety`
+* Major changes and bug fixes
+
 ## 0.1.3
 
 * Migrate to AndroidX.

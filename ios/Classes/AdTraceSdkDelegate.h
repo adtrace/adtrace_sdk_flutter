@@ -1,11 +1,8 @@
-//
-//  Created by Aref Hosseini on 7th October 2019.
-//
 
 #import <Flutter/Flutter.h>
 #import <Adtrace/Adtrace.h>
 
-@interface AdTraceSdkDelegate : NSObject<AdtraceDelegate>
+@interface AdtraceSdkDelegate : NSObject<AdtraceDelegate>
 
 @property (nonatomic) BOOL shouldLaunchDeferredDeeplink;
 @property (nonatomic, weak) FlutterMethodChannel *channel;
@@ -16,6 +13,7 @@
                              eventSuccessCallback:(NSString *)swizzleEventSuccessCallback
                              eventFailureCallback:(NSString *)swizzleEventFailureCallback
                          deferredDeeplinkCallback:(NSString *)swizzleDeferredDeeplinkCallback
+                   conversionValueUpdatedCallback:(NSString *)swizzleConversionValueUpdatedCallback
                      shouldLaunchDeferredDeeplink:(BOOL)shouldLaunchDeferredDeeplink
                                  andMethodChannel:(FlutterMethodChannel *)channel;
 

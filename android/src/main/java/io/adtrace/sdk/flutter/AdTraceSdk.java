@@ -1,8 +1,3 @@
-//
-//  Created by Aref Hosseini on 7th October 2019.
-//
-
-
 package io.adtrace.sdk.flutter;
 
 import android.content.Context;
@@ -10,6 +5,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import io.adtrace.sdk.AdTrace;
+import io.adtrace.sdk.AdTraceAdRevenue;
 import io.adtrace.sdk.AdTraceAttribution;
 import io.adtrace.sdk.AdTraceConfig;
 import io.adtrace.sdk.AdTraceEvent;
@@ -17,6 +13,8 @@ import io.adtrace.sdk.AdTraceEventFailure;
 import io.adtrace.sdk.AdTraceEventSuccess;
 import io.adtrace.sdk.AdTraceSessionFailure;
 import io.adtrace.sdk.AdTraceSessionSuccess;
+import io.adtrace.sdk.AdTracePlayStoreSubscription;
+import io.adtrace.sdk.AdTraceThirdPartySharing;
 import io.adtrace.sdk.AdTraceTestOptions;
 import io.adtrace.sdk.LogLevel;
 import io.adtrace.sdk.OnAttributionChangedListener;
@@ -34,29 +32,57 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.MethodCall;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 import static io.adtrace.sdk.flutter.AdTraceUtils.*;
 
-public class AdTraceSdk implements MethodCallHandler {
+public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandler {
     private static String TAG = "AdTraceBridge";
     private static boolean launchDeferredDeeplink = true;
     private MethodChannel channel;
     private Context applicationContext;
 
-    AdTraceSdk(MethodChannel channel, Context applicationContext) {
-        this.channel = channel;
-        this.applicationContext = applicationContext;
+    // FlutterPlugin
+    @Override
+    public void onAttachedToEngine(FlutterPluginBinding binding) {
+        applicationContext = binding.getApplicationContext();
+        channel = new MethodChannel(binding.getBinaryMessenger(), "io.adtrace.sdk/api");
+        channel.setMethodCallHandler(this);
     }
 
-    // Plugin registration.
-    public static void registerWith(Registrar registrar) {
-        final MethodChannel channel = new MethodChannel(registrar.messenger(), "io.adtrace.sdk/api");
-        channel.setMethodCallHandler(new AdTraceSdk(channel, registrar.context()));
+    @Override
+    public void onDetachedFromEngine(FlutterPluginBinding binding) {
+        applicationContext = null;
+        if (channel != null) {
+            channel.setMethodCallHandler(null);
+        }
+        channel = null;
+    }
+
+    // ActivityAware
+    @Override
+    public void onAttachedToActivity(ActivityPluginBinding binding) {
+        AdTrace.onResume();
+    }
+
+    @Override
+    public void onDetachedFromActivityForConfigChanges() {
+    }
+
+    @Override
+    public void onReattachedToActivityForConfigChanges(
+        ActivityPluginBinding binding) {
+    }
+
+    @Override
+    public void onDetachedFromActivity() {
+        AdTrace.onPause();
     }
 
     @Override
@@ -116,6 +142,9 @@ public class AdTraceSdk implements MethodCallHandler {
             case "gdprForgetMe":
                 gdprForgetMe(result);
                 break;
+            case "disableThirdPartySharing":
+                disableThirdPartySharing(result);
+                break;
             case "addSessionCallbackParameter":
                 addSessionCallbackParameter(call, result);
                 break;
@@ -133,6 +162,30 @@ public class AdTraceSdk implements MethodCallHandler {
                 break;
             case "resetSessionPartnerParameters":
                 resetSessionPartnerParameters(result);
+                break;
+            case "trackAdRevenue":
+                trackAdRevenue(call, result);
+                break;
+            case "trackAdRevenueNew":
+                trackAdRevenueNew(call, result);
+                break;
+            case "trackAppStoreSubscription":
+                trackAppStoreSubscription(result);
+                break;
+            case "trackPlayStoreSubscription":
+                trackPlayStoreSubscription(call, result);
+                break;
+            case "requestTrackingAuthorizationWithCompletionHandler":
+                requestTrackingAuthorizationWithCompletionHandler(result);
+                break;
+            case "updateConversionValue":
+                updateConversionValue(result);
+                break;
+            case "trackThirdPartySharing":
+                trackThirdPartySharing(call, result);
+                break;
+            case "trackMeasurementConsent":
+                trackMeasurementConsent(call, result);
                 break;
             case "setTestOptions":
                 setTestOptions(call, result);
@@ -168,94 +221,138 @@ public class AdTraceSdk implements MethodCallHandler {
         // Suppress log level.
         if (configMap.containsKey("logLevel")) {
             logLevel = (String) configMap.get("logLevel");
-            if (logLevel.equals("suppress")) {
+            if (logLevel != null && logLevel.equals("suppress")) {
                 isLogLevelSuppress = true;
             }
         }
 
         // Create configuration object.
-        AdTraceConfig adTraceConfig = new AdTraceConfig(applicationContext, appToken, environment, isLogLevelSuppress);
+        AdTraceConfig adtraceConfig = new AdTraceConfig(applicationContext, appToken, environment, isLogLevelSuppress);
 
         // SDK prefix.
         if (configMap.containsKey("sdkPrefix")) {
             String sdkPrefix = (String) configMap.get("sdkPrefix");
-            adTraceConfig.setSdkPrefix(sdkPrefix);
+            adtraceConfig.setSdkPrefix(sdkPrefix);
         }
 
         // Log level.
         if (configMap.containsKey("logLevel")) {
             logLevel = (String) configMap.get("logLevel");
-            if (logLevel.equals("verbose")) {
-                adTraceConfig.setLogLevel(LogLevel.VERBOSE);
-            } else if (logLevel.equals("debug")) {
-                adTraceConfig.setLogLevel(LogLevel.DEBUG);
-            } else if (logLevel.equals("info")) {
-                adTraceConfig.setLogLevel(LogLevel.INFO);
-            } else if (logLevel.equals("warn")) {
-                adTraceConfig.setLogLevel(LogLevel.WARN);
-            } else if (logLevel.equals("error")) {
-                adTraceConfig.setLogLevel(LogLevel.ERROR);
-            } else if (logLevel.equals("assert")) {
-                adTraceConfig.setLogLevel(LogLevel.ASSERT);
-            } else if (logLevel.equals("suppress")) {
-                adTraceConfig.setLogLevel(LogLevel.SUPRESS);
-            } else {
-                adTraceConfig.setLogLevel(LogLevel.INFO);
+            if (logLevel != null) {
+                switch (logLevel) {
+                    case "verbose":
+                        adtraceConfig.setLogLevel(LogLevel.VERBOSE);
+                        break;
+                    case "debug":
+                        adtraceConfig.setLogLevel(LogLevel.DEBUG);
+                        break;
+                    case "warn":
+                        adtraceConfig.setLogLevel(LogLevel.WARN);
+                        break;
+                    case "error":
+                        adtraceConfig.setLogLevel(LogLevel.ERROR);
+                        break;
+                    case "assert":
+                        adtraceConfig.setLogLevel(LogLevel.ASSERT);
+                        break;
+                    case "suppress":
+                        adtraceConfig.setLogLevel(LogLevel.SUPRESS);
+                        break;
+                    case "info":
+                    default:
+                        adtraceConfig.setLogLevel(LogLevel.INFO);
+                        break;
+                }
             }
         }
 
         // Event buffering.
         if (configMap.containsKey("eventBufferingEnabled")) {
             String eventBufferingEnabledString = (String) configMap.get("eventBufferingEnabled");
-            boolean eventBufferingEnabled = Boolean.valueOf(eventBufferingEnabledString);
-            adTraceConfig.setEventBufferingEnabled(eventBufferingEnabled);
+            boolean eventBufferingEnabled = Boolean.parseBoolean(eventBufferingEnabledString);
+            adtraceConfig.setEventBufferingEnabled(eventBufferingEnabled);
         }
 
         // Main process name.
         if (configMap.containsKey("processName")) {
             String processName = (String) configMap.get("processName");
-            adTraceConfig.setProcessName(processName);
+            adtraceConfig.setProcessName(processName);
         }
 
         // Default tracker.
         if (configMap.containsKey("defaultTracker")) {
             String defaultTracker = (String) configMap.get("defaultTracker");
-            adTraceConfig.setDefaultTracker(defaultTracker);
+            adtraceConfig.setDefaultTracker(defaultTracker);
+        }
+
+        // External device ID.
+        if (configMap.containsKey("externalDeviceId")) {
+            String externalDeviceId = (String) configMap.get("externalDeviceId");
+            adtraceConfig.setExternalDeviceId(externalDeviceId);
+        }
+
+        // Custom preinstall file path.
+        if (configMap.containsKey("preinstallFilePath")) {
+            String preinstallFilePath = (String) configMap.get("preinstallFilePath");
+            adtraceConfig.setPreinstallFilePath(preinstallFilePath);
+        }
+
+        // URL strategy.
+        if (configMap.containsKey("urlStrategy")) {
+            String urlStrategy = (String) configMap.get("urlStrategy");
+            if (urlStrategy.equalsIgnoreCase("china")) {
+                adtraceConfig.setUrlStrategy(AdTraceConfig.URL_STRATEGY_CHINA);
+            } else if (urlStrategy.equalsIgnoreCase("india")) {
+                adtraceConfig.setUrlStrategy(AdTraceConfig.URL_STRATEGY_INDIA);
+            } else if (urlStrategy.equalsIgnoreCase("data-residency-eu")) {
+                adtraceConfig.setUrlStrategy(AdTraceConfig.DATA_RESIDENCY_EU);
+            } else if (urlStrategy.equalsIgnoreCase("data-residency-tr")) {
+                adtraceConfig.setUrlStrategy(AdTraceConfig.DATA_RESIDENCY_TR);
+            } else if (urlStrategy.equalsIgnoreCase("data-residency-us")) {
+                adtraceConfig.setUrlStrategy(AdTraceConfig.DATA_RESIDENCY_US);
+            }
         }
 
         // User agent.
         if (configMap.containsKey("userAgent")) {
             String userAgent = (String) configMap.get("userAgent");
-            adTraceConfig.setUserAgent(userAgent);
+            adtraceConfig.setUserAgent(userAgent);
         }
 
         // Background tracking.
         if (configMap.containsKey("sendInBackground")) {
             String strSendInBackground = (String) configMap.get("sendInBackground");
-            boolean sendInBackground = Boolean.valueOf(strSendInBackground);
-            adTraceConfig.setSendInBackground(sendInBackground);
-        }
-
-        // Enable installed apps.
-        if (configMap.containsKey("enableInstalledApps")) {
-            String strEnableInstalledApps = (String) configMap.get("enableInstalledApps");
-            boolean enableInstalledApps = Boolean.valueOf(strEnableInstalledApps);
-            adTraceConfig.enableSendInstalledApps(enableInstalledApps);
+            boolean sendInBackground = Boolean.parseBoolean(strSendInBackground);
+            adtraceConfig.setSendInBackground(sendInBackground);
         }
 
         // Set device known.
         if (configMap.containsKey("isDeviceKnown")) {
             String strIsDeviceKnown = (String) configMap.get("isDeviceKnown");
-            boolean isDeviceKnown = Boolean.valueOf(strIsDeviceKnown);
-            adTraceConfig.setDeviceKnown(isDeviceKnown);
+            boolean isDeviceKnown = Boolean.parseBoolean(strIsDeviceKnown);
+            adtraceConfig.setDeviceKnown(isDeviceKnown);
+        }
+
+        // Cost data.
+        if (configMap.containsKey("needsCost")) {
+            String strNeedsCost = (String) configMap.get("needsCost");
+            boolean needsCost = Boolean.parseBoolean(strNeedsCost);
+            adtraceConfig.setNeedsCost(needsCost);
+        }
+
+        // Preinstall tracking.
+        if (configMap.containsKey("preinstallTrackingEnabled")) {
+            String strPreinstallTrackingEnabled = (String) configMap.get("preinstallTrackingEnabled");
+            boolean preinstallTrackingEnabled = Boolean.parseBoolean(strPreinstallTrackingEnabled);
+            adtraceConfig.setPreinstallTrackingEnabled(preinstallTrackingEnabled);
         }
 
         // Delayed start.
         if (configMap.containsKey("delayStart")) {
             String strDelayStart = (String) configMap.get("delayStart");
             if (isNumber(strDelayStart)) {
-                double delayStart = Double.valueOf(strDelayStart);
-                adTraceConfig.setDelayStart(delayStart);
+                double delayStart = Double.parseDouble(strDelayStart);
+                adtraceConfig.setDelayStart(delayStart);
             }
         }
 
@@ -276,130 +373,158 @@ public class AdTraceSdk implements MethodCallHandler {
                 long info2 = Long.parseLong(strInfo2, 10);
                 long info3 = Long.parseLong(strInfo3, 10);
                 long info4 = Long.parseLong(strInfo4, 10);
-                adTraceConfig.setAppSecret(secretId, info1, info2, info3, info4);
+                adtraceConfig.setAppSecret(secretId, info1, info2, info3, info4);
             } catch (NumberFormatException ignore) {}
         }
 
         // Launch deferred deep link.
         if (configMap.containsKey("launchDeferredDeeplink")) {
             String strLaunchDeferredDeeplink = (String) configMap.get("launchDeferredDeeplink");
-            this.launchDeferredDeeplink = strLaunchDeferredDeeplink.equals("true");
+            launchDeferredDeeplink = strLaunchDeferredDeeplink.equals("true");
         }
 
         // Attribution callback.
         if (configMap.containsKey("attributionCallback")) {
             final String dartMethodName = (String) configMap.get("attributionCallback");
-            adTraceConfig.setOnAttributionChangedListener(new OnAttributionChangedListener() {
-                @Override
-                public void onAttributionChanged(AdTraceAttribution adTraceAttribution) {
-                    HashMap<String, String> adTraceAttributionMap = new HashMap<String, String>();
-                    adTraceAttributionMap.put("trackerToken", adTraceAttribution.trackerToken);
-                    adTraceAttributionMap.put("trackerName", adTraceAttribution.trackerName);
-                    adTraceAttributionMap.put("network", adTraceAttribution.network);
-                    adTraceAttributionMap.put("campaign", adTraceAttribution.campaign);
-                    adTraceAttributionMap.put("adgroup", adTraceAttribution.adgroup);
-                    adTraceAttributionMap.put("creative", adTraceAttribution.creative);
-                    adTraceAttributionMap.put("clickLabel", adTraceAttribution.clickLabel);
-                    adTraceAttributionMap.put("adid", adTraceAttribution.adid);
-                    channel.invokeMethod(dartMethodName, adTraceAttributionMap);
-                }
-            });
+            if (dartMethodName != null) {
+                adtraceConfig.setOnAttributionChangedListener(new OnAttributionChangedListener() {
+                    @Override
+                    public void onAttributionChanged(AdTraceAttribution adtraceAttribution) {
+                        HashMap<String, Object> adtraceAttributionMap = new HashMap<String, Object>();
+                        adtraceAttributionMap.put("trackerToken", adtraceAttribution.trackerToken);
+                        adtraceAttributionMap.put("trackerName", adtraceAttribution.trackerName);
+                        adtraceAttributionMap.put("network", adtraceAttribution.network);
+                        adtraceAttributionMap.put("campaign", adtraceAttribution.campaign);
+                        adtraceAttributionMap.put("adgroup", adtraceAttribution.adgroup);
+                        adtraceAttributionMap.put("creative", adtraceAttribution.creative);
+                        adtraceAttributionMap.put("clickLabel", adtraceAttribution.clickLabel);
+                        adtraceAttributionMap.put("adid", adtraceAttribution.adid);
+                        adtraceAttributionMap.put("costType", adtraceAttribution.costType);
+                        adtraceAttributionMap.put("costAmount", adtraceAttribution.costAmount != null ?
+                                adtraceAttribution.costAmount.toString() : "");
+                        adtraceAttributionMap.put("costCurrency", adtraceAttribution.costCurrency);
+                        if (channel != null) {
+                            channel.invokeMethod(dartMethodName, adtraceAttributionMap);
+                        }
+                    }
+                });
+            }
         }
 
         // Session success callback.
         if (configMap.containsKey("sessionSuccessCallback")) {
             final String dartMethodName = (String) configMap.get("sessionSuccessCallback");
-            adTraceConfig.setOnSessionTrackingSucceededListener(new OnSessionTrackingSucceededListener() {
-                @Override
-                public void onFinishedSessionTrackingSucceeded(AdTraceSessionSuccess adTraceSessionSuccess) {
-                    HashMap<String, String> adTraceSessionSuccessMap = new HashMap<String, String>();
-                    adTraceSessionSuccessMap.put("message", adTraceSessionSuccess.message);
-                    adTraceSessionSuccessMap.put("timestamp", adTraceSessionSuccess.timestamp);
-                    adTraceSessionSuccessMap.put("adid", adTraceSessionSuccess.adid);
-                    if (adTraceSessionSuccess.jsonResponse != null) {
-                        adTraceSessionSuccessMap.put("jsonResponse", adTraceSessionSuccess.jsonResponse.toString());
+            if (dartMethodName != null) {
+                adtraceConfig.setOnSessionTrackingSucceededListener(new OnSessionTrackingSucceededListener() {
+                    @Override
+                    public void onFinishedSessionTrackingSucceeded(AdTraceSessionSuccess adtraceSessionSuccess) {
+                        HashMap<String, String> adtraceSessionSuccessMap = new HashMap<String, String>();
+                        adtraceSessionSuccessMap.put("message", adtraceSessionSuccess.message);
+                        adtraceSessionSuccessMap.put("timestamp", adtraceSessionSuccess.timestamp);
+                        adtraceSessionSuccessMap.put("adid", adtraceSessionSuccess.adid);
+                        if (adtraceSessionSuccess.jsonResponse != null) {
+                            adtraceSessionSuccessMap.put("jsonResponse", adtraceSessionSuccess.jsonResponse.toString());
+                        }
+                        if (channel != null) {
+                            channel.invokeMethod(dartMethodName, adtraceSessionSuccessMap);
+                        }
                     }
-                    channel.invokeMethod(dartMethodName, adTraceSessionSuccessMap);
-                }
-            });
+                });
+            }
         }
 
         // Session failure callback.
         if (configMap.containsKey("sessionFailureCallback")) {
             final String dartMethodName = (String) configMap.get("sessionFailureCallback");
-            adTraceConfig.setOnSessionTrackingFailedListener(new OnSessionTrackingFailedListener() {
-                @Override
-                public void onFinishedSessionTrackingFailed(AdTraceSessionFailure adTraceSessionFailure) {
-                    HashMap<String, String> adTraceSessionFailureMap = new HashMap<String, String>();
-                    adTraceSessionFailureMap.put("message", adTraceSessionFailure.message);
-                    adTraceSessionFailureMap.put("timestamp", adTraceSessionFailure.timestamp);
-                    adTraceSessionFailureMap.put("adid", adTraceSessionFailure.adid);
-                    adTraceSessionFailureMap.put("willRetry", Boolean.toString(adTraceSessionFailure.willRetry));
-                    if (adTraceSessionFailure.jsonResponse != null) {
-                        adTraceSessionFailureMap.put("jsonResponse", adTraceSessionFailure.jsonResponse.toString());
+            if (dartMethodName != null) {
+                adtraceConfig.setOnSessionTrackingFailedListener(new OnSessionTrackingFailedListener() {
+                    @Override
+                    public void onFinishedSessionTrackingFailed(AdTraceSessionFailure adtraceSessionFailure) {
+                        HashMap<String, String> adtraceSessionFailureMap = new HashMap<String, String>();
+                        adtraceSessionFailureMap.put("message", adtraceSessionFailure.message);
+                        adtraceSessionFailureMap.put("timestamp", adtraceSessionFailure.timestamp);
+                        adtraceSessionFailureMap.put("adid", adtraceSessionFailure.adid);
+                        adtraceSessionFailureMap.put("willRetry", Boolean.toString(adtraceSessionFailure.willRetry));
+                        if (adtraceSessionFailure.jsonResponse != null) {
+                            adtraceSessionFailureMap.put("jsonResponse", adtraceSessionFailure.jsonResponse.toString());
+                        }
+                        if (channel != null) {
+                            channel.invokeMethod(dartMethodName, adtraceSessionFailureMap);
+                        }
                     }
-                    channel.invokeMethod(dartMethodName, adTraceSessionFailureMap);
-                }
-            });
+                });
+            }
         }
 
         // Event success callback.
         if (configMap.containsKey("eventSuccessCallback")) {
             final String dartMethodName = (String) configMap.get("eventSuccessCallback");
-            adTraceConfig.setOnEventTrackingSucceededListener(new OnEventTrackingSucceededListener() {
-                @Override
-                public void onFinishedEventTrackingSucceeded(AdTraceEventSuccess adTraceEventSuccess) {
-                    HashMap<String, String> adTraceEventSuccessMap = new HashMap<String, String>();
-                    adTraceEventSuccessMap.put("message", adTraceEventSuccess.message);
-                    adTraceEventSuccessMap.put("timestamp", adTraceEventSuccess.timestamp);
-                    adTraceEventSuccessMap.put("adid", adTraceEventSuccess.adid);
-                    adTraceEventSuccessMap.put("eventToken", adTraceEventSuccess.eventToken);
-                    adTraceEventSuccessMap.put("callbackId", adTraceEventSuccess.callbackId);
-                    if (adTraceEventSuccess.jsonResponse != null) {
-                        adTraceEventSuccessMap.put("jsonResponse", adTraceEventSuccess.jsonResponse.toString());
+            if (dartMethodName != null) {
+                adtraceConfig.setOnEventTrackingSucceededListener(new OnEventTrackingSucceededListener() {
+                    @Override
+                    public void onFinishedEventTrackingSucceeded(AdTraceEventSuccess adtraceEventSuccess) {
+                        HashMap<String, String> adtraceEventSuccessMap = new HashMap<String, String>();
+                        adtraceEventSuccessMap.put("message", adtraceEventSuccess.message);
+                        adtraceEventSuccessMap.put("timestamp", adtraceEventSuccess.timestamp);
+                        adtraceEventSuccessMap.put("adid", adtraceEventSuccess.adid);
+                        adtraceEventSuccessMap.put("eventToken", adtraceEventSuccess.eventToken);
+                        adtraceEventSuccessMap.put("callbackId", adtraceEventSuccess.callbackId);
+                        if (adtraceEventSuccess.jsonResponse != null) {
+                            adtraceEventSuccessMap.put("jsonResponse", adtraceEventSuccess.jsonResponse.toString());
+                        }
+                        if (channel != null) {
+                            channel.invokeMethod(dartMethodName, adtraceEventSuccessMap);
+                        }
                     }
-                    channel.invokeMethod(dartMethodName, adTraceEventSuccessMap);
-                }
-            });
+                });
+            }
         }
 
         // Event failure callback.
         if (configMap.containsKey("eventFailureCallback")) {
             final String dartMethodName = (String) configMap.get("eventFailureCallback");
-            adTraceConfig.setOnEventTrackingFailedListener(new OnEventTrackingFailedListener() {
-                @Override
-                public void onFinishedEventTrackingFailed(AdTraceEventFailure adTraceEventFailure) {
-                    HashMap<String, String> adTraceEventFailureMap = new HashMap<String, String>();
-                    adTraceEventFailureMap.put("message", adTraceEventFailure.message);
-                    adTraceEventFailureMap.put("timestamp", adTraceEventFailure.timestamp);
-                    adTraceEventFailureMap.put("adid", adTraceEventFailure.adid);
-                    adTraceEventFailureMap.put("eventToken", adTraceEventFailure.eventToken);
-                    adTraceEventFailureMap.put("callbackId", adTraceEventFailure.callbackId);
-                    adTraceEventFailureMap.put("willRetry", Boolean.toString(adTraceEventFailure.willRetry));
-                    if (adTraceEventFailure.jsonResponse != null) {
-                        adTraceEventFailureMap.put("jsonResponse", adTraceEventFailure.jsonResponse.toString());
+            if (dartMethodName != null) {
+                adtraceConfig.setOnEventTrackingFailedListener(new OnEventTrackingFailedListener() {
+                    @Override
+                    public void onFinishedEventTrackingFailed(AdTraceEventFailure adtraceEventFailure) {
+                        HashMap<String, String> adtraceEventFailureMap = new HashMap<String, String>();
+                        adtraceEventFailureMap.put("message", adtraceEventFailure.message);
+                        adtraceEventFailureMap.put("timestamp", adtraceEventFailure.timestamp);
+                        adtraceEventFailureMap.put("adid", adtraceEventFailure.adid);
+                        adtraceEventFailureMap.put("eventToken", adtraceEventFailure.eventToken);
+                        adtraceEventFailureMap.put("callbackId", adtraceEventFailure.callbackId);
+                        adtraceEventFailureMap.put("willRetry", Boolean.toString(adtraceEventFailure.willRetry));
+                        if (adtraceEventFailure.jsonResponse != null) {
+                            adtraceEventFailureMap.put("jsonResponse", adtraceEventFailure.jsonResponse.toString());
+                        }
+                        if (channel != null) {
+                            channel.invokeMethod(dartMethodName, adtraceEventFailureMap);
+                        }
                     }
-                    channel.invokeMethod(dartMethodName, adTraceEventFailureMap);
-                }
-            });
+                });
+            }
         }
 
         // Deferred deep link callback.
         if (configMap.containsKey("deferredDeeplinkCallback")) {
             final String dartMethodName = (String) configMap.get("deferredDeeplinkCallback");
-            adTraceConfig.setOnDeeplinkResponseListener(new OnDeeplinkResponseListener() {
-                @Override
-                public boolean launchReceivedDeeplink(Uri uri) {
-                    HashMap<String, String> uriParamsMap = new HashMap<String, String>();
-                    uriParamsMap.put("uri", uri.toString());
-                    channel.invokeMethod(dartMethodName, uriParamsMap);
-                    return launchDeferredDeeplink;
-                }
-            });
+            if (dartMethodName != null) {
+                adtraceConfig.setOnDeeplinkResponseListener(new OnDeeplinkResponseListener() {
+                    @Override
+                    public boolean launchReceivedDeeplink(Uri uri) {
+                        HashMap<String, String> uriParamsMap = new HashMap<String, String>();
+                        uriParamsMap.put("uri", uri.toString());
+                        if (channel != null) {
+                            channel.invokeMethod(dartMethodName, uriParamsMap);
+                        }
+                        return launchDeferredDeeplink;
+                    }
+                });
+            }
         }
 
         // Start SDK.
-        AdTrace.onCreate(adTraceConfig);
+        AdTrace.onCreate(adtraceConfig);
         AdTrace.onResume();
         result.success(null);
     }
@@ -444,12 +569,6 @@ public class AdTraceSdk implements MethodCallHandler {
             event.setCallbackId(callbackId);
         }
 
-        // Event value.
-        if (eventMap.containsKey("eventValue")) {
-            String eventValue = (String) eventMap.get("eventValue");
-            event.setEventValue(eventValue);
-        }
-
         // Callback parameters.
         if (eventMap.containsKey("callbackParameters")) {
             String strCallbackParametersJson = (String) eventMap.get("callbackParameters");
@@ -466,19 +585,19 @@ public class AdTraceSdk implements MethodCallHandler {
             }
         }
 
-        // Partner parameters.
-        if (eventMap.containsKey("partnerParameters")) {
-            String strPartnerParametersJson = (String) eventMap.get("partnerParameters");
+        // Event parameters.
+        if (eventMap.containsKey("eventParameters")) {
+            String strEventParametersJson = (String) eventMap.get("eventParameters");
             try {
-                JSONObject jsonPartnerParameters = new JSONObject(strPartnerParametersJson);
-                JSONArray partnerParametersKeys = jsonPartnerParameters.names();
-                for (int i = 0; i < partnerParametersKeys.length(); ++i) {
-                    String key = partnerParametersKeys.getString(i);
-                    String value = jsonPartnerParameters.getString(key);
-                    event.addPartnerParameter(key, value);
+                JSONObject jsonEventParameters = new JSONObject(strEventParametersJson);
+                JSONArray eventParametersKeys = jsonEventParameters.names();
+                for (int i = 0; i < eventParametersKeys.length(); ++i) {
+                    String key = eventParametersKeys.getString(i);
+                    String value = jsonEventParameters.getString(key);
+                    event.addEventParameter(key, value);
                 }
             } catch (JSONException e) {
-                Log.e(TAG, "Failed to parse event partner parameter! Details: " + e);
+                Log.e(TAG, "Failed to parse event parameter! Details: " + e);
             }
         }
 
@@ -555,7 +674,8 @@ public class AdTraceSdk implements MethodCallHandler {
     }
 
     private void getIdfa(final Result result) {
-        result.error("0", "Error. No IDFA for Android plaftorm!", null);
+        result.notImplemented();
+        // result.error("0", "Error. No IDFA for Android platform!", null);
     }
 
     private void getGoogleAdId(final Result result) {
@@ -576,22 +696,31 @@ public class AdTraceSdk implements MethodCallHandler {
         result.success(null);
     }
 
+    private void disableThirdPartySharing(final Result result) {
+        AdTrace.disableThirdPartySharing(applicationContext);
+        result.success(null);
+    }
+
     private void getAttribution(final Result result) {
-        AdTraceAttribution adTraceAttribution = AdTrace.getAttribution();
-        if (adTraceAttribution == null) {
-            adTraceAttribution = new AdTraceAttribution();
+        AdTraceAttribution adtraceAttribution = AdTrace.getAttribution();
+        if (adtraceAttribution == null) {
+            adtraceAttribution = new AdTraceAttribution();
         }
 
-        HashMap<String, String> adTraceAttributionMap = new HashMap<String, String>();
-        adTraceAttributionMap.put("trackerToken", adTraceAttribution.trackerToken);
-        adTraceAttributionMap.put("trackerName", adTraceAttribution.trackerName);
-        adTraceAttributionMap.put("network", adTraceAttribution.network);
-        adTraceAttributionMap.put("campaign", adTraceAttribution.campaign);
-        adTraceAttributionMap.put("adgroup", adTraceAttribution.adgroup);
-        adTraceAttributionMap.put("creative", adTraceAttribution.creative);
-        adTraceAttributionMap.put("clickLabel", adTraceAttribution.clickLabel);
-        adTraceAttributionMap.put("adid", adTraceAttribution.adid);
-        result.success(adTraceAttributionMap);
+        HashMap<String, String> adtraceAttributionMap = new HashMap<String, String>();
+        adtraceAttributionMap.put("trackerToken", adtraceAttribution.trackerToken);
+        adtraceAttributionMap.put("trackerName", adtraceAttribution.trackerName);
+        adtraceAttributionMap.put("network", adtraceAttribution.network);
+        adtraceAttributionMap.put("campaign", adtraceAttribution.campaign);
+        adtraceAttributionMap.put("adgroup", adtraceAttribution.adgroup);
+        adtraceAttributionMap.put("creative", adtraceAttribution.creative);
+        adtraceAttributionMap.put("clickLabel", adtraceAttribution.clickLabel);
+        adtraceAttributionMap.put("adid", adtraceAttribution.adid);
+        adtraceAttributionMap.put("costType", adtraceAttribution.costType);
+        adtraceAttributionMap.put("costAmount", adtraceAttribution.costAmount != null ?
+                adtraceAttribution.costAmount.toString() : "");
+        adtraceAttributionMap.put("costCurrency", adtraceAttribution.costCurrency);
+        result.success(adtraceAttributionMap);
     }
 
     private void getSdkVersion(final Result result) {
@@ -657,6 +786,269 @@ public class AdTraceSdk implements MethodCallHandler {
         result.success(null);
     }
 
+    private void trackAdRevenue(final MethodCall call, final Result result) {
+        if (call.hasArgument("source") && call.hasArgument("payload")) {
+            // Old (MoPub) API.
+            String source = (String) call.argument("source");
+            String payload = (String) call.argument("payload");
+
+            try {
+                JSONObject jsonPayload = new JSONObject(payload);
+                AdTrace.trackAdRevenue(source, jsonPayload);
+            } catch (JSONException err) {
+                Log.e(TAG, "Given ad revenue payload is not a valid JSON string");
+            }
+        } 
+        result.success(null);
+    }
+
+    private void trackAdRevenueNew(final MethodCall call, final Result result) {
+        // New API.
+        Map adRevenueMap = (Map) call.arguments;
+        if (adRevenueMap == null) {
+            return;
+        }
+
+        // Source.
+        String source = null;
+        if (adRevenueMap.containsKey("source")) {
+            source = (String) adRevenueMap.get("source");
+        }
+
+        // Create ad revenue object.
+        AdTraceAdRevenue adRevenue = new AdTraceAdRevenue(source);
+
+        // Revenue.
+        if (adRevenueMap.containsKey("revenue") || adRevenueMap.containsKey("currency")) {
+            double revenue = -1.0;
+            String strRevenue = (String) adRevenueMap.get("revenue");
+
+            try {
+                revenue = Double.parseDouble(strRevenue);
+            } catch (NumberFormatException ignore) {}
+
+            String currency = (String) adRevenueMap.get("currency");
+            adRevenue.setRevenue(revenue, currency);
+        }
+
+        // Ad impressions count.
+        if (adRevenueMap.containsKey("adImpressionsCount")) {
+            String strAdImpressionsCount = (String) adRevenueMap.get("adImpressionsCount");
+            int adImpressionsCount = Integer.parseInt(strAdImpressionsCount);
+            adRevenue.setAdImpressionsCount(adImpressionsCount);
+        }
+
+        // Ad revenue network.
+        if (adRevenueMap.containsKey("adRevenueNetwork")) {
+            String adRevenueNetwork = (String) adRevenueMap.get("adRevenueNetwork");
+            adRevenue.setAdRevenueNetwork(adRevenueNetwork);
+        }
+
+        // Ad revenue unit.
+        if (adRevenueMap.containsKey("adRevenueUnit")) {
+            String adRevenueUnit = (String) adRevenueMap.get("adRevenueUnit");
+            adRevenue.setAdRevenueUnit(adRevenueUnit);
+        }
+
+        // Ad revenue placement.
+        if (adRevenueMap.containsKey("adRevenuePlacement")) {
+            String adRevenuePlacement = (String) adRevenueMap.get("adRevenuePlacement");
+            adRevenue.setAdRevenuePlacement(adRevenuePlacement);
+        }
+
+        // Callback parameters.
+        if (adRevenueMap.containsKey("callbackParameters")) {
+            String strCallbackParametersJson = (String) adRevenueMap.get("callbackParameters");
+            try {
+                JSONObject jsonCallbackParameters = new JSONObject(strCallbackParametersJson);
+                JSONArray callbackParametersKeys = jsonCallbackParameters.names();
+                for (int i = 0; i < callbackParametersKeys.length(); ++i) {
+                    String key = callbackParametersKeys.getString(i);
+                    String value = jsonCallbackParameters.getString(key);
+                    adRevenue.addCallbackParameter(key, value);
+                }
+            } catch (JSONException e) {
+                Log.e(TAG, "Failed to parse ad revenue callback parameter! Details: " + e);
+            }
+        }
+
+        // Partner parameters.
+        if (adRevenueMap.containsKey("partnerParameters")) {
+            String strPartnerParametersJson = (String) adRevenueMap.get("partnerParameters");
+            try {
+                JSONObject jsonPartnerParameters = new JSONObject(strPartnerParametersJson);
+                JSONArray partnerParametersKeys = jsonPartnerParameters.names();
+                for (int i = 0; i < partnerParametersKeys.length(); ++i) {
+                    String key = partnerParametersKeys.getString(i);
+                    String value = jsonPartnerParameters.getString(key);
+                    adRevenue.addPartnerParameter(key, value);
+                }
+            } catch (JSONException e) {
+                Log.e(TAG, "Failed to parse ad revenue partner parameter! Details: " + e);
+            }
+        }
+
+        // Track ad revenue.
+        AdTrace.trackAdRevenue(adRevenue);
+        result.success(null);
+    }
+
+    private void trackAppStoreSubscription(final Result result) {
+        result.notImplemented();
+        // result.error("0", "Error. No App Store subscription tracking for Android platform!", null);
+    }
+
+    private void trackPlayStoreSubscription(final MethodCall call, final Result result) {
+        Map subscriptionMap = (Map) call.arguments;
+        if (subscriptionMap == null) {
+            return;
+        }
+
+        // Price.
+        long price = -1;
+        if (subscriptionMap.containsKey("price")) {
+            try {
+                price = Long.parseLong(subscriptionMap.get("price").toString());
+            } catch (NumberFormatException ignore) {}
+        }
+
+        // Currency.
+        String currency = null;
+        if (subscriptionMap.containsKey("currency")) {
+            currency = (String) subscriptionMap.get("currency");
+        }
+
+        // SKU.
+        String sku = null;
+        if (subscriptionMap.containsKey("sku")) {
+            sku = (String) subscriptionMap.get("sku");
+        }
+
+        // Order ID.
+        String orderId = null;
+        if (subscriptionMap.containsKey("orderId")) {
+            orderId = (String) subscriptionMap.get("orderId");
+        }
+
+        // Signature.
+        String signature = null;
+        if (subscriptionMap.containsKey("signature")) {
+            signature = (String) subscriptionMap.get("signature");
+        }
+
+        // Purchase token.
+        String purchaseToken = null;
+        if (subscriptionMap.containsKey("purchaseToken")) {
+            purchaseToken = (String) subscriptionMap.get("purchaseToken");
+        }
+
+        // Create subscription object.
+        AdTracePlayStoreSubscription subscription = new AdTracePlayStoreSubscription(
+                price,
+                currency,
+                sku,
+                orderId,
+                signature,
+                purchaseToken);
+
+        // Purchase time.
+        if (subscriptionMap.containsKey("purchaseTime")) {
+            try {
+                long purchaseTime = Long.parseLong(subscriptionMap.get("purchaseTime").toString());
+                subscription.setPurchaseTime(purchaseTime);
+            } catch (NumberFormatException ignore) {}
+        }
+
+        // Callback parameters.
+        if (subscriptionMap.containsKey("callbackParameters")) {
+            String strCallbackParametersJson = (String) subscriptionMap.get("callbackParameters");
+            try {
+                JSONObject jsonCallbackParameters = new JSONObject(strCallbackParametersJson);
+                JSONArray callbackParametersKeys = jsonCallbackParameters.names();
+                for (int i = 0; i < callbackParametersKeys.length(); ++i) {
+                    String key = callbackParametersKeys.getString(i);
+                    String value = jsonCallbackParameters.getString(key);
+                    subscription.addCallbackParameter(key, value);
+                }
+            } catch (JSONException e) {
+                Log.e(TAG, "Failed to parse subscription callback parameter! Details: " + e);
+            }
+        }
+
+        // Partner parameters.
+        if (subscriptionMap.containsKey("partnerParameters")) {
+            String strPartnerParametersJson = (String) subscriptionMap.get("partnerParameters");
+            try {
+                JSONObject jsonPartnerParameters = new JSONObject(strPartnerParametersJson);
+                JSONArray partnerParametersKeys = jsonPartnerParameters.names();
+                for (int i = 0; i < partnerParametersKeys.length(); ++i) {
+                    String key = partnerParametersKeys.getString(i);
+                    String value = jsonPartnerParameters.getString(key);
+                    subscription.addPartnerParameter(key, value);
+                }
+            } catch (JSONException e) {
+                Log.e(TAG, "Failed to parse subscription partner parameter! Details: " + e);
+            }
+        }
+
+        // Track subscription.
+        AdTrace.trackPlayStoreSubscription(subscription);
+        result.success(null);
+    }
+
+    private void requestTrackingAuthorizationWithCompletionHandler(final Result result) {
+        result.notImplemented();
+        // result.error("0", "Error. No requestTrackingAuthorizationWithCompletionHandler for Android platform!", null);
+    }
+
+    private void updateConversionValue(final Result result) {
+        result.notImplemented();
+        // result.error("0", "Error. No updateConversionValue for Android platform!", null);
+    }
+
+    private void trackThirdPartySharing(final MethodCall call, final Result result) {
+        Map thirdPartySharingMap = (Map) call.arguments;
+        if (thirdPartySharingMap == null) {
+            return;
+        }
+
+        Boolean isEnabled = null;
+        if (thirdPartySharingMap.containsKey("isEnabled")) {
+            isEnabled = (Boolean) thirdPartySharingMap.get("isEnabled");
+        }
+
+        // Create third party sharing object.
+        AdTraceThirdPartySharing thirdPartySharing = new AdTraceThirdPartySharing(isEnabled);
+
+        // Granular options.
+        if (thirdPartySharingMap.containsKey("granularOptions")) {
+            String strGranularOptions = (String) thirdPartySharingMap.get("granularOptions");
+            String[] arrayGranularOptions = strGranularOptions.split("__ADT__", -1);
+            for (int i = 0; i < arrayGranularOptions.length; i += 3) {
+                thirdPartySharing.addGranularOption(
+                    arrayGranularOptions[i],
+                    arrayGranularOptions[i+1],
+                    arrayGranularOptions[i+2]);
+            }
+        }
+
+        // Track third party sharing.
+        AdTrace.trackThirdPartySharing(thirdPartySharing);
+        result.success(null);
+    }
+
+    private void trackMeasurementConsent(final MethodCall call, final Result result) {
+        Map measurementConsentMap = (Map) call.arguments;
+        if (!measurementConsentMap.containsKey("measurementConsent")) {
+            result.error("0", "Arguments null or wrong (missing argument of 'trackMeasurementConsent' method.", null);
+            return;
+        }
+
+        boolean measurementConsent = (boolean) measurementConsentMap.get("measurementConsent");
+        AdTrace.trackMeasurementConsent(measurementConsent);
+        result.success(null);
+    }
+
     private void setTestOptions(final MethodCall call, final Result result) {
         AdTraceTestOptions testOptions = new AdTraceTestOptions();
         Map testOptionsMap = (Map) call.arguments;
@@ -667,15 +1059,22 @@ public class AdTraceSdk implements MethodCallHandler {
         if (testOptionsMap.containsKey("gdprUrl")) {
             testOptions.gdprUrl = (String) testOptionsMap.get("gdprUrl");
         }
+        if (testOptionsMap.containsKey("subscriptionUrl")) {
+            testOptions.subscriptionUrl = (String) testOptionsMap.get("subscriptionUrl");
+        }
         if (testOptionsMap.containsKey("basePath")) {
             testOptions.basePath = (String) testOptionsMap.get("basePath");
         }
         if (testOptionsMap.containsKey("gdprPath")) {
             testOptions.gdprPath = (String) testOptionsMap.get("gdprPath");
         }
-        if (testOptionsMap.containsKey("useTestConnectionOptions")) {
-            testOptions.useTestConnectionOptions = testOptionsMap.get("useTestConnectionOptions").toString().equals("true");
+        if (testOptionsMap.containsKey("subscriptionPath")) {
+            testOptions.subscriptionPath = (String) testOptionsMap.get("subscriptionPath");
         }
+        // Kept for the record. Not needed anymore with test options extraction.
+        // if (testOptionsMap.containsKey("useTestConnectionOptions")) {
+        //     testOptions.useTestConnectionOptions = testOptionsMap.get("useTestConnectionOptions").toString().equals("true");
+        // }
         if (testOptionsMap.containsKey("noBackoffWait")) {
             testOptions.noBackoffWait = testOptionsMap.get("noBackoffWait").toString().equals("true");
         }

@@ -1,6 +1,6 @@
-# adtrace_sdk_example
+# example
 
-Demonstrates how to use the AdTrace Flutter SDK plugin.
+AdTrace Flutter Applicаtion
 
 ## Getting Started
 
