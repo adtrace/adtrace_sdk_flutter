@@ -1,3 +1,7 @@
+## 1.0.3
+* bug fixes
+* update readme
+
 ## 1.0.2
 
 * AdTrace android sdk version 2.0.2 integration

@@ -961,7 +961,7 @@ Upon receiving this information, AdTrace will block the sharing of that specific
 
 [example-app]: example
 
-[multiple-receivers]:             https://github.com/adtreferrer.md
+[multiple-receivers]:             https://github.com/adtrace/adtrace_sdk_android/blob/master/doc/english/multiple-receivers.md
 [google-ad-id]:                   https://support.google.com/googleplay/android-developer/answer/6048248?hl=en
 [ios-deeplinking]:                https://github.com/adtrace/ios_sdk/#deep-linking
 [new-referrer-api]:               https://developer.android.com/google/play/installreferrer/library.html
