@@ -1,4 +1,8 @@
-
+/**
+ *  AdTrace SDK for Flutter
+ *  Developed by Nasser Amini on Mar 2021
+ *  for more information visit https://adtrace.io
+ */
 
 class AdTraceEventFailure {
   final String? message;

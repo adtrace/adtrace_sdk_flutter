@@ -1,4 +1,8 @@
-
+/**
+ *  AdTrace SDK for Flutter
+ *  Developed by Nasser Amini on Mar 2021
+ *  for more information visit https://adtrace.io
+ */
 
 import 'package:adtrace_sdk/adtrace_attribution.dart';
 import 'package:adtrace_sdk/adtrace_event_failure.dart';
