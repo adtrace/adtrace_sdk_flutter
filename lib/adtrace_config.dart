@@ -4,11 +4,11 @@
  *  for more information visit https://adtrace.io
  */
 
-import 'package:adtrace_sdk/adtrace_attribution.dart';
-import 'package:adtrace_sdk/adtrace_event_failure.dart';
-import 'package:adtrace_sdk/adtrace_event_success.dart';
-import 'package:adtrace_sdk/adtrace_session_failure.dart';
-import 'package:adtrace_sdk/adtrace_session_success.dart';
+import 'package:adtrace_sdk_flutter/adtrace_attribution.dart';
+import 'package:adtrace_sdk_flutter/adtrace_event_failure.dart';
+import 'package:adtrace_sdk_flutter/adtrace_event_success.dart';
+import 'package:adtrace_sdk_flutter/adtrace_session_failure.dart';
+import 'package:adtrace_sdk_flutter/adtrace_session_success.dart';
 import 'package:flutter/services.dart';
 
 enum AdTraceLogLevel { verbose, debug, info, warn, error, suppress }

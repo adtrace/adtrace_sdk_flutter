@@ -7,13 +7,13 @@
 import 'dart:async';
 
  
-import 'package:adtrace_sdk/adtrace_ad_revenue.dart';
-import 'package:adtrace_sdk/adtrace_app_store_subscription.dart';
-import 'package:adtrace_sdk/adtrace_attribution.dart';
-import 'package:adtrace_sdk/adtrace_config.dart';
-import 'package:adtrace_sdk/adtrace_event.dart';
-import 'package:adtrace_sdk/adtrace_play_store_subscription.dart';
-import 'package:adtrace_sdk/adtrace_third_party_sharing.dart';
+import 'package:adtrace_sdk_flutter/adtrace_ad_revenue.dart';
+import 'package:adtrace_sdk_flutter/adtrace_app_store_subscription.dart';
+import 'package:adtrace_sdk_flutter/adtrace_attribution.dart';
+import 'package:adtrace_sdk_flutter/adtrace_config.dart';
+import 'package:adtrace_sdk_flutter/adtrace_event.dart';
+import 'package:adtrace_sdk_flutter/adtrace_play_store_subscription.dart';
+import 'package:adtrace_sdk_flutter/adtrace_third_party_sharing.dart';
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 

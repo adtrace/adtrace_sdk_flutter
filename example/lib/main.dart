@@ -1,11 +1,11 @@
 
-import 'package:adtrace_sdk/adtrace.dart';
-import 'package:adtrace_sdk/adtrace_attribution.dart';
-import 'package:adtrace_sdk/adtrace_config.dart';
-import 'package:adtrace_sdk/adtrace_event_failure.dart';
-import 'package:adtrace_sdk/adtrace_event_success.dart';
-import 'package:adtrace_sdk/adtrace_session_failure.dart';
-import 'package:adtrace_sdk/adtrace_session_success.dart';
+import 'package:adtrace_sdk_flutter/adtrace.dart';
+import 'package:adtrace_sdk_flutter/adtrace_attribution.dart';
+import 'package:adtrace_sdk_flutter/adtrace_config.dart';
+import 'package:adtrace_sdk_flutter/adtrace_event_failure.dart';
+import 'package:adtrace_sdk_flutter/adtrace_event_success.dart';
+import 'package:adtrace_sdk_flutter/adtrace_session_failure.dart';
+import 'package:adtrace_sdk_flutter/adtrace_session_success.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

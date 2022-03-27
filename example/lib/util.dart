@@ -1,4 +1,4 @@
-import 'package:adtrace_sdk/adtrace_event.dart';
+import 'package:adtrace_sdk_flutter/adtrace_event.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
