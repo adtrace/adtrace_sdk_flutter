@@ -1,3 +1,6 @@
+## 1.1.0
+* AdTrace iOS SDK 2.0.7 integration
+
 ## 1.0.3
 * bug fixes
 * update readme

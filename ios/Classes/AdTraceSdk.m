@@ -2,7 +2,7 @@
 
 #import "AdtraceSdk.h"
 #import "AdtraceSdkDelegate.h"
-#import <Adtrace/Adtrace.h>
+#import "Adtrace.h"
 
 static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
 
@@ -177,7 +177,7 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     if ([self isFieldValid:eventBufferingEnabled]) {
         [adtraceConfig setEventBufferingEnabled:[eventBufferingEnabled boolValue]];
     }
-    
+
     // Default tracker.
     if ([self isFieldValid:defaultTracker]) {
         [adtraceConfig setDefaultTracker:defaultTracker];
@@ -232,7 +232,7 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     if ([self isFieldValid:allowIdfaReading]) {
         [adtraceConfig setAllowIdfaReading:[allowIdfaReading boolValue]];
     }
-    
+
     // SKAdNetwork handling.
     if ([self isFieldValid:skAdNetworkHandling]) {
         if ([skAdNetworkHandling boolValue] == NO) {
@@ -249,7 +249,7 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     if ([self isFieldValid:delayStart]) {
         [adtraceConfig setDelayStart:[delayStart doubleValue]];
     }
-    
+
     // App secret.
     if ([self isFieldValid:secretId]
         && [self isFieldValid:info1]
@@ -296,7 +296,7 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     NSString *callbackId = call.arguments[@"callbackId"];
     NSString *transactionId = call.arguments[@"transactionId"];
     NSString *strCallbackParametersJson = call.arguments[@"callbackParameters"];
-    NSString *strPartnerParametersJson = call.arguments[@"partnerParameters"];
+    NSString *strPartnerParametersJson = call.arguments[@"eventParameters"];
 
     // Create event object.
     ADTEvent *adtraceEvent = [ADTEvent eventWithEventToken:eventToken];
@@ -329,15 +329,15 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
         }
     }
 
-    // Partner parameters.
+    // Value parameters.
     if (strPartnerParametersJson != nil) {
-        NSData *partnerParametersData = [strPartnerParametersJson dataUsingEncoding:NSUTF8StringEncoding];
-        id partnerParametersJson = [NSJSONSerialization JSONObjectWithData:partnerParametersData
+        NSData *valueParametersData = [strPartnerParametersJson dataUsingEncoding:NSUTF8StringEncoding];
+        id valueParametersJson = [NSJSONSerialization JSONObjectWithData:valueParametersData
                                                                    options:0
                                                                      error:NULL];
-        for (id key in partnerParametersJson) {
-            NSString *value = [partnerParametersJson objectForKey:key];
-            [adtraceEvent addPartnerParameter:key value:value];
+        for (id key in valueParametersJson) {
+            NSString *value = [valueParametersJson objectForKey:key];
+            [adtraceEvent addEventValueParameter:key value:value];
         }
     }
 
@@ -390,7 +390,7 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     if (urlString == nil) {
         return;
     }
-    
+
     NSURL *url;
     if ([NSString instancesRespondToSelector:@selector(stringByAddingPercentEncodingWithAllowedCharacters:)]) {
         url = [NSURL URLWithString:[urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLFragmentAllowedCharacterSet]]];
@@ -443,12 +443,12 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     if ([self isFieldValid:adRevenueNetwork]) {
         [adtraceAdRevenue setAdRevenueNetwork:adRevenueNetwork];
     }
-    
+
     // Ad revenue unit.
     if ([self isFieldValid:adRevenueUnit]) {
         [adtraceAdRevenue setAdRevenueUnit:adRevenueUnit];
     }
-    
+
     // Ad revenue placement.
     if ([self isFieldValid:adRevenuePlacement]) {
         [adtraceAdRevenue setAdRevenuePlacement:adRevenuePlacement];
@@ -565,7 +565,7 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     if (attribution == nil) {
         result(dictionary);
     }
-    
+
     [self addValueOrEmpty:attribution.trackerToken withKey:@"trackerToken" toDictionary:dictionary];
     [self addValueOrEmpty:attribution.trackerName withKey:@"trackerName" toDictionary:dictionary];
     [self addValueOrEmpty:attribution.network withKey:@"network" toDictionary:dictionary];
@@ -662,7 +662,7 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     NSString *noBackoffWait = call.arguments[@"noBackoffWait"];
     NSString *iAdFrameworkEnabled = call.arguments[@"iAdFrameworkEnabled"];
     NSString *adServicesFrameworkEnabled = call.arguments[@"adServicesFrameworkEnabled"];
-    
+
     if ([self isFieldValid:baseUrl]) {
         testOptions.baseUrl = baseUrl;
     }
@@ -705,7 +705,7 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     if ([self isFieldValid:adServicesFrameworkEnabled]) {
         testOptions.adServicesFrameworkEnabled = [adServicesFrameworkEnabled boolValue];
     }
-    
+
     [Adtrace setTestOptions:testOptions];
 }
 

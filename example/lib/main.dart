@@ -96,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   // Platform messages are asynchronous, so we initialize in an async method.
   initPlatformState() async {
     AdTraceConfig config =
-        new AdTraceConfig('2fm9gkqubvpc', AdTraceEnvironment.sandbox);
+        new AdTraceConfig('09eu7dllf7md', AdTraceEnvironment.sandbox);
     config.logLevel = AdTraceLogLevel.verbose;
 
     config.attributionCallback = (AdTraceAttribution attributionChangedData) {
@@ -312,8 +312,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                     () => AdTrace.trackEvent(Util.buildCallbackEvent())),
                 const Padding(padding: const EdgeInsets.all(7.0)),
 
-                // Track partner event button.
-                Util.buildCupertinoButton('Track Partner Event',
+                // Track value event button.
+                Util.buildCupertinoButton('Track Event Value',
                     () => AdTrace.trackEvent(Util.buildPartnerEvent())),
                 const Padding(padding: const EdgeInsets.all(7.0)),
 

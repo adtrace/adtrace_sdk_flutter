@@ -6,70 +6,70 @@ This is the Flutter SDK of AdTrace. You can read more about AdTrace at [adtrace.
 
 ### Quick start
 
-   * [Example apps](#qs-example-apps)
-   * [Getting started](#qs-getting-started)
-      * [Add the SDK to your project](#qs-add-sdk)
-      * [[Android] Add Google Play Services](#qs-gps)
-      * [[Android] Add permissions](#qs-permissions)
-      * [[Android] Proguard settings](#qs-proguard)
-      * [[Android] Install referrer](#qs-install-referrer)
-         * [[Android] Google Play Referrer API](#qs-gpr-api)
-         * [[Android] Google Play Store intent](#qs-gps-intent)
-         * [[Android] Huawei Referrer API](#qs-hr-api)
-         * [[iOS] Link additional frameworks](#qs-ios-frameworks)
-   * [Integrate the SDK into your app](#qs-integrate-sdk)
-      * [Basic setup](#qs-basic-setup)
-      * [Session tracking](#qs-session-tracking)
-         * [Session tracking in Android](#qs-session-tracking-android)
-      * [SDK signature](#qs-sdk-signature)
-      * [AdTrace logging](#qs-adtrace-logging)
-      * [Build your app](#qs-build-the-app)
+* [Example apps](#qs-example-apps)
+* [Getting started](#qs-getting-started)
+    * [Add the SDK to your project](#qs-add-sdk)
+    * [[Android] Add Google Play Services](#qs-gps)
+    * [[Android] Add permissions](#qs-permissions)
+    * [[Android] Proguard settings](#qs-proguard)
+    * [[Android] Install referrer](#qs-install-referrer)
+        * [[Android] Google Play Referrer API](#qs-gpr-api)
+        * [[Android] Google Play Store intent](#qs-gps-intent)
+        * [[Android] Huawei Referrer API](#qs-hr-api)
+        * [[iOS] Link additional frameworks](#qs-ios-frameworks)
+* [Integrate the SDK into your app](#qs-integrate-sdk)
+    * [Basic setup](#qs-basic-setup)
+    * [Session tracking](#qs-session-tracking)
+        * [Session tracking in Android](#qs-session-tracking-android)
+    * [SDK signature](#qs-sdk-signature)
+    * [AdTrace logging](#qs-adtrace-logging)
+    * [Build your app](#qs-build-the-app)
 
 ### Deep linking
 
-   * [Deep linking](#dl)
-   * [Standard deep linking scenario](#dl-standard)
-   * [Deferred deep linking scenario](#dl-deferred)
-   * [Deep linking handling in Android app](#dl-app-android)
-   * [Deep linking handling in iOS app](#dl-app-ios)
-   * [Reattribution via deep links](#dl-reattribution)
+* [Deep linking](#dl)
+* [Standard deep linking scenario](#dl-standard)
+* [Deferred deep linking scenario](#dl-deferred)
+* [Deep linking handling in Android app](#dl-app-android)
+* [Deep linking handling in iOS app](#dl-app-ios)
+* [Reattribution via deep links](#dl-reattribution)
 
 ### Event tracking
 
-   * [Track event](#et-tracking)
-   * [Track revenue](#et-revenue)
+* [Track event](#et-tracking)
+* [Track revenue](#et-revenue)
 
 ### Custom parameters
 
-   * [Event parameters](#cp-event-parameters)
-      * [Event callback parameters](#cp-event-callback-parameters)
-      * [Event value parameters](#cp-event-value-parameters)
-      * [Event callback identifier](#cp-event-callback-id)
-   * [Session parameters](#cp-session-parameters)
-      * [Session callback parameters](#cp-session-callback-parameters)
-      * [Delay start](#cp-delay-start)
+* [Event parameters](#cp-event-parameters)
+    * [Event callback parameters](#cp-event-callback-parameters)
+    * [Event value parameters](#cp-event-value-parameters)
+    * [Event callback identifier](#cp-event-callback-id)
+* [Session parameters](#cp-session-parameters)
+    * [Session callback parameters](#cp-session-callback-parameters)
+    * [Delay start](#cp-delay-start)
 
 ### Additional features
 
-   * [SKAdNetwork framework](#af-skadn-framework)
-      * [Update SKAdNetwork conversion value](#af-skadn-update-conversion-value)
-      * [Conversion value updated callback](#af-skadn-cv-updated-callback)
-   * [Push token (uninstall tracking)](#af-push-token)
-   * [Attribution callback](#af-attribution-callback)
-   * [Session and event callbacks](#af-session-event-callbacks)
-   * [User attribution](#af-user-attribution)
-   * [Device IDs](#af-device-ids)
-      * [iOS advertising identifier](#af-idfa)
-      * [Google Play Services advertising identifier](#af-gps-adid)
-      * [AdTrace device identifier](#af-adid)
-   * [Set external device ID](#set-external-device-id)
-   * [Offline mode](#af-offline-mode)
-   * [Disable tracking](#af-disable-tracking)
-   * [Event buffering](#af-event-buffering)
-   * [Background tracking](#af-background-tracking)
-   * [Third-party sharing](#af-third-party-sharing)
-      * [Disable third-party sharing](#af-disable-third-party-sharing)
-      * [Enable third-party sharing](#af-enable-third-party-sharing)
+* [SKAdNetwork framework](#af-skadn-framework)
+    * [Update SKAdNetwork conversion value](#af-skadn-update-conversion-value)
+    * [Conversion value updated callback](#af-skadn-cv-updated-callback)
+* [Push token (uninstall tracking)](#af-push-token)
+* [Attribution callback](#af-attribution-callback)
+* [Session and event callbacks](#af-session-event-callbacks)
+* [User attribution](#af-user-attribution)
+* [Device IDs](#af-device-ids)
+    * [iOS advertising identifier](#af-idfa)
+    * [Google Play Services advertising identifier](#af-gps-adid)
+    * [AdTrace device identifier](#af-adid)
+* [Set external device ID](#set-external-device-id)
+* [Offline mode](#af-offline-mode)
+* [Disable tracking](#af-disable-tracking)
+* [Event buffering](#af-event-buffering)
+* [Background tracking](#af-background-tracking)
+* [Third-party sharing](#af-third-party-sharing)
+    * [Disable third-party sharing](#af-disable-third-party-sharing)
+    * [Enable third-party sharing](#af-enable-third-party-sharing)
 
 
 ### License
@@ -861,7 +861,7 @@ AdTrace.getGoogleAdId().then((googleAdId) {
   // Use googleAdId string value.
 });
 ```
- 
+
 
 ### <a id="af-adid"></a>AdTrace device identifier
 

@@ -3,8 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Util {
-  static const String EVENT_TOKEN_SIMPLE = 'g3mfiw';
-  static const String EVENT_TOKEN_REVENUE = 'a4fd35';
+  static const String EVENT_TOKEN_SIMPLE = 'd6wlpj';
+  static const String EVENT_TOKEN_REVENUE = 'ou92ya';
   static const String EVENT_TOKEN_CALLBACK = '34vgg9';
   static const String EVENT_TOKEN_PARTNER = 'w788qs';
 
@@ -68,7 +68,7 @@ class Util {
 
   static AdTraceEvent buildRevenueEvent() {
     AdTraceEvent event = new AdTraceEvent(EVENT_TOKEN_REVENUE);
-    event.setRevenue(100.0, 'EUR');
+    event.setRevenue(100.0, 'IRR');
     event.transactionId = 'DummyTransactionId';
     return event;
   }
