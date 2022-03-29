@@ -314,7 +314,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
                 // Track value event button.
                 Util.buildCupertinoButton('Track Event Value',
-                    () => AdTrace.trackEvent(Util.buildPartnerEvent())),
+                    () => AdTrace.trackEvent(Util.buildEventValueParams())),
                 const Padding(padding: const EdgeInsets.all(7.0)),
 
                 // Get Google Advertising Id.

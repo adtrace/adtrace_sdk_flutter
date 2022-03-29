@@ -18,7 +18,7 @@ import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 
 class AdTrace {
-  static const String _sdkPrefix = 'flutter1.0.3';
+  static const String _sdkPrefix = 'flutter1.1.0';
   static const MethodChannel _channel =
       const MethodChannel('io.adtrace.sdk/api');
 
