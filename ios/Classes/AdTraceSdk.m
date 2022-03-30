@@ -1,25 +1,23 @@
-//
-//  Created by Aref Hosseini on 7th October 2019.
-//
 
-#import "AdTraceSdk.h"
-#import "AdTraceSdkDelegate.h"
-#import <Adtrace/Adtrace.h>
+
+#import "AdtraceSdk.h"
+#import "AdtraceSdkDelegate.h"
+#import "Adtrace.h"
 
 static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
 
-@interface AdTraceSdk ()
+@interface AdtraceSdk ()
 
 @property (nonatomic, retain) FlutterMethodChannel *channel;
 
 @end
 
-@implementation AdTraceSdk
+@implementation AdtraceSdk
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar> *)registrar {
     FlutterMethodChannel *channel = [FlutterMethodChannel methodChannelWithName:CHANNEL_API_NAME
                                                                 binaryMessenger:[registrar messenger]];
-    AdTraceSdk *instance = [[AdTraceSdk alloc] init];
+    AdtraceSdk *instance = [[AdtraceSdk alloc] init];
     instance.channel = channel;
     [registrar addMethodCallDelegate:instance channel:channel];
 }
@@ -44,6 +42,8 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
         [self sendFirstPackages:call withResult:result];
     } else if ([@"gdprForgetMe" isEqualToString:call.method]) {
         [self gdprForgetMe:call withResult:result];
+    } else if ([@"disableThirdPartySharing" isEqualToString:call.method]) {
+        [self disableThirdPartySharing:call withResult:result];
     } else if ([@"getAttribution" isEqualToString:call.method]) {
         [self getAttribution:call withResult:result];
     } else if ([@"getIdfa" isEqualToString:call.method]) {
@@ -58,6 +58,24 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
         [self setPushToken:call withResult:result];
     } else if ([@"appWillOpenUrl" isEqualToString:call.method]) {
         [self appWillOpenUrl:call withResult:result];
+    } else if ([@"trackAdRevenue" isEqualToString:call.method]) {
+        [self trackAdRevenue:call withResult:result];
+    } else if ([@"trackAdRevenueNew" isEqualToString:call.method]) {
+        [self trackAdRevenueNew:call withResult:result];
+    } else if ([@"trackAppStoreSubscription" isEqualToString:call.method]) {
+        [self trackAppStoreSubscription:call withResult:result];
+    } else if ([@"trackPlayStoreSubscription" isEqualToString:call.method]) {
+        [self trackPlayStoreSubscription:call withResult:result];
+    } else if ([@"requestTrackingAuthorizationWithCompletionHandler" isEqualToString:call.method]) {
+        [self requestTrackingAuthorizationWithCompletionHandler:call withResult:result];
+    } else if ([@"getAppTrackingAuthorizationStatus" isEqualToString:call.method]) {
+        [self getAppTrackingAuthorizationStatus:call withResult:result];
+    } else if ([@"updateConversionValue" isEqualToString:call.method]) {
+        [self updateConversionValue:call withResult:result];
+    } else if ([@"trackThirdPartySharing" isEqualToString:call.method]) {
+        [self trackThirdPartySharing:call withResult:result];
+    } else if ([@"trackMeasurementConsent" isEqualToString:call.method]) {
+        [self trackMeasurementConsent:call withResult:result];
     } else if ([@"setTestOptions" isEqualToString:call.method]) {
         [self setTestOptions:call withResult:result];
     } else if ([@"addSessionCallbackParameter" isEqualToString:call.method]) {
@@ -93,6 +111,8 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     } else if ([@"isEnabled" isEqualToString:call.method]) {
         BOOL isEnabled = [Adtrace isEnabled];
         result(@(isEnabled));
+    } else if ([@"getAdid" isEqualToString:call.method]) {
+        result([Adtrace adid]);
     } else {
         result(FlutterMethodNotImplemented);
     }
@@ -104,7 +124,9 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     NSString *logLevel = call.arguments[@"logLevel"];
     NSString *sdkPrefix = call.arguments[@"sdkPrefix"];
     NSString *defaultTracker = call.arguments[@"defaultTracker"];
+    NSString *externalDeviceId = call.arguments[@"externalDeviceId"];
     NSString *userAgent = call.arguments[@"userAgent"];
+    NSString *urlStrategy = call.arguments[@"urlStrategy"];
     NSString *secretId = call.arguments[@"secretId"];
     NSString *info1 = call.arguments[@"info1"];
     NSString *info2 = call.arguments[@"info2"];
@@ -114,12 +136,18 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     NSString *isDeviceKnown = call.arguments[@"isDeviceKnown"];
     NSString *eventBufferingEnabled = call.arguments[@"eventBufferingEnabled"];
     NSString *sendInBackground = call.arguments[@"sendInBackground"];
+    NSString *needsCost = call.arguments[@"needsCost"];
+    NSString *allowiAdInfoReading = call.arguments[@"allowiAdInfoReading"];
+    NSString *allowAdServicesInfoReading = call.arguments[@"allowAdServicesInfoReading"];
+    NSString *allowIdfaReading = call.arguments[@"allowIdfaReading"];
+    NSString *skAdNetworkHandling = call.arguments[@"skAdNetworkHandling"];
     NSString *dartAttributionCallback = call.arguments[@"attributionCallback"];
     NSString *dartSessionSuccessCallback = call.arguments[@"sessionSuccessCallback"];
     NSString *dartSessionFailureCallback = call.arguments[@"sessionFailureCallback"];
     NSString *dartEventSuccessCallback = call.arguments[@"eventSuccessCallback"];
     NSString *dartEventFailureCallback = call.arguments[@"eventFailureCallback"];
     NSString *dartDeferredDeeplinkCallback = call.arguments[@"deferredDeeplinkCallback"];
+    NSString *dartConversionValueUpdatedCallback = call.arguments[@"conversionValueUpdatedCallback"];
     BOOL allowSuppressLogLevel = NO;
     BOOL launchDeferredDeeplink = [call.arguments[@"launchDeferredDeeplink"] boolValue];
 
@@ -131,48 +159,95 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     }
 
     // Create config object.
-    ADTConfig *adTraceConfig = [ADTConfig configWithAppToken:appToken
+    ADTConfig *adtraceConfig = [ADTConfig configWithAppToken:appToken
                                                 environment:environment
                                       allowSuppressLogLevel:allowSuppressLogLevel];
 
     // SDK prefix.
     if ([self isFieldValid:sdkPrefix]) {
-        [adTraceConfig setSdkPrefix:sdkPrefix];
+        [adtraceConfig setSdkPrefix:sdkPrefix];
     }
 
     // Log level.
     if ([self isFieldValid:logLevel]) {
-        [adTraceConfig setLogLevel:[ADTLogger logLevelFromString:[logLevel lowercaseString]]];
+        [adtraceConfig setLogLevel:[ADTLogger logLevelFromString:[logLevel lowercaseString]]];
     }
 
     // Event buffering.
     if ([self isFieldValid:eventBufferingEnabled]) {
-        [adTraceConfig setEventBufferingEnabled:[eventBufferingEnabled boolValue]];
+        [adtraceConfig setEventBufferingEnabled:[eventBufferingEnabled boolValue]];
     }
 
     // Default tracker.
     if ([self isFieldValid:defaultTracker]) {
-        [adTraceConfig setDefaultTracker:defaultTracker];
+        [adtraceConfig setDefaultTracker:defaultTracker];
+    }
+
+    // External device ID.
+    if ([self isFieldValid:externalDeviceId]) {
+        [adtraceConfig setExternalDeviceId:externalDeviceId];
     }
 
     // User agent.
     if ([self isFieldValid:userAgent]) {
-        [adTraceConfig setUserAgent:userAgent];
+        [adtraceConfig setUserAgent:userAgent];
+    }
+
+    // URL strategy.
+    if ([self isFieldValid:urlStrategy]) {
+        if ([urlStrategy isEqualToString:@"china"]) {
+            [adtraceConfig setUrlStrategy:ADTUrlStrategyChina];
+        } else if ([urlStrategy isEqualToString:@"india"]) {
+            [adtraceConfig setUrlStrategy:ADTUrlStrategyIndia];
+        } else if ([urlStrategy isEqualToString:@"data-residency-eu"]) {
+            [adtraceConfig setUrlStrategy:ADTDataResidencyEU];
+        } else if ([urlStrategy isEqualToString:@"data-residency-tr"]) {
+            [adtraceConfig setUrlStrategy:ADTDataResidencyTR];
+        } else if ([urlStrategy isEqualToString:@"data-residency-us"]) {
+            [adtraceConfig setUrlStrategy:ADTDataResidencyUS];
+        }
     }
 
     // Background tracking.
     if ([self isFieldValid:sendInBackground]) {
-        [adTraceConfig setSendInBackground:[sendInBackground boolValue]];
+        [adtraceConfig setSendInBackground:[sendInBackground boolValue]];
+    }
+
+    // Cost data.
+    if ([self isFieldValid:needsCost]) {
+        [adtraceConfig setNeedsCost:[needsCost boolValue]];
+    }
+
+    // Allow iAd info reading.
+    if ([self isFieldValid:allowiAdInfoReading]) {
+        [adtraceConfig setAllowiAdInfoReading:[allowiAdInfoReading boolValue]];
+    }
+
+    // Allow AdServices info reading.
+    if ([self isFieldValid:allowAdServicesInfoReading]) {
+        [adtraceConfig setAllowAdServicesInfoReading:[allowAdServicesInfoReading boolValue]];
+    }
+
+    // Allow IDFA reading.
+    if ([self isFieldValid:allowIdfaReading]) {
+        [adtraceConfig setAllowIdfaReading:[allowIdfaReading boolValue]];
+    }
+
+    // SKAdNetwork handling.
+    if ([self isFieldValid:skAdNetworkHandling]) {
+        if ([skAdNetworkHandling boolValue] == NO) {
+            [adtraceConfig deactivateSKAdNetworkHandling];
+        }
     }
 
     // Set device known.
     if ([self isFieldValid:isDeviceKnown]) {
-        [adTraceConfig setIsDeviceKnown:[isDeviceKnown boolValue]];
+        [adtraceConfig setIsDeviceKnown:[isDeviceKnown boolValue]];
     }
 
     // Delayed start.
     if ([self isFieldValid:delayStart]) {
-        [adTraceConfig setDelayStart:[delayStart doubleValue]];
+        [adtraceConfig setDelayStart:[delayStart doubleValue]];
     }
 
     // App secret.
@@ -181,7 +256,7 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
         && [self isFieldValid:info2]
         && [self isFieldValid:info3]
         && [self isFieldValid:info4]) {
-        [adTraceConfig setAppSecret:[[NSNumber numberWithLongLong:[secretId longLongValue]] unsignedIntegerValue]
+        [adtraceConfig setAppSecret:[[NSNumber numberWithLongLong:[secretId longLongValue]] unsignedIntegerValue]
                              info1:[[NSNumber numberWithLongLong:[info1 longLongValue]] unsignedIntegerValue]
                              info2:[[NSNumber numberWithLongLong:[info2 longLongValue]] unsignedIntegerValue]
                              info3:[[NSNumber numberWithLongLong:[info3 longLongValue]] unsignedIntegerValue]
@@ -194,20 +269,22 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
         || dartSessionFailureCallback != nil
         || dartEventSuccessCallback != nil
         || dartEventFailureCallback != nil
-        || dartDeferredDeeplinkCallback != nil) {
-        [adTraceConfig setDelegate:
-         [AdTraceSdkDelegate getInstanceWithSwizzleOfAttributionCallback:dartAttributionCallback
-                                              sessionSuccessCallback:dartSessionSuccessCallback
-                                              sessionFailureCallback:dartSessionFailureCallback
-                                                eventSuccessCallback:dartEventSuccessCallback
-                                                eventFailureCallback:dartEventFailureCallback
-                                            deferredDeeplinkCallback:dartDeferredDeeplinkCallback
-                                        shouldLaunchDeferredDeeplink:launchDeferredDeeplink
-                                                    andMethodChannel:self.channel]];
+        || dartDeferredDeeplinkCallback != nil
+        || dartConversionValueUpdatedCallback != nil) {
+        [adtraceConfig setDelegate:
+         [AdtraceSdkDelegate getInstanceWithSwizzleOfAttributionCallback:dartAttributionCallback
+                                                 sessionSuccessCallback:dartSessionSuccessCallback
+                                                 sessionFailureCallback:dartSessionFailureCallback
+                                                   eventSuccessCallback:dartEventSuccessCallback
+                                                   eventFailureCallback:dartEventFailureCallback
+                                               deferredDeeplinkCallback:dartDeferredDeeplinkCallback
+                                         conversionValueUpdatedCallback:dartConversionValueUpdatedCallback
+                                           shouldLaunchDeferredDeeplink:launchDeferredDeeplink
+                                                       andMethodChannel:self.channel]];
     }
 
     // Start SDK.
-    [Adtrace appDidLaunch:adTraceConfig];
+    [Adtrace appDidLaunch:adtraceConfig];
     [Adtrace trackSubsessionStart];
     result(nil);
 }
@@ -219,25 +296,25 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     NSString *callbackId = call.arguments[@"callbackId"];
     NSString *transactionId = call.arguments[@"transactionId"];
     NSString *strCallbackParametersJson = call.arguments[@"callbackParameters"];
-    NSString *strPartnerParametersJson = call.arguments[@"partnerParameters"];
+    NSString *strPartnerParametersJson = call.arguments[@"eventParameters"];
 
     // Create event object.
-    ADTEvent *adTraceEvent = [ADTEvent eventWithEventToken:eventToken];
+    ADTEvent *adtraceEvent = [ADTEvent eventWithEventToken:eventToken];
 
     // Revenue.
     if ([self isFieldValid:revenue]) {
         double revenueValue = [revenue doubleValue];
-        [adTraceEvent setRevenue:revenueValue currency:currency];
+        [adtraceEvent setRevenue:revenueValue currency:currency];
     }
 
     // Transaction ID.
     if ([self isFieldValid:transactionId]) {
-        [adTraceEvent setTransactionId:transactionId];
+        [adtraceEvent setTransactionId:transactionId];
     }
 
     // Callback ID.
     if ([self isFieldValid:callbackId]) {
-        [adTraceEvent setCallbackId:callbackId];
+        [adtraceEvent setCallbackId:callbackId];
     }
 
     // Callback parameters.
@@ -248,24 +325,24 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
                                                                       error:NULL];
         for (id key in callbackParametersJson) {
             NSString *value = [callbackParametersJson objectForKey:key];
-            [adTraceEvent addCallbackParameter:key value:value];
+            [adtraceEvent addCallbackParameter:key value:value];
         }
     }
 
-    // Partner parameters.
+    // Value parameters.
     if (strPartnerParametersJson != nil) {
-        NSData *partnerParametersData = [strPartnerParametersJson dataUsingEncoding:NSUTF8StringEncoding];
-        id partnerParametersJson = [NSJSONSerialization JSONObjectWithData:partnerParametersData
+        NSData *valueParametersData = [strPartnerParametersJson dataUsingEncoding:NSUTF8StringEncoding];
+        id valueParametersJson = [NSJSONSerialization JSONObjectWithData:valueParametersData
                                                                    options:0
                                                                      error:NULL];
-        for (id key in partnerParametersJson) {
-            NSString *value = [partnerParametersJson objectForKey:key];
-            [adTraceEvent addPartnerParameter:key value:value];
+        for (id key in valueParametersJson) {
+            NSString *value = [valueParametersJson objectForKey:key];
+            [adtraceEvent addEventValueParameter:key value:value];
         }
     }
 
     // Track event.
-    [Adtrace trackEvent:adTraceEvent];
+    [Adtrace trackEvent:adtraceEvent];
     result(nil);
 }
 
@@ -284,6 +361,11 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
 
 - (void)gdprForgetMe:(FlutterMethodCall *)call withResult:(FlutterResult)result {
     [Adtrace gdprForgetMe];
+    result(nil);
+}
+
+- (void)disableThirdPartySharing:(FlutterMethodCall *)call withResult:(FlutterResult)result {
+    [Adtrace disableThirdPartySharing];
     result(nil);
 }
 
@@ -321,6 +403,162 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     [Adtrace appWillOpenUrl:url];
 }
 
+- (void)trackAdRevenue:(FlutterMethodCall *)call withResult:(FlutterResult)result {
+    NSString *source = call.arguments[@"source"];
+    NSString *payload = call.arguments[@"payload"];
+    if (!([self isFieldValid:source]) || !([self isFieldValid:payload])) {
+        return;
+    }
+    NSData *dataPayload = [payload dataUsingEncoding:NSUTF8StringEncoding];
+    [Adtrace trackAdRevenue:source payload:dataPayload];
+}
+
+- (void)trackAdRevenueNew:(FlutterMethodCall *)call withResult:(FlutterResult)result {
+    NSString *source = call.arguments[@"source"];
+    NSString *revenue = call.arguments[@"revenue"];
+    NSString *currency = call.arguments[@"currency"];
+    NSString *adImpressionsCount = call.arguments[@"adImpressionsCount"];
+    NSString *adRevenueNetwork = call.arguments[@"adRevenueNetwork"];
+    NSString *adRevenueUnit = call.arguments[@"adRevenueUnit"];
+    NSString *adRevenuePlacement = call.arguments[@"adRevenuePlacement"];
+    NSString *strCallbackParametersJson = call.arguments[@"callbackParameters"];
+    NSString *strPartnerParametersJson = call.arguments[@"partnerParameters"];
+
+    // Create ad revenue object.
+    ADTAdRevenue *adtraceAdRevenue = [[ADTAdRevenue alloc] initWithSource:source];
+
+    // Revenue.
+    if ([self isFieldValid:revenue]) {
+        double revenueValue = [revenue doubleValue];
+        [adtraceAdRevenue setRevenue:revenueValue currency:currency];
+    }
+
+    // Ad impressions count.
+    if ([self isFieldValid:adImpressionsCount]) {
+        int adImpressionsCountValue = [adImpressionsCount intValue];
+        [adtraceAdRevenue setAdImpressionsCount:adImpressionsCountValue];
+    }
+
+    // Ad revenue network.
+    if ([self isFieldValid:adRevenueNetwork]) {
+        [adtraceAdRevenue setAdRevenueNetwork:adRevenueNetwork];
+    }
+
+    // Ad revenue unit.
+    if ([self isFieldValid:adRevenueUnit]) {
+        [adtraceAdRevenue setAdRevenueUnit:adRevenueUnit];
+    }
+
+    // Ad revenue placement.
+    if ([self isFieldValid:adRevenuePlacement]) {
+        [adtraceAdRevenue setAdRevenuePlacement:adRevenuePlacement];
+    }
+
+    // Callback parameters.
+    if (strCallbackParametersJson != nil) {
+        NSData *callbackParametersData = [strCallbackParametersJson dataUsingEncoding:NSUTF8StringEncoding];
+        id callbackParametersJson = [NSJSONSerialization JSONObjectWithData:callbackParametersData
+                                                                    options:0
+                                                                      error:NULL];
+        for (id key in callbackParametersJson) {
+            NSString *value = [callbackParametersJson objectForKey:key];
+            [adtraceAdRevenue addCallbackParameter:key value:value];
+        }
+    }
+
+    // Partner parameters.
+    if (strPartnerParametersJson != nil) {
+        NSData *partnerParametersData = [strPartnerParametersJson dataUsingEncoding:NSUTF8StringEncoding];
+        id partnerParametersJson = [NSJSONSerialization JSONObjectWithData:partnerParametersData
+                                                                   options:0
+                                                                     error:NULL];
+        for (id key in partnerParametersJson) {
+            NSString *value = [partnerParametersJson objectForKey:key];
+            [adtraceAdRevenue addPartnerParameter:key value:value];
+        }
+    }
+
+    // Track ad revenue.
+    [Adtrace trackAdRevenue:adtraceAdRevenue];
+    result(nil);
+}
+
+- (void)trackPlayStoreSubscription:(FlutterMethodCall *)call withResult:(FlutterResult)result {
+    result([FlutterError errorWithCode:@"non_existing_method"
+                               message:@"trackPlayStoreSubscription not available for iOS platform"
+                               details:nil]);
+}
+
+- (void)trackAppStoreSubscription:(FlutterMethodCall *)call withResult:(FlutterResult)result {
+    NSString *price = call.arguments[@"price"];
+    NSString *currency = call.arguments[@"currency"];
+    NSString *transactionId = call.arguments[@"transactionId"];
+    NSString *receipt = call.arguments[@"receipt"];
+    NSString *transactionDate = call.arguments[@"transactionDate"];
+    NSString *salesRegion = call.arguments[@"salesRegion"];
+    // NSString *billingStore = call.arguments[@"billingStore"];
+    NSString *strCallbackParametersJson = call.arguments[@"callbackParameters"];
+    NSString *strPartnerParametersJson = call.arguments[@"partnerParameters"];
+
+    // Price.
+    NSDecimalNumber *priceValue;
+    if ([self isFieldValid:price]) {
+        priceValue = [NSDecimalNumber decimalNumberWithString:price];
+    }
+
+    // Receipt.
+    NSData *receiptValue;
+    if ([self isFieldValid:receipt]) {
+        receiptValue = [receipt dataUsingEncoding:NSUTF8StringEncoding];
+    }
+
+    // Create subscription object.
+    ADTSubscription *subscription = [[ADTSubscription alloc] initWithPrice:priceValue
+                                                                  currency:currency
+                                                             transactionId:transactionId
+                                                                andReceipt:receiptValue];
+
+    // Transaction date.
+    if ([self isFieldValid:transactionDate]) {
+        NSTimeInterval transactionDateInterval = [transactionDate doubleValue];
+        NSDate *oTransactionDate = [NSDate dateWithTimeIntervalSince1970:transactionDateInterval];
+        [subscription setTransactionDate:oTransactionDate];
+    }
+
+    // Sales region.
+    if ([self isFieldValid:salesRegion]) {
+        [subscription setSalesRegion:salesRegion];
+    }
+
+    // Callback parameters.
+    if (strCallbackParametersJson != nil) {
+        NSData *callbackParametersData = [strCallbackParametersJson dataUsingEncoding:NSUTF8StringEncoding];
+        id callbackParametersJson = [NSJSONSerialization JSONObjectWithData:callbackParametersData
+                                                                    options:0
+                                                                      error:NULL];
+        for (id key in callbackParametersJson) {
+            NSString *value = [callbackParametersJson objectForKey:key];
+            [subscription addCallbackParameter:key value:value];
+        }
+    }
+
+    // Partner parameters.
+    if (strPartnerParametersJson != nil) {
+        NSData *partnerParametersData = [strPartnerParametersJson dataUsingEncoding:NSUTF8StringEncoding];
+        id partnerParametersJson = [NSJSONSerialization JSONObjectWithData:partnerParametersData
+                                                                   options:0
+                                                                     error:NULL];
+        for (id key in partnerParametersJson) {
+            NSString *value = [partnerParametersJson objectForKey:key];
+            [subscription addPartnerParameter:key value:value];
+        }
+    }
+
+    // Track event.
+    [Adtrace trackSubscription:subscription];
+    result(nil);
+}
+
 - (void)getAttribution:(FlutterMethodCall *)call withResult:(FlutterResult)result {
     ADTAttribution *attribution = [Adtrace attribution];
     NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
@@ -336,6 +574,9 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     [self addValueOrEmpty:attribution.adgroup withKey:@"adgroup" toDictionary:dictionary];
     [self addValueOrEmpty:attribution.clickLabel withKey:@"clickLabel" toDictionary:dictionary];
     [self addValueOrEmpty:attribution.adid withKey:@"adid" toDictionary:dictionary];
+    [self addValueOrEmpty:attribution.costType withKey:@"costType" toDictionary:dictionary];
+    [self addNumberOrEmpty:attribution.costAmount withKey:@"costAmount" toDictionary:dictionary];
+    [self addValueOrEmpty:attribution.costCurrency withKey:@"costCurrency" toDictionary:dictionary];
     result(dictionary);
 }
 
@@ -355,12 +596,63 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     result(sdkVersion);
 }
 
+- (void)requestTrackingAuthorizationWithCompletionHandler:(FlutterMethodCall *)call withResult:(FlutterResult)result {
+    [Adtrace requestTrackingAuthorizationWithCompletionHandler:^(NSUInteger status) {
+        result([NSNumber numberWithUnsignedLong:status]);
+    }];
+}
+
+- (void)getAppTrackingAuthorizationStatus:(FlutterMethodCall *)call withResult:(FlutterResult)result {
+    result([NSNumber numberWithInt:[Adtrace appTrackingAuthorizationStatus]]);
+}
+
+- (void)updateConversionValue:(FlutterMethodCall *)call withResult:(FlutterResult)result {
+    NSString *conversionValue = call.arguments[@"conversionValue"];
+    if ([self isFieldValid:conversionValue]) {
+        [Adtrace updateConversionValue:[conversionValue intValue]];
+    }
+    result(nil);
+}
+
+- (void)trackThirdPartySharing:(FlutterMethodCall *)call withResult:(FlutterResult)result {
+    NSNumber *isEnabled = call.arguments[@"isEnabled"];
+    NSString *strGranularOptions = call.arguments[@"granularOptions"];
+
+    // Create third party sharing object.
+    ADTThirdPartySharing *adtraceThirdPartySharing = [[ADTThirdPartySharing alloc]
+                                                     initWithIsEnabledNumberBool:[self isFieldValid:isEnabled] ? isEnabled : nil];
+
+    // Granular options.
+    if (strGranularOptions != nil) {
+        NSArray *arrayGranularOptions = [strGranularOptions componentsSeparatedByString:@"__ADT__"];
+        if (arrayGranularOptions != nil) {
+            for (int i = 0; i < [arrayGranularOptions count]; i += 3) {
+                [adtraceThirdPartySharing addGranularOption:[arrayGranularOptions objectAtIndex:i]
+                                                       key:[arrayGranularOptions objectAtIndex:i+1]
+                                                     value:[arrayGranularOptions objectAtIndex:i+2]];
+            }
+        }
+    }
+
+    // Track third party sharing.
+    [Adtrace trackThirdPartySharing:adtraceThirdPartySharing];
+    result(nil);
+}
+
+- (void)trackMeasurementConsent:(FlutterMethodCall *)call withResult:(FlutterResult)result {
+    NSString *measurementConsent = call.arguments[@"measurementConsent"];
+    if ([self isFieldValid:measurementConsent]) {
+        [Adtrace trackMeasurementConsent:[measurementConsent boolValue]];
+    }
+    result(nil);
+}
+
 - (void)setTestOptions:(FlutterMethodCall *)call withResult:(FlutterResult)result {
     AdtraceTestOptions *testOptions = [[AdtraceTestOptions alloc] init];
     NSString *baseUrl = call.arguments[@"baseUrl"];
     NSString *gdprUrl = call.arguments[@"gdprUrl"];
-    NSString *basePath = call.arguments[@"basePath"];
-    NSString *gdprPath = call.arguments[@"gdprPath"];
+    NSString *subscriptionUrl = call.arguments[@"subscriptionUrl"];
+    NSString *extraPath = call.arguments[@"extraPath"];
     NSString *timerIntervalInMilliseconds = call.arguments[@"timerIntervalInMilliseconds"];
     NSString *timerStartInMilliseconds = call.arguments[@"timerStartInMilliseconds"];
     NSString *sessionIntervalInMilliseconds = call.arguments[@"sessionIntervalInMilliseconds"];
@@ -369,6 +661,7 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     NSString *deleteState = call.arguments[@"deleteState"];
     NSString *noBackoffWait = call.arguments[@"noBackoffWait"];
     NSString *iAdFrameworkEnabled = call.arguments[@"iAdFrameworkEnabled"];
+    NSString *adServicesFrameworkEnabled = call.arguments[@"adServicesFrameworkEnabled"];
 
     if ([self isFieldValid:baseUrl]) {
         testOptions.baseUrl = baseUrl;
@@ -376,11 +669,11 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     if ([self isFieldValid:gdprUrl]) {
         testOptions.gdprUrl = gdprUrl;
     }
-    if ([self isFieldValid:basePath]) {
-        testOptions.basePath = basePath;
+    if ([self isFieldValid:subscriptionUrl]) {
+        testOptions.subscriptionUrl = subscriptionUrl;
     }
-    if ([self isFieldValid:gdprPath]) {
-        testOptions.gdprPath = gdprPath;
+    if ([self isFieldValid:extraPath]) {
+        testOptions.extraPath = extraPath;
     }
     if ([self isFieldValid:timerIntervalInMilliseconds]) {
         testOptions.timerIntervalInMilliseconds = [NSNumber numberWithLongLong:[timerIntervalInMilliseconds longLongValue]];
@@ -397,7 +690,7 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     if ([self isFieldValid:teardown]) {
         testOptions.teardown = [teardown boolValue];
         if (testOptions.teardown) {
-            [AdTraceSdkDelegate teardown];
+            [AdtraceSdkDelegate teardown];
         }
     }
     if ([self isFieldValid:deleteState]) {
@@ -408,6 +701,9 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     }
     if ([self isFieldValid:iAdFrameworkEnabled]) {
         testOptions.iAdFrameworkEnabled = [iAdFrameworkEnabled boolValue];
+    }
+    if ([self isFieldValid:adServicesFrameworkEnabled]) {
+        testOptions.adServicesFrameworkEnabled = [adServicesFrameworkEnabled boolValue];
     }
 
     [Adtrace setTestOptions:testOptions];
@@ -439,6 +735,16 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
            toDictionary:(NSMutableDictionary *)dictionary {
     if (nil != value) {
         [dictionary setObject:[NSString stringWithFormat:@"%@", value] forKey:key];
+    } else {
+        [dictionary setObject:@"" forKey:key];
+    }
+}
+
+- (void)addNumberOrEmpty:(NSNumber *)value
+                 withKey:(NSString *)key
+            toDictionary:(NSMutableDictionary *)dictionary {
+    if (nil != value) {
+        [dictionary setObject:[value stringValue] forKey:key];
     } else {
         [dictionary setObject:@"" forKey:key];
     }

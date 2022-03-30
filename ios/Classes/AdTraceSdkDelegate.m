@@ -1,20 +1,19 @@
-//
-//  Created by Aref Hosseini on 7th October 2019.
-//
+
 
 #import <objc/runtime.h>
-#import "AdTraceSdkDelegate.h"
+#import "AdtraceSdkDelegate.h"
 
 static dispatch_once_t onceToken;
-static AdTraceSdkDelegate *defaultInstance = nil;
+static AdtraceSdkDelegate *defaultInstance = nil;
 static NSString *dartAttributionCallback;
 static NSString *dartSessionSuccessCallback;
 static NSString *dartSessionFailureCallback;
 static NSString *dartEventSuccessCallback;
 static NSString *dartEventFailureCallback;
 static NSString *dartDeferredDeeplinkCallback;
+static NSString *dartConversionValueUpdatedCallback;
 
-@implementation AdTraceSdkDelegate
+@implementation AdtraceSdkDelegate
 
 #pragma mark - Object lifecycle methods
 
@@ -34,42 +33,48 @@ static NSString *dartDeferredDeeplinkCallback;
                              eventSuccessCallback:(NSString *)swizzleEventSuccessCallback
                              eventFailureCallback:(NSString *)swizzleEventFailureCallback
                          deferredDeeplinkCallback:(NSString *)swizzleDeferredDeeplinkCallback
+                   conversionValueUpdatedCallback:(NSString *)swizzleConversionValueUpdatedCallback
                      shouldLaunchDeferredDeeplink:(BOOL)shouldLaunchDeferredDeeplink
                                  andMethodChannel:(FlutterMethodChannel *)channel {
-
+    
     dispatch_once(&onceToken, ^{
-        defaultInstance = [[AdTraceSdkDelegate alloc] init];
-
+        defaultInstance = [[AdtraceSdkDelegate alloc] init];
+        
         // Do the swizzling where and if needed.
         if (swizzleAttributionCallback != nil) {
-            [defaultInstance swizzleCallbackMethod:@selector(adTraceAttributionChanged:)
-                                  swizzledSelector:@selector(adTraceAttributionChangedWannabe:)];
+            [defaultInstance swizzleCallbackMethod:@selector(adtraceAttributionChanged:)
+                                  swizzledSelector:@selector(adtraceAttributionChangedWannabe:)];
             dartAttributionCallback = swizzleAttributionCallback;
         }
         if (swizzleSessionSuccessCallback != nil) {
-            [defaultInstance swizzleCallbackMethod:@selector(adTraceSessionTrackingSucceeded:)
-                                  swizzledSelector:@selector(adTraceSessionTrackingSucceededWannabe:)];
+            [defaultInstance swizzleCallbackMethod:@selector(adtraceSessionTrackingSucceeded:)
+                                  swizzledSelector:@selector(adtraceSessionTrackingSucceededWannabe:)];
             dartSessionSuccessCallback = swizzleSessionSuccessCallback;
         }
         if (swizzleSessionFailureCallback != nil) {
-            [defaultInstance swizzleCallbackMethod:@selector(adTraceSessionTrackingFailed:)
-                                  swizzledSelector:@selector(adTraceSessionTrackingFailedWannabe:)];
+            [defaultInstance swizzleCallbackMethod:@selector(adtraceSessionTrackingFailed:)
+                                  swizzledSelector:@selector(adtraceSessionTrackingFailedWananbe:)];
             dartSessionFailureCallback = swizzleSessionFailureCallback;
         }
         if (swizzleEventSuccessCallback != nil) {
-            [defaultInstance swizzleCallbackMethod:@selector(adTraceEventTrackingSucceeded:)
-                                  swizzledSelector:@selector(adTraceEventTrackingSucceededWannabe:)];
+            [defaultInstance swizzleCallbackMethod:@selector(adtraceEventTrackingSucceeded:)
+                                  swizzledSelector:@selector(adtraceEventTrackingSucceededWannabe:)];
             dartEventSuccessCallback = swizzleEventSuccessCallback;
         }
         if (swizzleEventFailureCallback != nil) {
-            [defaultInstance swizzleCallbackMethod:@selector(adTraceEventTrackingFailed:)
-                                  swizzledSelector:@selector(adTraceEventTrackingFailedWannabe:)];
+            [defaultInstance swizzleCallbackMethod:@selector(adtraceEventTrackingFailed:)
+                                  swizzledSelector:@selector(adtraceEventTrackingFailedWannabe:)];
             dartEventFailureCallback = swizzleEventFailureCallback;
         }
         if (swizzleDeferredDeeplinkCallback != nil) {
-            [defaultInstance swizzleCallbackMethod:@selector(adTraceDeeplinkResponse:)
-                                  swizzledSelector:@selector(adTraceDeeplinkResponseWannabe:)];
+            [defaultInstance swizzleCallbackMethod:@selector(adtraceDeeplinkResponse:)
+                                  swizzledSelector:@selector(adtraceDeeplinkResponseWannabe:)];
             dartDeferredDeeplinkCallback = swizzleDeferredDeeplinkCallback;
+        }
+        if (swizzleConversionValueUpdatedCallback != nil) {
+            [defaultInstance swizzleCallbackMethod:@selector(adtraceConversionValueUpdated:)
+                                  swizzledSelector:@selector(adtraceConversionValueUpdatedWannabe:)];
+            dartConversionValueUpdatedCallback = swizzleConversionValueUpdatedCallback;
         }
 
         [defaultInstance setShouldLaunchDeferredDeeplink:shouldLaunchDeferredDeeplink];
@@ -86,12 +91,23 @@ static NSString *dartDeferredDeeplinkCallback;
 
 #pragma mark - Private & helper methods
 
-- (void)adTraceAttributionChangedWannabe:(ADTAttribution *)attribution {
+- (void)adtraceAttributionChangedWannabe:(ADTAttribution *)attribution {
     if (attribution == nil) {
         return;
     }
-
-    id keys[] = { @"trackerToken", @"trackerName", @"network", @"campaign", @"adgroup", @"creative", @"clickLabel", @"adid" };
+    
+    id keys[] = {
+        @"trackerToken",
+        @"trackerName",
+        @"network",
+        @"campaign",
+        @"adgroup",
+        @"creative",
+        @"clickLabel",
+        @"adid",
+        @"costType",
+        @"costAmount",
+        @"costCurrency" };
     id values[] = {
         [self getValueOrEmpty:[attribution trackerToken]],
         [self getValueOrEmpty:[attribution trackerName]],
@@ -100,7 +116,10 @@ static NSString *dartDeferredDeeplinkCallback;
         [self getValueOrEmpty:[attribution adgroup]],
         [self getValueOrEmpty:[attribution creative]],
         [self getValueOrEmpty:[attribution clickLabel]],
-        [self getValueOrEmpty:[attribution adid]]
+        [self getValueOrEmpty:[attribution adid]],
+        [self getValueOrEmpty:[attribution costType]],
+        [self getNumberValueOrEmpty:[attribution costAmount]],
+        [self getValueOrEmpty:[attribution costCurrency]]
     };
     NSUInteger count = sizeof(values) / sizeof(id);
     NSDictionary *attributionMap = [NSDictionary dictionaryWithObjects:values
@@ -109,7 +128,7 @@ static NSString *dartDeferredDeeplinkCallback;
     [self.channel invokeMethod:dartAttributionCallback arguments:attributionMap];
 }
 
-- (void)adTraceSessionTrackingSucceededWannabe:(ADTSessionSuccess *)sessionSuccessResponseData {
+- (void)adtraceSessionTrackingSucceededWannabe:(ADTSessionSuccess *)sessionSuccessResponseData {
     if (nil == sessionSuccessResponseData) {
         return;
     }
@@ -128,7 +147,7 @@ static NSString *dartDeferredDeeplinkCallback;
     [self.channel invokeMethod:dartSessionSuccessCallback arguments:sessionSuccessMap];
 }
 
-- (void)adTraceSessionTrackingFailedWannabe:(ADTSessionFailure *)sessionFailureResponseData {
+- (void)adtraceSessionTrackingFailedWananbe:(ADTSessionFailure *)sessionFailureResponseData {
     if (nil == sessionFailureResponseData) {
         return;
     }
@@ -149,11 +168,11 @@ static NSString *dartDeferredDeeplinkCallback;
     [self.channel invokeMethod:dartSessionFailureCallback arguments:sessionFailureMap];
 }
 
-- (void)adTraceEventTrackingSucceededWannabe:(ADTEventSuccess *)eventSuccessResponseData {
+- (void)adtraceEventTrackingSucceededWannabe:(ADTEventSuccess *)eventSuccessResponseData {
     if (nil == eventSuccessResponseData) {
         return;
     }
-
+    
     id keys[] = { @"message", @"timestamp", @"adid", @"eventToken", @"callbackId", @"jsonResponse" };
     id values[] = {
         [self getValueOrEmpty:[eventSuccessResponseData message]],
@@ -170,7 +189,7 @@ static NSString *dartDeferredDeeplinkCallback;
     [self.channel invokeMethod:dartEventSuccessCallback arguments:eventSuccessMap];
 }
 
-- (void)adTraceEventTrackingFailedWannabe:(ADTEventFailure *)eventFailureResponseData {
+- (void)adtraceEventTrackingFailedWannabe:(ADTEventFailure *)eventFailureResponseData {
     if (nil == eventFailureResponseData) {
         return;
     }
@@ -193,7 +212,7 @@ static NSString *dartDeferredDeeplinkCallback;
     [self.channel invokeMethod:dartEventFailureCallback arguments:eventFailureMap];
 }
 
-- (BOOL)adTraceDeeplinkResponseWannabe:(NSURL *)deeplink {
+- (BOOL)adtraceDeeplinkResponseWannabe:(NSURL *)deeplink {
     id keys[] = { @"uri" };
     id values[] = { [deeplink absoluteString] };
     NSUInteger count = sizeof(values) / sizeof(id);
@@ -202,6 +221,16 @@ static NSString *dartDeferredDeeplinkCallback;
                                                               count:count];
     [self.channel invokeMethod:dartDeferredDeeplinkCallback arguments:deeplinkMap];
     return self.shouldLaunchDeferredDeeplink;
+}
+
+- (void)adtraceConversionValueUpdatedWannabe:(NSNumber *)conversionValue {
+    id keys[] = { @"conversionValue" };
+    id values[] = { [conversionValue stringValue] };
+    NSUInteger count = sizeof(values) / sizeof(id);
+    NSDictionary *conversionValueMap = [NSDictionary dictionaryWithObjects:values
+                                                                   forKeys:keys
+                                                                     count:count];
+    [self.channel invokeMethod:dartConversionValueUpdatedCallback arguments:conversionValueMap];
 }
 
 - (void)swizzleCallbackMethod:(SEL)originalSelector
@@ -246,6 +275,13 @@ static NSString *dartDeferredDeeplinkCallback;
         return @"";
     }
     return value;
+}
+
+- (id)getNumberValueOrEmpty:(NSNumber *)value {
+    if (value == nil || value == NULL) {
+        return @"";
+    }
+    return [value stringValue];
 }
 
 - (id)getObjectValueOrEmpty:(id)value {

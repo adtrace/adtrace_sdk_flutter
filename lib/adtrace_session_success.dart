@@ -1,23 +1,34 @@
-//
-//  Created by Aref Hosseini on 7th October 2019.
-//
+/**
+ *  AdTrace SDK for Flutter
+ *  Developed by Nasser Amini on Mar 2021
+ *  for more information visit https://adtrace.io
+ */
 
 class AdTraceSessionSuccess {
-  String message;
-  String timestamp;
-  String adid;
-  String jsonResponse;
+  final String? message;
+  final String? timestamp;
+  final String? adid;
+  final String? jsonResponse;
 
-  static AdTraceSessionSuccess fromMap(dynamic map) {
-    AdTraceSessionSuccess sessionSuccess = new AdTraceSessionSuccess();
+  AdTraceSessionSuccess({
+    required this.message,
+    required this.timestamp,
+    required this.adid,
+    required this.jsonResponse,
+  });
+
+  factory AdTraceSessionSuccess.fromMap(dynamic map) {
     try {
-      sessionSuccess.message = map['message'];
-      sessionSuccess.timestamp = map['timestamp'];
-      sessionSuccess.adid = map['adid'];
-      sessionSuccess.jsonResponse = map['jsonResponse'];
+      return AdTraceSessionSuccess(
+        message: map['message'],
+        timestamp: map['timestamp'],
+        adid: map['adid'],
+        jsonResponse: map['jsonResponse'],
+      );
     } catch (e) {
-      print('[AdTraceFlutter]: Failed to create AdTraceSessionSuccess object from given map object. Details: ' + e.toString());
+      throw Exception(
+          '[AdTraceFlutter]: Failed to create AdTraceSessionSuccess object from given map object. Details: ' +
+              e.toString());
     }
-    return sessionSuccess;
   }
 }

@@ -1,18 +1,26 @@
-//
-//  Created by Aref Hosseini on 7th October 2019.
-//
+/**
+ *  AdTrace SDK for Flutter
+ *  Developed by Nasser Amini on Mar 2021
+ *  for more information visit https://adtrace.io
+ */
 
 import 'dart:async';
 
-import 'package:adtrace_sdk/adtrace_attribution.dart';
-import 'package:adtrace_sdk/adtrace_config.dart';
-import 'package:adtrace_sdk/adtrace_event.dart';
+ 
+import 'package:adtrace_sdk_flutter/adtrace_ad_revenue.dart';
+import 'package:adtrace_sdk_flutter/adtrace_app_store_subscription.dart';
+import 'package:adtrace_sdk_flutter/adtrace_attribution.dart';
+import 'package:adtrace_sdk_flutter/adtrace_config.dart';
+import 'package:adtrace_sdk_flutter/adtrace_event.dart';
+import 'package:adtrace_sdk_flutter/adtrace_play_store_subscription.dart';
+import 'package:adtrace_sdk_flutter/adtrace_third_party_sharing.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+import 'package:meta/meta.dart';
 
 class AdTrace {
-  static const String _sdkPrefix = 'flutter0.1.3';
-  static const MethodChannel _channel = const MethodChannel('io.adtrace.sdk/api');
+  static const String _sdkPrefix = 'flutter1.1.0';
+  static const MethodChannel _channel =
+      const MethodChannel('io.adtrace.sdk/api');
 
   static void start(AdTraceConfig config) {
     config.sdkPrefix = _sdkPrefix;
@@ -51,6 +59,10 @@ class AdTrace {
     _channel.invokeMethod('gdprForgetMe');
   }
 
+  static void disableThirdPartySharing() {
+    _channel.invokeMethod('disableThirdPartySharing');
+  }
+
   static void onResume() {
     _channel.invokeMethod('onResume');
   }
@@ -64,40 +76,41 @@ class AdTrace {
     return isEnabled;
   }
 
-  static Future<String> getAdid() async {
-    final String adid = await _channel.invokeMethod('getAdid');
+  static Future<String?> getAdid() async {
+    final String? adid = await _channel.invokeMethod('getAdid');
     return adid;
   }
 
-  static Future<String> getIdfa() async {
-    try {
-      final String idfa = await _channel.invokeMethod('getIdfa');
-      return idfa;
-    } catch (e) {
-      return null;
-    }
+  static Future<String?> getIdfa() async {
+    final String? idfa = await _channel.invokeMethod('getIdfa');
+    return idfa;
   }
 
-  static Future<String> getAmazonAdId() async {
-    try {
-      final String amazonAdId = await _channel.invokeMethod('getAmazonAdId');
-      return amazonAdId;
-    } catch (e) {
-      return null;
-    }
+  static Future<String?> getAmazonAdId() async {
+    final String? amazonAdId = await _channel.invokeMethod('getAmazonAdId');
+    return amazonAdId;
   }
 
-  static Future<String> getGoogleAdId() async {
-    try {
-      final String googleAdId = await _channel.invokeMethod('getGoogleAdId');
-      return googleAdId;
-    } catch (e) {
-      return null;
-    }
+  static Future<String?> getGoogleAdId() async {
+    final String? googleAdId = await _channel.invokeMethod('getGoogleAdId');
+    return googleAdId;
+  }
+
+  static Future<num> requestTrackingAuthorizationWithCompletionHandler() async {
+    final num status = await _channel
+        .invokeMethod('requestTrackingAuthorizationWithCompletionHandler');
+    return status;
+  }
+
+  static Future<int> getAppTrackingAuthorizationStatus() async {
+    final int authorizationStatus =
+        await _channel.invokeMethod('getAppTrackingAuthorizationStatus');
+    return authorizationStatus;
   }
 
   static Future<AdTraceAttribution> getAttribution() async {
-    final Map attributionMap = await _channel.invokeMethod('getAttribution');
+    final dynamic attributionMap =
+        await _channel.invokeMethod('getAttribution');
     return AdTraceAttribution.fromMap(attributionMap);
   }
 
@@ -107,11 +120,13 @@ class AdTrace {
   }
 
   static void addSessionCallbackParameter(String key, String value) {
-    _channel.invokeMethod('addSessionCallbackParameter', {'key': key, 'value': value});
+    _channel.invokeMethod(
+        'addSessionCallbackParameter', {'key': key, 'value': value});
   }
 
   static void addSessionPartnerParameter(String key, String value) {
-    _channel.invokeMethod('addSessionPartnerParameter', {'key': key, 'value': value});
+    _channel.invokeMethod(
+        'addSessionPartnerParameter', {'key': key, 'value': value});
   }
 
   static void removeSessionCallbackParameter(String key) {
@@ -128,6 +143,40 @@ class AdTrace {
 
   static void resetSessionPartnerParameters() {
     _channel.invokeMethod('resetSessionPartnerParameters');
+  }
+
+  static void trackAdRevenue(String source, String payload) {
+    _channel
+        .invokeMethod('trackAdRevenue', {'source': source, 'payload': payload});
+  }
+
+  static void trackAdRevenueNew(AdTraceAdRevenue adRevenue) {
+    _channel.invokeMethod('trackAdRevenueNew', adRevenue.toMap);
+  }
+
+  static void trackAppStoreSubscription(
+      AdTraceAppStoreSubscription subscription) {
+    _channel.invokeMethod('trackAppStoreSubscription', subscription.toMap);
+  }
+
+  static void trackPlayStoreSubscription(
+      AdTracePlayStoreSubscription subscription) {
+    _channel.invokeMethod('trackPlayStoreSubscription', subscription.toMap);
+  }
+
+  static void trackThirdPartySharing(
+      AdTraceThirdPartySharing thirdPartySharing) {
+    _channel.invokeMethod('trackThirdPartySharing', thirdPartySharing.toMap);
+  }
+
+  static void trackMeasurementConsent(bool measurementConsent) {
+    _channel.invokeMethod(
+        'trackMeasurementConsent', {'measurementConsent': measurementConsent});
+  }
+
+  static void updateConversionValue(int conversionValue) {
+    _channel.invokeMethod(
+        'updateConversionValue', {'conversionValue': conversionValue});
   }
 
   // For testing purposes only. Do not use in production.

@@ -1,6 +1,4 @@
-//
-//  Created by Aref Hosseini on 7th October 2019.
-//
+
 
 package io.adtrace.sdk.flutter;
 

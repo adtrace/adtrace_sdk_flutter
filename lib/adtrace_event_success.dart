@@ -1,27 +1,40 @@
-//
-//  Created by Aref Hosseini on 7th October 2019.
-//
+/**
+ *  AdTrace SDK for Flutter
+ *  Developed by Nasser Amini on Mar 2021
+ *  for more information visit https://adtrace.io
+ */
 
 class AdTraceEventSuccess {
-  String message;
-  String timestamp;
-  String adid;
-  String eventToken;
-  String callbackId;
-  String jsonResponse;
+  final String? message;
+  final String? timestamp;
+  final String? adid;
+  final String? eventToken;
+  final String? callbackId;
+  final String? jsonResponse;
 
-  static AdTraceEventSuccess fromMap(dynamic map) {
-    AdTraceEventSuccess eventSuccess = new AdTraceEventSuccess();
+  AdTraceEventSuccess({
+    required this.message,
+    required this.timestamp,
+    required this.adid,
+    required this.eventToken,
+    required this.callbackId,
+    required this.jsonResponse,
+  });
+
+  factory AdTraceEventSuccess.fromMap(dynamic map) {
     try {
-      eventSuccess.message = map['message'];
-      eventSuccess.timestamp = map['timestamp'];
-      eventSuccess.adid = map['adid'];
-      eventSuccess.eventToken = map['eventToken'];
-      eventSuccess.callbackId = map['callbackId'];
-      eventSuccess.jsonResponse = map['jsonResponse'];
+      return AdTraceEventSuccess(
+        message: map['message'],
+        timestamp: map['timestamp'],
+        adid: map['adid'],
+        eventToken: map['eventToken'],
+        callbackId: map['callbackId'],
+        jsonResponse: map['jsonResponse'],
+      );
     } catch (e) {
-      print('[AdTraceFlutter]: Failed to create AdTraceEventSuccess object from given map object. Details: ' + e.toString());
+      throw Exception(
+          '[AdTraceFlutter]: Failed to create AdTraceEventSuccess object from given map object. Details: ' +
+              e.toString());
     }
-    return eventSuccess;
   }
 }
