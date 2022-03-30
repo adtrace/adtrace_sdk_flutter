@@ -566,32 +566,6 @@ If you wish to remove all keys and their corresponding values from the session c
 AdTrace.resetSessionCallbackParameters();
 ```
 
-### <a id="cp-session-partner-parameters"></a>Session partner parameters
-
-In the same way that there are [session callback parameters](#session-callback-parameters) sent in every event or session of the AdTrace SDK, there is also session partner parameters.
-
-These will be transmitted to network partners, for the integrations that have been activated in your AdTrace [dashboard].
-
-The session partner parameters have a similar interface to the event partner parameters. Instead of adding the key and it's value to an event, it's added through a call to `AdTrace.addSessionPartnerParameter(String key, String value)`:
-
-```dart
-AdTrace.addSessionPartnerParameter('foo', 'bar');
-```
-
-The session partner parameters will be merged with the partner parameters added to an event. The partner parameters added to an event have precedence over the session partner parameters. Meaning that, when adding a partner parameter to an event with the same key to one added from the session, the value that prevails is the partner parameter added to the event.
-
-It's possible to remove a specific session partner parameter by passing the desiring key to the method `AdTrace.removeSessionPartnerParameter(String key)`.
-
-```dart
-AdTrace.removeSessionPartnerParameter('foo');
-```
-
-If you wish to remove all keys and their corresponding values from the session partner parameters, you can reset it with the method `AdTrace.resetSessionPartnerParameters()`.
-
-```dart
-AdTrace.resetSessionPartnerParameters();
-```
-
 ### <a id="cp-delay-start"></a>Delay start
 
 Delaying the start of the AdTrace SDK allows your app some time to obtain session parameters, such as unique identifiers, to be sent on install.
