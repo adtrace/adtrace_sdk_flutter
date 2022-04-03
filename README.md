@@ -32,7 +32,6 @@ This is the Flutter SDK of AdTrace. You can read more about AdTrace at [adtrace.
 * [Deferred deep linking scenario](#dl-deferred)
 * [Deep linking handling in Android app](#dl-app-android)
 * [Deep linking handling in iOS app](#dl-app-ios)
-* [Reattribution via deep links](#dl-reattribution)
 
 ### Event tracking
 
@@ -67,9 +66,7 @@ This is the Flutter SDK of AdTrace. You can read more about AdTrace at [adtrace.
 * [Disable tracking](#af-disable-tracking)
 * [Event buffering](#af-event-buffering)
 * [Background tracking](#af-background-tracking)
-* [Third-party sharing](#af-third-party-sharing)
-    * [Disable third-party sharing](#af-disable-third-party-sharing)
-    * [Enable third-party sharing](#af-enable-third-party-sharing)
+
 
 
 ### License
@@ -203,7 +200,7 @@ If you are already using a different broadcast receiver for the `INSTALL_REFERRE
 
 #### <a id="qs-hr-api"></a>[Android] Huawei Referrer API
 
-As of v4.22.0, the AdTrace SDK supports install tracking on Huawei devices with Huawei App Gallery version 10.4 and higher. No additional integration steps are needed to start using the Huawei Referrer API.
+As of v2.0.2, the AdTrace SDK supports install tracking on Huawei devices with Huawei App Gallery version 10.4 and higher. No additional integration steps are needed to start using the Huawei Referrer API.
 
 #### <a id="qs-ios-frameworks"></a>[iOS] Link additional frameworks
 
@@ -384,74 +381,6 @@ To set up your Android app to handle deep linking on native level, please follow
 
 To set up your iOS app (`Runner` project) to handle deep linking on native level, please follow our [guide][ios-deeplinking] in the official iOS SDK README.
 
-### <a id="dl-reattribution"></a>Reattribution via deep links
-
-AdTrace enables you to run re-engagement campaigns through deep links. For more information on how to do that, please check our [official docs][reattribution-with-deeplinks].
-
-If you are using this feature, in order for your user to be properly reattributed, you need to make one additional call to the AdTrace SDK in your app.
-
-Once you have received deep link content information in your app, add a call to the `appWillOpenUrl` method. By making this call, the AdTrace SDK will try to find if there is any new attribution information inside of the deep link. If there is any, it will be sent to the AdTrace backend. If your user should be reattributed due to a click on the adtrace tracker URL with deep link content, you will see the [attribution callback](#af-attribution-callback) in your app being triggered with new attribution info for this user.
-
-Once everything set up, inside of your native Android activity make a call to `appWillOpenUrl` method in following way:
-
-```java
-import io.adtrace.sdk.flutter.AdTraceSdk;
-import io.flutter.embedding.android.FlutterActivity; // Used for post flutter 1.12 Android projects
-//import io.flutter.app.FlutterActivity; // Used for pre flutter 1.12 Android projects
-
-public class MainActivity extends FlutterActivity {
-    // Either call make the call in onCreate.
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // GeneratedPluginRegistrant.registerWith(this); Used only for pre flutter 1.12 Android projects
-
-        Intent intent = getIntent();
-        Uri data = intent.getData();
-        AdTraceSdk.appWillOpenUrl(data, this);
-    }
-
-    // Or make the cakll in onNewIntent.
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        Uri data = intent.getData();
-        AdTraceSdk.appWillOpenUrl(data, this);
-    }
-}
-```
-
-Depending on the `android:launchMode` setting of your Activity in the `AndroidManifest.xml` file, information about the `deep_link` parameter content will be delivered to the appropriate place in the Activity file. For more information about the possible values of the `android:launchMode` property, check [the official Android documentation][android-launch-modes].
-
-There are two places within your desired Activity where information about the deep link content will be delivered via the `Intent` object - either in the Activity's `onCreate` or `onNewIntent` methods. Once your app has launched and one of these methods has been triggered, you will be able to get the actual deep link passed in the `deep_link` parameter in the click URL.
-
-Once everything set up, inside of your native iOS app delegate make a call to `appWillOpenUrl` method in following way:
-
-```objc
-#import "AdTrace.h"
-
-@implementation AppDelegate
-
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [GeneratedPluginRegistrant registerWithRegistry:self];
-    // Override point for customization after application launch.
-    return [super application:application didFinishLaunchingWithOptions:launchOptions];
-}
-
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-    [AdTrace appWillOpenUrl:url];
-    return YES;
-}
-
-- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray<id<UIUserActivityRestoring>> *restorableObjects))restorationHandler {
-    if ([[userActivity activityType] isEqualToString:NSUserActivityTypeBrowsingWeb]) {
-        [AdTrace appWillOpenUrl:[userActivity webpageURL]];
-    }
-    return YES;
-}
-
-@end
-```
 
 ## Event tracking
 
@@ -859,7 +788,7 @@ You can also use an external device ID as a custom identifier for a device. This
 
 Check out our [external device identifiers article](https://adtrace.io) for more information.
 
-> **Note** This setting requires AdTrace SDK v4.21.0 or later.
+> **Note** This setting requires AdTrace SDK v2.0.2 or later.
 
 To set an external device ID, assign the identifier to the `externalDeviceId` property of your config instance. Do this before you initialize the AdTrace SDK.
 
@@ -915,20 +844,6 @@ adtraceConfig.sendInBackground = true;
 ```
 
 
-## <a id="af-third-party-sharing"></a>Third-party sharing for specific users
-
-You can notify AdTrace when a user disables, enables, and re-enables data sharing with third-party partners.
-
-### <a id="af-disable-third-party-sharing"></a>Disable third-party sharing for specific users
-
-Call the following method to instruct the AdTrace SDK to communicate the user's choice to disable data sharing to the AdTrace backend:
-
-```dart
-AdTraceThirdPartySharing adtraceThirdPartySharing = new AdTraceThirdPartySharing(false);
-AdTrace.trackThirdPartySharing(adtraceThirdPartySharing);
-```
-
-Upon receiving this information, AdTrace will block the sharing of that specific user's data to partners and the AdTrace SDK will continue to work as usual.
 
 [dashboard]:  https://adtrace.io
 [adtrace.io]: https://adtrace.io
