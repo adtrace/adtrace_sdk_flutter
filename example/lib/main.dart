@@ -1,4 +1,3 @@
-
 import 'package:adtrace_sdk_flutter/adtrace.dart';
 import 'package:adtrace_sdk_flutter/adtrace_attribution.dart';
 import 'package:adtrace_sdk_flutter/adtrace_config.dart';
@@ -15,6 +14,7 @@ import 'util.dart';
 void main() {
   runApp(MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -96,18 +96,19 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   // Platform messages are asynchronous, so we initialize in an async method.
   initPlatformState() async {
     AdTraceConfig config =
-        new AdTraceConfig('09eu7dllf7md', AdTraceEnvironment.sandbox);
+        AdTraceConfig('09eu7dllf7md', AdTraceEnvironment.sandbox);
     config.logLevel = AdTraceLogLevel.verbose;
 
     config.attributionCallback = (AdTraceAttribution attributionChangedData) {
       print('[AdTrace]: Attribution changed!');
 
       if (attributionChangedData.trackerToken != null) {
-        print(
-            '[AdTrace]: Tracker token: ' + attributionChangedData.trackerToken!);
+        print('[AdTrace]: Tracker token: ' +
+            attributionChangedData.trackerToken!);
       }
       if (attributionChangedData.trackerName != null) {
-        print('[AdTrace]: Tracker name: ' + attributionChangedData.trackerName!);
+        print(
+            '[AdTrace]: Tracker name: ' + attributionChangedData.trackerName!);
       }
       if (attributionChangedData.campaign != null) {
         print('[AdTrace]: Campaign: ' + attributionChangedData.campaign!);
@@ -135,8 +136,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
             attributionChangedData.costAmount!.toString());
       }
       if (attributionChangedData.costCurrency != null) {
-        print(
-            '[AdTrace]: Cost currency: ' + attributionChangedData.costCurrency!);
+        print('[AdTrace]: Cost currency: ' +
+            attributionChangedData.costCurrency!);
       }
     };
 
@@ -170,8 +171,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
         print('[AdTrace]: Adid: ' + sessionFailureData.adid!);
       }
       if (sessionFailureData.willRetry != null) {
-        print(
-            '[AdTrace]: Will retry: ' + sessionFailureData.willRetry.toString());
+        print('[AdTrace]: Will retry: ' +
+            sessionFailureData.willRetry.toString());
       }
       if (sessionFailureData.jsonResponse != null) {
         print('[AdTrace]: JSON response: ' + sessionFailureData.jsonResponse!);
@@ -220,7 +221,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
         print('[AdTrace]: Callback ID: ' + eventFailureData.callbackId!);
       }
       if (eventFailureData.willRetry != null) {
-        print('[AdTrace]: Will retry: ' + eventFailureData.willRetry.toString());
+        print(
+            '[AdTrace]: Will retry: ' + eventFailureData.willRetry.toString());
       }
       if (eventFailureData.jsonResponse != null) {
         print('[AdTrace]: JSON response: ' + eventFailureData.jsonResponse!);
@@ -254,28 +256,28 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     // Clear all session partner parameters.
     AdTrace.resetSessionPartnerParameters();
 
-    // Ask for tracking consent.
-    AdTrace.requestTrackingAuthorizationWithCompletionHandler().then((status) {
-      print('[AdTrace]: Authorization status update!');
-      switch (status) {
-        case 0:
-          print(
-              '[AdTrace]: Authorization status update: ATTrackingManagerAuthorizationStatusNotDetermined');
-          break;
-        case 1:
-          print(
-              '[AdTrace]: Authorization status update: ATTrackingManagerAuthorizationStatusRestricted');
-          break;
-        case 2:
-          print(
-              '[AdTrace]: Authorization status update: ATTrackingManagerAuthorizationStatusDenied');
-          break;
-        case 3:
-          print(
-              '[AdTrace]: Authorization status update: ATTrackingManagerAuthorizationStatusAuthorized');
-          break;
-      }
-    });
+    // // Ask for tracking consent.
+    // AdTrace.requestTrackingAuthorizationWithCompletionHandler().then((status) {
+    //   print('[AdTrace]: Authorization status update!');
+    //   switch (status) {
+    //     case 0:
+    //       print(
+    //           '[AdTrace]: Authorization status update: ATTrackingManagerAuthorizationStatusNotDetermined');
+    //       break;
+    //     case 1:
+    //       print(
+    //           '[AdTrace]: Authorization status update: ATTrackingManagerAuthorizationStatusRestricted');
+    //       break;
+    //     case 2:
+    //       print(
+    //           '[AdTrace]: Authorization status update: ATTrackingManagerAuthorizationStatusDenied');
+    //       break;
+    //     case 3:
+    //       print(
+    //           '[AdTrace]: Authorization status update: ATTrackingManagerAuthorizationStatusAuthorized');
+    //       break;
+    //   }
+    // });
 
     // Start SDK.
     AdTrace.start(config);
@@ -283,39 +285,39 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return new CustomScrollView(
+    return CustomScrollView(
       shrinkWrap: true,
       slivers: <Widget>[
-        new SliverPadding(
+        SliverPadding(
           padding: const EdgeInsets.all(20.0),
-          sliver: new SliverList(
-            delegate: new SliverChildListDelegate(
+          sliver: SliverList(
+            delegate: SliverChildListDelegate(
               <Widget>[
-                const Padding(padding: const EdgeInsets.all(7.0)),
+                const Padding(padding: EdgeInsets.all(7.0)),
 
                 Util.buildCupertinoButton(
                     'Is Enabled ?', () => _showIsSdkEnabled()),
-                const Padding(padding: const EdgeInsets.all(7.0)),
+                const Padding(padding: EdgeInsets.all(7.0)),
 
                 // Track simple event button.
                 Util.buildCupertinoButton('Track Simple Event',
                     () => AdTrace.trackEvent(Util.buildSimpleEvent())),
-                const Padding(padding: const EdgeInsets.all(7.0)),
+                const Padding(padding: EdgeInsets.all(7.0)),
 
                 // Track revenue event button.
                 Util.buildCupertinoButton('Track Revenue Event',
                     () => AdTrace.trackEvent(Util.buildRevenueEvent())),
-                const Padding(padding: const EdgeInsets.all(7.0)),
+                const Padding(padding: EdgeInsets.all(7.0)),
 
                 // Track callback event button.
                 Util.buildCupertinoButton('Track Callback Event',
                     () => AdTrace.trackEvent(Util.buildCallbackEvent())),
-                const Padding(padding: const EdgeInsets.all(7.0)),
+                const Padding(padding: EdgeInsets.all(7.0)),
 
                 // Track value event button.
                 Util.buildCupertinoButton('Track Event Value',
                     () => AdTrace.trackEvent(Util.buildEventValueParams())),
-                const Padding(padding: const EdgeInsets.all(7.0)),
+                const Padding(padding: EdgeInsets.all(7.0)),
 
                 // Get Google Advertising Id.
                 Util.buildCupertinoButton(
@@ -324,7 +326,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                           _showDialogMessage('Get Google Advertising Id',
                               'Received Google Advertising Id: $googleAdid');
                         })),
-                const Padding(padding: const EdgeInsets.all(7.0)),
+                const Padding(padding: EdgeInsets.all(7.0)),
 
                 // Get AdTrace identifier.
                 Util.buildCupertinoButton(
@@ -333,7 +335,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                           _showDialogMessage('AdTrace identifier',
                               'Received AdTrace identifier: $adid');
                         })),
-                const Padding(padding: const EdgeInsets.all(7.0)),
+                const Padding(padding: EdgeInsets.all(7.0)),
 
                 // Get IDFA.
                 Util.buildCupertinoButton(
@@ -341,7 +343,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                     () => AdTrace.getIdfa().then((idfa) {
                           _showDialogMessage('IDFA', 'Received IDFA: $idfa');
                         })),
-                const Padding(padding: const EdgeInsets.all(7.0)),
+                const Padding(padding: EdgeInsets.all(7.0)),
 
                 // Get attribution.
                 Util.buildCupertinoButton(
@@ -350,22 +352,22 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                           _showDialogMessage('Attribution',
                               'Received attribution: ${attribution.toString()}');
                         })),
-                const Padding(padding: const EdgeInsets.all(7.0)),
+                const Padding(padding: EdgeInsets.all(7.0)),
 
                 // Enable / disable SDK.
-                new Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     // Is SDK enabled switch.
-                    new Text(
+                    Text(
                       _isSdkEnabled ? 'Enabled' : 'Disabled',
                       style: _isSdkEnabled
-                          ? new TextStyle(fontSize: 32.0, color: Colors.green)
-                          : new TextStyle(fontSize: 32.0, color: Colors.red),
+                          ? TextStyle(fontSize: 32.0, color: Colors.green)
+                          : TextStyle(fontSize: 32.0, color: Colors.red),
                     ),
-                    new CupertinoSwitch(
+                    CupertinoSwitch(
                       value: _isSdkEnabled,
                       onChanged: (bool value) {
                         setState(() {
@@ -377,7 +379,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                     ),
                   ],
                 ),
-                const Padding(padding: const EdgeInsets.all(7.0)),
+                const Padding(padding: EdgeInsets.all(7.0)),
 
                 // end
               ],
@@ -409,11 +411,11 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     showDialog<void>(
       context: context,
       builder: (BuildContext context) {
-        return new CupertinoAlertDialog(
+        return CupertinoAlertDialog(
           title: Text(title),
           content: Text(text),
           actions: <Widget>[
-            new CupertinoDialogAction(
+            CupertinoDialogAction(
               child: const Text('OK'),
               onPressed: () {
                 Navigator.pop(context, 'OK');

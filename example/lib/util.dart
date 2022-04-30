@@ -9,15 +9,15 @@ class Util {
   static const String EVENT_TOKEN_PARTNER = 'w788qs';
 
   static Widget buildRaisedButton(String text, Function action) {
-    return new Align(
+    return Align(
       alignment: const Alignment(0.0, -0.2),
-      child: new Column(
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          new ButtonBar(
+          ButtonBar(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              new ElevatedButton(
+              ElevatedButton(
                 child: Text(text),
                 onPressed: () {
                   action();
@@ -31,7 +31,7 @@ class Util {
   }
 
   static Widget buildCupertinoButton(String text, Function action) {
-    return new CupertinoButton(
+    return CupertinoButton(
       child: Text(text),
       color: CupertinoColors.activeBlue,
       padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 30.0),
@@ -40,13 +40,13 @@ class Util {
   }
 
   static Widget buildRaisedButtonRow(String text, Function action) {
-    return new Align(
+    return Align(
       alignment: const Alignment(0.0, -0.2),
-      child: new Container(
-        child: new Row(
+      child: Container(
+        child: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            new ElevatedButton(
+            ElevatedButton(
               child: Text(text),
               onPressed: () {
                 action();
@@ -54,34 +54,34 @@ class Util {
             ),
           ],
         ),
-        margin: new EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
-        padding: new EdgeInsets.all(1.0),
+        margin: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
+        padding: EdgeInsets.all(1.0),
         decoration:
-            new BoxDecoration(border: new Border.all(color: Colors.black)),
+            BoxDecoration(border: Border.all(color: Colors.black)),
       ),
     );
   }
 
   static AdTraceEvent buildSimpleEvent() {
-    return new AdTraceEvent(EVENT_TOKEN_SIMPLE);
+    return AdTraceEvent(EVENT_TOKEN_SIMPLE);
   }
 
   static AdTraceEvent buildRevenueEvent() {
-    AdTraceEvent event = new AdTraceEvent(EVENT_TOKEN_REVENUE);
+    AdTraceEvent event = AdTraceEvent(EVENT_TOKEN_REVENUE);
     event.setRevenue(100.0, 'IRR');
     event.transactionId = 'DummyTransactionId';
     return event;
   }
 
   static AdTraceEvent buildCallbackEvent() {
-    AdTraceEvent event = new AdTraceEvent(EVENT_TOKEN_CALLBACK);
+    AdTraceEvent event = AdTraceEvent(EVENT_TOKEN_CALLBACK);
     event.addCallbackParameter('key1', 'value1');
     event.addCallbackParameter('key2', 'value2');
     return event;
   }
 
   static AdTraceEvent buildEventValueParams() {
-    AdTraceEvent event = new AdTraceEvent(EVENT_TOKEN_PARTNER);
+    AdTraceEvent event = AdTraceEvent(EVENT_TOKEN_PARTNER);
     event.addEventParameter('foo1', 'bar1');
     event.addEventParameter('foo2', 'bar2');
     return event;
@@ -91,9 +91,9 @@ class Util {
       BuildContext context, String dialogText, String message) {
     showDialog<Null>(
         context: context,
-        builder: (_) => new AlertDialog(
-              title: new Text(dialogText),
-              content: new Text(message),
+        builder: (_) => AlertDialog(
+              title: Text(dialogText),
+              content: Text(message),
             ));
   }
 
@@ -109,8 +109,8 @@ class Util {
       // The value passed to Navigator.pop() or null.
       if (scaffoldKey != null && value != null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          new SnackBar(
-            content: new Text('You selected: $value'),
+          SnackBar(
+            content: Text('You selected: $value'),
           ),
         );
       }

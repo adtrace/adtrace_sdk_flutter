@@ -1,3 +1,7 @@
+## 1.1.0+6
+* `.podspec` updated
+
+
 ## 1.1.0+3
 * Readme updated
 
