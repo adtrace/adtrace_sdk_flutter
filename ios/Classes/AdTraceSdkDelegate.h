@@ -1,6 +1,6 @@
 
 #import <Flutter/Flutter.h>
-#import "Adtrace.h"
+#import <Adtrace_sdk/Adtrace.h>
 
 @interface AdtraceSdkDelegate : NSObject<AdtraceDelegate>
 
