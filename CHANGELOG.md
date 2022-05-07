@@ -1,3 +1,6 @@
+## 1.1.2
+* update `pods` and `ios` classes to support earlier versions of flutter for ios
+
 ## 1.1.1
 * update minimum `sdk: ">=2.12.1 <3.0.0"` and `flutter: ">=1.10.0"` to support older flutter sdk versions
 
