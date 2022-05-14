@@ -88,7 +88,10 @@ You can add AdTrace SDK to your Flutter app by adding following to your `pubspec
 
 ```yaml
 dependencies:
-  adtrace_sdk_flutter: ^1.1.2
+  adtrace_sdk_flutter:
+    git:
+      url: https://github.com/adtrace/adtrace_sdk_flutter.git
+      ref: flutter-version2.2.3
 ```
 
 Then navigate to your project in the terminal and run:
