@@ -85,20 +85,11 @@ These are the minimal steps required to integrate the AdTrace SDK into your Flut
 ### <a id="qs-add-sdk"></a>Add the SDK to your project
 
 You can add AdTrace SDK to your Flutter app by adding following to your `pubspec.yaml` file:
+ 
 
 ```yaml
 dependencies:
-  adtrace_sdk_flutter:
-    git:
-      url: https://github.com/adtrace/adtrace_sdk_flutter.git
-      ref: flutter-version2.2.3
-```
-
-or
-
-```yaml
-dependencies:
-  adtrace_sdk_flutter: ^1.1.1+3
+  adtrace_sdk_flutter: ^1.1.1+4
 ```
 
 Then navigate to your project in the terminal and run:
