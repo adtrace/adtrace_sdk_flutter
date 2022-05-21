@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'adtrace_sdk_flutter'
-  s.version          = '1.1.2'
+  s.version          = '1.1.1'
   s.summary          = 'AdTrace Flutter SDK for iOS platform'
   s.description      = <<-DESC
                             AdTrace Flutter SDK for iOS platform.
@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'  
-  s.dependency 'Adtrace-sdk','2.0.7'
+  s.dependency 'Adtrace-sdk','2.0.8'
   s.ios.deployment_target = '8.0'
   s.static_framework = true
 

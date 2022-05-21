@@ -1,4 +1,4 @@
-## 1.1.2
+## 1.1.1+3
 * update `pods` and `ios` classes to support earlier versions of flutter for ios
 
 ## 1.1.1

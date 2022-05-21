@@ -98,7 +98,7 @@ or
 
 ```yaml
 dependencies:
-  adtrace_sdk_flutter: ^1.1.1+2
+  adtrace_sdk_flutter: ^1.1.1+3
 ```
 
 Then navigate to your project in the terminal and run:
