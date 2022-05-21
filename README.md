@@ -94,6 +94,13 @@ dependencies:
       ref: flutter-version2.2.3
 ```
 
+or
+
+```yaml
+dependencies:
+  adtrace_sdk_flutter: ^1.1.1+2
+```
+
 Then navigate to your project in the terminal and run:
 
 ```
