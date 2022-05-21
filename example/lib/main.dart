@@ -15,7 +15,6 @@ void main() {
   runApp(MyApp());
 }
 
-
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -67,13 +66,13 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   @override
   initState() {
     super.initState();
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     initPlatformState();
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -255,29 +254,6 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
     // Clear all session partner parameters.
     AdTrace.resetSessionPartnerParameters();
-
-    // // Ask for tracking consent.
-    // AdTrace.requestTrackingAuthorizationWithCompletionHandler().then((status) {
-    //   print('[AdTrace]: Authorization status update!');
-    //   switch (status) {
-    //     case 0:
-    //       print(
-    //           '[AdTrace]: Authorization status update: ATTrackingManagerAuthorizationStatusNotDetermined');
-    //       break;
-    //     case 1:
-    //       print(
-    //           '[AdTrace]: Authorization status update: ATTrackingManagerAuthorizationStatusRestricted');
-    //       break;
-    //     case 2:
-    //       print(
-    //           '[AdTrace]: Authorization status update: ATTrackingManagerAuthorizationStatusDenied');
-    //       break;
-    //     case 3:
-    //       print(
-    //           '[AdTrace]: Authorization status update: ATTrackingManagerAuthorizationStatusAuthorized');
-    //       break;
-    //   }
-    // });
 
     // Start SDK.
     AdTrace.start(config);
