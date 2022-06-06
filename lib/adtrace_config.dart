@@ -3,7 +3,6 @@
  *  Developed by Nasser Amini on Mar 2021
  *  for more information visit https://adtrace.io
  */
-
 import 'package:adtrace_sdk_flutter/adtrace_attribution.dart';
 import 'package:adtrace_sdk_flutter/adtrace_event_failure.dart';
 import 'package:adtrace_sdk_flutter/adtrace_event_success.dart';
@@ -12,6 +11,7 @@ import 'package:adtrace_sdk_flutter/adtrace_session_success.dart';
 import 'package:flutter/services.dart';
 
 enum AdTraceLogLevel { verbose, debug, info, warn, error, suppress }
+
 enum AdTraceEnvironment { production, sandbox }
 
 typedef void AttributionCallback(AdTraceAttribution attributionData);
@@ -84,6 +84,8 @@ class AdTraceConfig {
   EventFailureCallback? eventFailureCallback;
   DeferredDeeplinkCallback? deferredDeeplinkCallback;
   ConversionValueUpdatedCallback? conversionValueUpdatedCallback;
+  bool? coppaCompliantEnabled;
+  bool? playStoreKidsAppEnabled;
 
   AdTraceConfig(this._appToken, this._environment) {
     _initCallbackHandlers();
@@ -266,6 +268,12 @@ class AdTraceConfig {
     if (conversionValueUpdatedCallback != null) {
       configMap['conversionValueUpdatedCallback'] =
           _conversionValueUpdatedCallbackName;
+    }
+    if (coppaCompliantEnabled != null) {
+      configMap['coppaCompliantEnabled'] = coppaCompliantEnabled.toString();
+    }
+    if (playStoreKidsAppEnabled != null) {
+      configMap['playStoreKidsAppEnabled'] = playStoreKidsAppEnabled.toString();
     }
 
     return configMap;
