@@ -68,6 +68,11 @@ This is the Flutter SDK of AdTrace. You can read more about AdTrace at [adtrace.
 * [Background tracking](#af-background-tracking)
 
 
+* [COPPA compliance](#af-coppa-compliance)
+* [Play Store Kids Apps](#af-play-store-kids-apps)
+
+
+
 
 ### License
 
@@ -844,6 +849,25 @@ The default behaviour of the AdTrace SDK is to pause sending HTTP requests while
 adtraceConfig.sendInBackground = true;
 ```
 
+
+### <a id="af-coppa-compliance"></a>COPPA compliance
+
+By deafult AdTrace SDK doesn't mark app as COPPA compliant. In order to mark your app as COPPA compliant, make sure to call `coppaCompliantEnabled` method of `AdTraceConfig` instance with boolean parameter `true`:
+
+```dart
+adtraceConfig.coppaCompliantEnabled = true;
+```
+
+**Note:** By enabling this feature, third-party sharing will be automatically disabled for the users. If later during the app lifetime you decide not to mark app as COPPA compliant anymore, third-party sharing **will not be automatically re-enabled**. Instead, next to not marking your app as COPPA compliant anymore, you will need to explicitly re-enable third-party sharing in case you want to do that.
+
+### <a id="af-play-store-kids-apps"></a>Play Store Kids Apps
+
+By default AdTrace SDK doesn't mark app as Play Store Kids App. In order to mark your app as the app which is targetting kids in Play Store, make sure to call `playStoreKidsAppEnabled` method of `AdTraceConfig` instance with boolean parameter `true`:
+
+
+```dart
+adtraceConfig.playStoreKidsAppEnabled = true;
+``` 
 
 
 [dashboard]:  https://adtrace.io
