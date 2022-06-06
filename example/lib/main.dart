@@ -236,6 +236,11 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
       print('[AdTrace]: Received conversion value update: ' +
           conversionValue!.toString());
     };
+    // coppa compliant
+    config.coppaCompliantEnabled = true;
+
+    //play store kids app
+    config.playStoreKidsAppEnabled = true;
 
     // Add session callback parameters.
     AdTrace.addSessionCallbackParameter('scp_foo_1', 'scp_bar');
