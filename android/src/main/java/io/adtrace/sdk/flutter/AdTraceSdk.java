@@ -1025,7 +1025,7 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             return;
         }
 
-        Boolean isEnabled = null;
+        Boolean isEnabled = false;
         if (thirdPartySharingMap.containsKey("isEnabled")) {
             isEnabled = (Boolean) thirdPartySharingMap.get("isEnabled");
         }
