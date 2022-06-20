@@ -37,6 +37,6 @@ android {
     }
 }
 dependencies {
-    api 'io.adtrace:android-sdk:2.0.2'
+    api 'io.adtrace:android-sdk:2.1.0'
 }
 

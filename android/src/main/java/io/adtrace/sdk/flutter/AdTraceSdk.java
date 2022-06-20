@@ -346,6 +346,20 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             adtraceConfig.setPreinstallTrackingEnabled(preinstallTrackingEnabled);
         }
 
+        // CoppaCompliantEnabled
+        if (configMap.containsKey("coppaCompliantEnabled")) {
+            String strCoppaCompliantEnabled = (String) configMap.get("coppaCompliantEnabled");
+            boolean coppaCompliantEnabled = Boolean.parseBoolean(strCoppaCompliantEnabled);
+            adtraceConfig.setCoppaCompliantEnabled(coppaCompliantEnabled);
+        }
+
+        // PlayStoreKidsAppEnabled
+        if (configMap.containsKey("playStoreKidsAppEnabled")) {
+            String strPlayStoreKidsAppEnabled = (String) configMap.get("playStoreKidsAppEnabled");
+            boolean playStoreKidsAppEnabled = Boolean.parseBoolean(strPlayStoreKidsAppEnabled);
+            adtraceConfig.setPlayStoreKidsAppEnabled(playStoreKidsAppEnabled);
+        }
+
         // Delayed start.
         if (configMap.containsKey("delayStart")) {
             String strDelayStart = (String) configMap.get("delayStart");
@@ -1011,7 +1025,7 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             return;
         }
 
-        Boolean isEnabled = null;
+        Boolean isEnabled = false;
         if (thirdPartySharingMap.containsKey("isEnabled")) {
             isEnabled = (Boolean) thirdPartySharingMap.get("isEnabled");
         }
