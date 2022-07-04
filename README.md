@@ -557,6 +557,7 @@ To send us the push notification token, add the following call to AdTrace once y
 ```dart
 AdTrace.setPushToken('{PushNotificationsToken}');
 ```
+**Note:** in order to handle the case where a silent push sent, check [this link](https://github.com/adtrace/adtrace_sdk_android#uninstall-tracking).
 
 ### <a id="af-attribution-callback"></a>Attribution callback
 
