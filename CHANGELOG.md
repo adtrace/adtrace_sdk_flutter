@@ -1,7 +1,9 @@
+## 1.2.1
+* ios build error fixed
+
 ## 1.2.0
 * `coppaCompliant` and `playStoreKids` added
-* ios native sdk v2.1.0 
-
+* ios native sdk v2.1.0
 
 ## 1.1.1+4
 * flutter 3 update

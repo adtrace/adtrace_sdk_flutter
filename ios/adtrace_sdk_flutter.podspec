@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name                  = 'adtrace_sdk_flutter'
-  s.version               = '1.2.1'
+  s.version               = '1.2.1+1'
   s.summary               = 'AdTrace Flutter SDK for iOS platform'
   s.description           = <<-DESC
                                  AdTrace Flutter SDK for iOS platform.
