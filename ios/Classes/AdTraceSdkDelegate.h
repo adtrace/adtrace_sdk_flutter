@@ -1,8 +1,7 @@
-
 #import <Flutter/Flutter.h>
 #import "Adtrace.h"
 
-@interface AdtraceSdkDelegate : NSObject<AdtraceDelegate>
+@interface AdTraceSdkDelegate : NSObject<AdtraceDelegate>
 
 @property (nonatomic) BOOL shouldLaunchDeferredDeeplink;
 @property (nonatomic, weak) FlutterMethodChannel *channel;
