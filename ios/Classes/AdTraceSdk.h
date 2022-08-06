@@ -1,4 +1,4 @@
 #import <Flutter/Flutter.h>
 
-@interface AdtraceSdk : NSObject<FlutterPlugin>
+@interface AdTraceSdk : NSObject<FlutterPlugin>
 @end
