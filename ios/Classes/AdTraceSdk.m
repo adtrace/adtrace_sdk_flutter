@@ -1,7 +1,5 @@
-
-
-#import "AdtraceSdk.h"
-#import "AdtraceSdkDelegate.h"
+#import "AdTraceSdk.h"
+#import "AdTraceSdkDelegate.h"
 #import "Adtrace.h"
 
 static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
