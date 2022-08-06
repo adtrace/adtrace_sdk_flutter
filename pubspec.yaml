@@ -25,7 +25,7 @@ flutter:
         package: io.adtrace.sdk.flutter
         pluginClass: AdTraceSdk
       ios:
-        pluginClass: AdtraceSdk
+        pluginClass: AdTraceSdk
 
   
   
