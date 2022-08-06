@@ -2,7 +2,7 @@
 #import "AdTraceSdkDelegate.h"
 
 static dispatch_once_t onceToken;
-static AdtraceSdkDelegate *defaultInstance = nil;
+static AdTraceSdkDelegate *defaultInstance = nil;
 static NSString *dartAttributionCallback;
 static NSString *dartSessionSuccessCallback;
 static NSString *dartSessionFailureCallback;
@@ -11,7 +11,7 @@ static NSString *dartEventFailureCallback;
 static NSString *dartDeferredDeeplinkCallback;
 static NSString *dartConversionValueUpdatedCallback;
 
-@implementation AdtraceSdkDelegate
+@implementation AdTraceSdkDelegate
 
 #pragma mark - Object lifecycle methods
 
@@ -36,7 +36,7 @@ static NSString *dartConversionValueUpdatedCallback;
                                  andMethodChannel:(FlutterMethodChannel *)channel {
     
     dispatch_once(&onceToken, ^{
-        defaultInstance = [[AdtraceSdkDelegate alloc] init];
+        defaultInstance = [[AdTraceSdkDelegate alloc] init];
         
         // Do the swizzling where and if needed.
         if (swizzleAttributionCallback != nil) {
