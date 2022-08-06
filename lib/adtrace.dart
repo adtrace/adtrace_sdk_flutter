@@ -3,10 +3,8 @@
  *  Developed by Nasser Amini on Mar 2021
  *  for more information visit https://adtrace.io
  */
-
 import 'dart:async';
 
- 
 import 'package:adtrace_sdk_flutter/adtrace_ad_revenue.dart';
 import 'package:adtrace_sdk_flutter/adtrace_app_store_subscription.dart';
 import 'package:adtrace_sdk_flutter/adtrace_attribution.dart';
@@ -18,7 +16,7 @@ import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 
 class AdTrace {
-  static const String _sdkPrefix = 'flutter1.2.0';
+  static const String _sdkPrefix = 'flutter1.2.1';
   static const MethodChannel _channel =
       const MethodChannel('io.adtrace.sdk/api');
 
