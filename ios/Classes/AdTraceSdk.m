@@ -4,18 +4,18 @@
 
 static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
 
-@interface AdtraceSdk ()
+@interface AdTraceSdk ()
 
 @property (nonatomic, retain) FlutterMethodChannel *channel;
 
 @end
 
-@implementation AdtraceSdk
+@implementation AdTraceSdk
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar> *)registrar {
     FlutterMethodChannel *channel = [FlutterMethodChannel methodChannelWithName:CHANNEL_API_NAME
                                                                 binaryMessenger:[registrar messenger]];
-    AdtraceSdk *instance = [[AdtraceSdk alloc] init];
+    AdTraceSdk *instance = [[AdTraceSdk alloc] init];
     instance.channel = channel;
     [registrar addMethodCallDelegate:instance channel:channel];
 }
@@ -270,7 +270,7 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
         || dartDeferredDeeplinkCallback != nil
         || dartConversionValueUpdatedCallback != nil) {
         [adtraceConfig setDelegate:
-         [AdtraceSdkDelegate getInstanceWithSwizzleOfAttributionCallback:dartAttributionCallback
+         [AdTraceSdkDelegate getInstanceWithSwizzleOfAttributionCallback:dartAttributionCallback
                                                  sessionSuccessCallback:dartSessionSuccessCallback
                                                  sessionFailureCallback:dartSessionFailureCallback
                                                    eventSuccessCallback:dartEventSuccessCallback
@@ -688,7 +688,7 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     if ([self isFieldValid:teardown]) {
         testOptions.teardown = [teardown boolValue];
         if (testOptions.teardown) {
-            [AdtraceSdkDelegate teardown];
+            [AdTraceSdkDelegate teardown];
         }
     }
     if ([self isFieldValid:deleteState]) {
