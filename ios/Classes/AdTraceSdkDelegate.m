@@ -1,7 +1,5 @@
-
-
 #import <objc/runtime.h>
-#import "AdtraceSdkDelegate.h"
+#import "AdTraceSdkDelegate.h"
 
 static dispatch_once_t onceToken;
 static AdtraceSdkDelegate *defaultInstance = nil;
