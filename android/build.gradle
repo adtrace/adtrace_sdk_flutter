@@ -17,20 +17,21 @@ rootProject.allprojects {
         google()
         mavenCentral()
     }
+       gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+        }
+    }
 }
 
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 32
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
+     compileSdkVersion 31
 
     defaultConfig {
         minSdkVersion 16
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     lintOptions {
         disable 'InvalidPackage'
