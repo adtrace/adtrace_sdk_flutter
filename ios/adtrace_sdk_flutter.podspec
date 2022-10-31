@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
   s.homepage              = 'http://github.com/adtrace'
   s.license               = { :file => '../LICENSE' }
   s.author                = { 'AdTrace' => 'info@adtrace.io','Nasser Amini' => 'namini40@gmail.com' }
-  s.source                = { :git => 'git@github.com:adtrace/adtrace_sdk_iOS.git' }
+  s.source                = { :git => '.' }
   s.source_files          = 'Classes/**/*'
   s.public_header_files   = 'Classes/**/*.h'
   s.ios.deployment_target = '8.0'
