@@ -1053,6 +1053,18 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             }
         }
 
+        // Partner sharing settings.
+        if (thirdPartySharingMap.containsKey("partnerSharingSettings")) {
+            String strPartnerSharingSettings = (String) thirdPartySharingMap.get("partnerSharingSettings");
+            String[] arrayPartnerSharingSettings = strPartnerSharingSettings.split("__ADT__", -1);
+            for (int i = 0; i < arrayPartnerSharingSettings.length; i += 3) {
+                thirdPartySharing.addPartnerSharingSetting(
+                    arrayPartnerSharingSettings[i],
+                    arrayPartnerSharingSettings[i+1],
+                    Boolean.parseBoolean(arrayPartnerSharingSettings[i+2]));
+            }
+        }
+
         // Track third party sharing.
         AdTrace.trackThirdPartySharing(thirdPartySharing);
         result.success(null);
