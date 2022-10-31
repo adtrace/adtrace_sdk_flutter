@@ -6,18 +6,18 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import io.adtrace.sdk.Adjust;
-import io.adtrace.sdk.AdjustAdRevenue;
-import io.adtrace.sdk.AdjustAttribution;
-import io.adtrace.sdk.AdjustConfig;
-import io.adtrace.sdk.AdjustEvent;
-import io.adtrace.sdk.AdjustEventFailure;
-import io.adtrace.sdk.AdjustEventSuccess;
-import io.adtrace.sdk.AdjustSessionFailure;
-import io.adtrace.sdk.AdjustSessionSuccess;
-import io.adtrace.sdk.AdjustPlayStoreSubscription;
-import io.adtrace.sdk.AdjustThirdPartySharing;
-import io.adtrace.sdk.AdjustTestOptions;
+import io.adtrace.sdk.AdTrace;
+import io.adtrace.sdk.AdTraceAdRevenue;
+import io.adtrace.sdk.AdTraceAttribution;
+import io.adtrace.sdk.AdTraceConfig;
+import io.adtrace.sdk.AdTraceEvent;
+import io.adtrace.sdk.AdTraceEventFailure;
+import io.adtrace.sdk.AdTraceEventSuccess;
+import io.adtrace.sdk.AdTraceSessionFailure;
+import io.adtrace.sdk.AdTraceSessionSuccess;
+import io.adtrace.sdk.AdTracePlayStoreSubscription;
+import io.adtrace.sdk.AdTraceThirdPartySharing;
+import io.adtrace.sdk.AdTraceTestOptions;
 import io.adtrace.sdk.LogLevel;
 import io.adtrace.sdk.OnAttributionChangedListener;
 import io.adtrace.sdk.OnDeeplinkResponseListener;
@@ -279,9 +279,23 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
 
         // Event buffering.
         if (configMap.containsKey("eventBufferingEnabled")) {
-            String eventBufferingEnabledString = (String) configMap.get("eventBufferingEnabled");
-            boolean eventBufferingEnabled = Boolean.parseBoolean(eventBufferingEnabledString);
+            String strEventBufferingEnabled = (String) configMap.get("eventBufferingEnabled");
+            boolean eventBufferingEnabled = Boolean.parseBoolean(strEventBufferingEnabled);
             adtraceConfig.setEventBufferingEnabled(eventBufferingEnabled);
+        }
+
+        // COPPA compliance.
+        if (configMap.containsKey("coppaCompliantEnabled")) {
+            String strCoppaCompliantEnabled = (String) configMap.get("coppaCompliantEnabled");
+            boolean coppaCompliantEnabled = Boolean.parseBoolean(strCoppaCompliantEnabled);
+            adtraceConfig.setCoppaCompliantEnabled(coppaCompliantEnabled);
+        }
+
+        // Google Play Store kids apps.
+        if (configMap.containsKey("playStoreKidsAppEnabled")) {
+            String strPlayStoreKidsAppEnabled = (String) configMap.get("playStoreKidsAppEnabled");
+            boolean playStoreKidsAppEnabled = Boolean.parseBoolean(strPlayStoreKidsAppEnabled);
+            adtraceConfig.setPlayStoreKidsAppEnabled(playStoreKidsAppEnabled);
         }
 
         // Main process name.
@@ -356,20 +370,6 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             String strPreinstallTrackingEnabled = (String) configMap.get("preinstallTrackingEnabled");
             boolean preinstallTrackingEnabled = Boolean.parseBoolean(strPreinstallTrackingEnabled);
             adtraceConfig.setPreinstallTrackingEnabled(preinstallTrackingEnabled);
-        }
-
-        // CoppaCompliantEnabled
-        if (configMap.containsKey("coppaCompliantEnabled")) {
-            String strCoppaCompliantEnabled = (String) configMap.get("coppaCompliantEnabled");
-            boolean coppaCompliantEnabled = Boolean.parseBoolean(strCoppaCompliantEnabled);
-            adtraceConfig.setCoppaCompliantEnabled(coppaCompliantEnabled);
-        }
-
-        // PlayStoreKidsAppEnabled
-        if (configMap.containsKey("playStoreKidsAppEnabled")) {
-            String strPlayStoreKidsAppEnabled = (String) configMap.get("playStoreKidsAppEnabled");
-            boolean playStoreKidsAppEnabled = Boolean.parseBoolean(strPlayStoreKidsAppEnabled);
-            adtraceConfig.setPlayStoreKidsAppEnabled(playStoreKidsAppEnabled);
         }
 
         // Delayed start.
