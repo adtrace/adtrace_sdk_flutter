@@ -6,25 +6,18 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import io.adtrace.sdk.AdTrace;
-import io.adtrace.sdk.AdTraceAdRevenue;
-import io.adtrace.sdk.AdTraceAttribution;
-import io.adtrace.sdk.AdTraceConfig;
-import io.adtrace.sdk.AdTraceEvent;
-import io.adtrace.sdk.AdTraceEventFailure;
-import io.adtrace.sdk.AdTraceEventSuccess;
-import io.adtrace.sdk.AdTracePlayStoreSubscription;
-import io.adtrace.sdk.AdTraceSessionFailure;
-import io.adtrace.sdk.AdTraceSessionSuccess;
-import io.adtrace.sdk.AdTraceTestOptions;
-import io.adtrace.sdk.AdTraceThirdPartySharing;
+import io.adtrace.sdk.Adjust;
+import io.adtrace.sdk.AdjustAdRevenue;
+import io.adtrace.sdk.AdjustAttribution;
+import io.adtrace.sdk.AdjustConfig;
+import io.adtrace.sdk.AdjustEvent;
+import io.adtrace.sdk.AdjustEventFailure;
+import io.adtrace.sdk.AdjustEventSuccess;
+import io.adtrace.sdk.AdjustSessionFailure;
+import io.adtrace.sdk.AdjustSessionSuccess;
+import io.adtrace.sdk.AdjustPlayStoreSubscription;
+import io.adtrace.sdk.AdjustThirdPartySharing;
+import io.adtrace.sdk.AdjustTestOptions;
 import io.adtrace.sdk.LogLevel;
 import io.adtrace.sdk.OnAttributionChangedListener;
 import io.adtrace.sdk.OnDeeplinkResponseListener;
@@ -33,13 +26,23 @@ import io.adtrace.sdk.OnEventTrackingFailedListener;
 import io.adtrace.sdk.OnEventTrackingSucceededListener;
 import io.adtrace.sdk.OnSessionTrackingFailedListener;
 import io.adtrace.sdk.OnSessionTrackingSucceededListener;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
-import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
+import io.flutter.plugin.common.MethodCall;
+
+import static io.adtrace.sdk.flutter.AdTraceUtils.*;
 
 public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandler {
     private static String TAG = "AdTraceBridge";
