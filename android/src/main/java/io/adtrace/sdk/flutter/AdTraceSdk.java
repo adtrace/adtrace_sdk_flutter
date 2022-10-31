@@ -189,6 +189,15 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             case "trackMeasurementConsent":
                 trackMeasurementConsent(call, result);
                 break;
+            case "checkForNewAttStatus":
+                checkForNewAttStatus(call, result);
+                break;
+            case "getAppTrackingAuthorizationStatus":
+                getAppTrackingAuthorizationStatus(call, result);
+                break;
+            case "getLastDeeplink":
+                getLastDeeplink(call, result);
+                break;
             case "setTestOptions":
                 setTestOptions(call, result);
                 break;
@@ -1063,6 +1072,18 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
         boolean measurementConsent = (boolean) measurementConsentMap.get("measurementConsent");
         AdTrace.trackMeasurementConsent(measurementConsent);
         result.success(null);
+    }
+
+    private void checkForNewAttStatus(final MethodCall call, final Result result) {
+        result.success("Error. No checkForNewAttStatus for Android platform!");
+    }
+
+    private void getAppTrackingAuthorizationStatus(final MethodCall call, final Result result) {
+        result.success("Error. No getAppTrackingAuthorizationStatus for Android platform!");
+    }
+
+    private void getLastDeeplink(final MethodCall call, final Result result) {
+        result.success("Error. No getLastDeeplink for Android platform!");
     }
 
     private void setTestOptions(final MethodCall call, final Result result) {
