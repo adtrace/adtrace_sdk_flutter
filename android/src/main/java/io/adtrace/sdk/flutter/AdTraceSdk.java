@@ -1,10 +1,10 @@
 package io.adtrace.sdk.flutter;
 
-import static io.adtrace.sdk.flutter.AdTraceUtils.*;
-
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
+
+import static io.adtrace.sdk.flutter.AdTraceUtils.*;
 
 import io.adtrace.sdk.AdTrace;
 import io.adtrace.sdk.AdTraceAdRevenue;
@@ -41,8 +41,6 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.MethodCall;
-
-import static io.adtrace.sdk.flutter.AdTraceUtils.*;
 
 public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandler {
     private static String TAG = "AdTraceBridge";
@@ -1058,10 +1056,10 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             String strPartnerSharingSettings = (String) thirdPartySharingMap.get("partnerSharingSettings");
             String[] arrayPartnerSharingSettings = strPartnerSharingSettings.split("__ADT__", -1);
             for (int i = 0; i < arrayPartnerSharingSettings.length; i += 3) {
-                thirdPartySharing.addPartnerSharingSetting(
-                    arrayPartnerSharingSettings[i],
-                    arrayPartnerSharingSettings[i+1],
-                    Boolean.parseBoolean(arrayPartnerSharingSettings[i+2]));
+//                thirdPartySharing.addPartnerSharingSetting(
+//                    arrayPartnerSharingSettings[i],
+//                    arrayPartnerSharingSettings[i+1],
+//                    Boolean.parseBoolean(arrayPartnerSharingSettings[i+2]));
             }
         }
 
