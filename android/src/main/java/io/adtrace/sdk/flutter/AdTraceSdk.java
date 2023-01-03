@@ -1,17 +1,10 @@
 package io.adtrace.sdk.flutter;
 
-import static io.adtrace.sdk.flutter.AdTraceUtils.*;
-
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
+import static io.adtrace.sdk.flutter.AdTraceUtils.*;
 
 import io.adtrace.sdk.AdTrace;
 import io.adtrace.sdk.AdTraceAdRevenue;
@@ -20,11 +13,11 @@ import io.adtrace.sdk.AdTraceConfig;
 import io.adtrace.sdk.AdTraceEvent;
 import io.adtrace.sdk.AdTraceEventFailure;
 import io.adtrace.sdk.AdTraceEventSuccess;
-import io.adtrace.sdk.AdTracePlayStoreSubscription;
 import io.adtrace.sdk.AdTraceSessionFailure;
 import io.adtrace.sdk.AdTraceSessionSuccess;
-import io.adtrace.sdk.AdTraceTestOptions;
+import io.adtrace.sdk.AdTracePlayStoreSubscription;
 import io.adtrace.sdk.AdTraceThirdPartySharing;
+import io.adtrace.sdk.AdTraceTestOptions;
 import io.adtrace.sdk.LogLevel;
 import io.adtrace.sdk.OnAttributionChangedListener;
 import io.adtrace.sdk.OnDeeplinkResponseListener;
@@ -33,13 +26,21 @@ import io.adtrace.sdk.OnEventTrackingFailedListener;
 import io.adtrace.sdk.OnEventTrackingSucceededListener;
 import io.adtrace.sdk.OnSessionTrackingFailedListener;
 import io.adtrace.sdk.OnSessionTrackingSucceededListener;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
-import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
+import io.flutter.plugin.common.MethodCall;
 
 public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandler {
     private static String TAG = "AdTraceBridge";
@@ -186,6 +187,15 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             case "trackMeasurementConsent":
                 trackMeasurementConsent(call, result);
                 break;
+            case "checkForNewAttStatus":
+                checkForNewAttStatus(call, result);
+                break;
+            case "getAppTrackingAuthorizationStatus":
+                getAppTrackingAuthorizationStatus(call, result);
+                break;
+            case "getLastDeeplink":
+                getLastDeeplink(call, result);
+                break;
             case "setTestOptions":
                 setTestOptions(call, result);
                 break;
@@ -267,9 +277,23 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
 
         // Event buffering.
         if (configMap.containsKey("eventBufferingEnabled")) {
-            String eventBufferingEnabledString = (String) configMap.get("eventBufferingEnabled");
-            boolean eventBufferingEnabled = Boolean.parseBoolean(eventBufferingEnabledString);
+            String strEventBufferingEnabled = (String) configMap.get("eventBufferingEnabled");
+            boolean eventBufferingEnabled = Boolean.parseBoolean(strEventBufferingEnabled);
             adtraceConfig.setEventBufferingEnabled(eventBufferingEnabled);
+        }
+
+        // COPPA compliance.
+        if (configMap.containsKey("coppaCompliantEnabled")) {
+            String strCoppaCompliantEnabled = (String) configMap.get("coppaCompliantEnabled");
+            boolean coppaCompliantEnabled = Boolean.parseBoolean(strCoppaCompliantEnabled);
+            adtraceConfig.setCoppaCompliantEnabled(coppaCompliantEnabled);
+        }
+
+        // Google Play Store kids apps.
+        if (configMap.containsKey("playStoreKidsAppEnabled")) {
+            String strPlayStoreKidsAppEnabled = (String) configMap.get("playStoreKidsAppEnabled");
+            boolean playStoreKidsAppEnabled = Boolean.parseBoolean(strPlayStoreKidsAppEnabled);
+            adtraceConfig.setPlayStoreKidsAppEnabled(playStoreKidsAppEnabled);
         }
 
         // Main process name.
@@ -344,20 +368,6 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             String strPreinstallTrackingEnabled = (String) configMap.get("preinstallTrackingEnabled");
             boolean preinstallTrackingEnabled = Boolean.parseBoolean(strPreinstallTrackingEnabled);
             adtraceConfig.setPreinstallTrackingEnabled(preinstallTrackingEnabled);
-        }
-
-        // CoppaCompliantEnabled
-        if (configMap.containsKey("coppaCompliantEnabled")) {
-            String strCoppaCompliantEnabled = (String) configMap.get("coppaCompliantEnabled");
-            boolean coppaCompliantEnabled = Boolean.parseBoolean(strCoppaCompliantEnabled);
-            adtraceConfig.setCoppaCompliantEnabled(coppaCompliantEnabled);
-        }
-
-        // PlayStoreKidsAppEnabled
-        if (configMap.containsKey("playStoreKidsAppEnabled")) {
-            String strPlayStoreKidsAppEnabled = (String) configMap.get("playStoreKidsAppEnabled");
-            boolean playStoreKidsAppEnabled = Boolean.parseBoolean(strPlayStoreKidsAppEnabled);
-            adtraceConfig.setPlayStoreKidsAppEnabled(playStoreKidsAppEnabled);
         }
 
         // Delayed start.
@@ -687,8 +697,7 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
     }
 
     private void getIdfa(final Result result) {
-        result.notImplemented();
-        // result.error("0", "Error. No IDFA for Android platform!", null);
+        result.success("Error. No IDFA on Android platform!");
     }
 
     private void getGoogleAdId(final Result result) {
@@ -907,8 +916,7 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
     }
 
     private void trackAppStoreSubscription(final Result result) {
-        result.notImplemented();
-        // result.error("0", "Error. No App Store subscription tracking for Android platform!", null);
+        result.success("Error. No App Store subscription tracking on Android platform!");
     }
 
     private void trackPlayStoreSubscription(final MethodCall call, final Result result) {
@@ -1010,13 +1018,11 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
     }
 
     private void requestTrackingAuthorizationWithCompletionHandler(final Result result) {
-        result.notImplemented();
-        // result.error("0", "Error. No requestTrackingAuthorizationWithCompletionHandler for Android platform!", null);
+        result.success("Error. No requestTrackingAuthorizationWithCompletionHandler on Android platform!");
     }
 
     private void updateConversionValue(final Result result) {
-        result.notImplemented();
-        // result.error("0", "Error. No updateConversionValue for Android platform!", null);
+        result.success("Error. No updateConversionValue on Android platform!");
     }
 
     private void trackThirdPartySharing(final MethodCall call, final Result result) {
@@ -1045,6 +1051,18 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             }
         }
 
+        // Partner sharing settings.
+        if (thirdPartySharingMap.containsKey("partnerSharingSettings")) {
+            String strPartnerSharingSettings = (String) thirdPartySharingMap.get("partnerSharingSettings");
+            String[] arrayPartnerSharingSettings = strPartnerSharingSettings.split("__ADT__", -1);
+            for (int i = 0; i < arrayPartnerSharingSettings.length; i += 3) {
+//                thirdPartySharing.addPartnerSharingSetting(
+//                    arrayPartnerSharingSettings[i],
+//                    arrayPartnerSharingSettings[i+1],
+//                    Boolean.parseBoolean(arrayPartnerSharingSettings[i+2]));
+            }
+        }
+
         // Track third party sharing.
         AdTrace.trackThirdPartySharing(thirdPartySharing);
         result.success(null);
@@ -1060,6 +1078,18 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
         boolean measurementConsent = (boolean) measurementConsentMap.get("measurementConsent");
         AdTrace.trackMeasurementConsent(measurementConsent);
         result.success(null);
+    }
+
+    private void checkForNewAttStatus(final MethodCall call, final Result result) {
+        result.success("Error. No checkForNewAttStatus for Android platform!");
+    }
+
+    private void getAppTrackingAuthorizationStatus(final MethodCall call, final Result result) {
+        result.success("Error. No getAppTrackingAuthorizationStatus for Android platform!");
+    }
+
+    private void getLastDeeplink(final MethodCall call, final Result result) {
+        result.success("Error. No getLastDeeplink for Android platform!");
     }
 
     private void setTestOptions(final MethodCall call, final Result result) {

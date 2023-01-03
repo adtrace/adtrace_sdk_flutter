@@ -1,3 +1,7 @@
+## 1.3.0
+* android update (to v2.3.0)
+* `gradle` files update (compatibility)
+
 ## 1.2.1
 * ios build error fixed
 

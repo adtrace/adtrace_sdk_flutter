@@ -7,9 +7,11 @@
 class AdTraceThirdPartySharing {
   bool? _isEnabled;
   late List<String> _granularOptions;
+  late List<String> _partnerSharingSettings;
 
   AdTraceThirdPartySharing(this._isEnabled) {
     _granularOptions = <String>[];
+    _partnerSharingSettings = <String>[];
   }
 
   void addGranularOption(String partnerName, String key, String value) {
@@ -18,11 +20,21 @@ class AdTraceThirdPartySharing {
     _granularOptions.add(value);
   }
 
+  void addPartnerSharingSetting(String partnerName, String key, bool value) {
+    _partnerSharingSettings.add(partnerName);
+    _partnerSharingSettings.add(key);
+    _partnerSharingSettings.add(value.toString());
+  }
+
   Map<String, Object?> get toMap {
     Map<String, Object?> thirdPartySharingMap = {'isEnabled': _isEnabled};
     if (_granularOptions.length > 0) {
       thirdPartySharingMap['granularOptions'] =
           _granularOptions.join('__ADT__');
+    }
+    if (_partnerSharingSettings.length > 0) {
+      thirdPartySharingMap['partnerSharingSettings'] =
+          _partnerSharingSettings.join('__ADT__');
     }
 
     return thirdPartySharingMap;

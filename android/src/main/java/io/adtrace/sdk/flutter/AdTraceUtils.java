@@ -1,5 +1,3 @@
-
-
 package io.adtrace.sdk.flutter;
 
 import java.text.NumberFormat;

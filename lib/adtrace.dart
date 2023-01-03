@@ -16,7 +16,7 @@ import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 
 class AdTrace {
-  static const String _sdkPrefix = 'flutter1.2.1+2';
+  static const String _sdkPrefix = 'flutter1.3.0';
   static const MethodChannel _channel =
       const MethodChannel('io.adtrace.sdk/api');
 
@@ -175,6 +175,15 @@ class AdTrace {
   static void updateConversionValue(int conversionValue) {
     _channel.invokeMethod(
         'updateConversionValue', {'conversionValue': conversionValue});
+  }
+
+  static void checkForNewAttStatus() {
+    _channel.invokeMethod('checkForNewAttStatus');
+  }
+
+  static Future<String?> getLastDeeplink() async {
+    final String? deeplink = await _channel.invokeMethod('getLastDeeplink');
+    return deeplink;
   }
 
   // For testing purposes only. Do not use in production.

@@ -237,10 +237,10 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
           conversionValue!.toString());
     };
     // coppa compliant
-    config.coppaCompliantEnabled = true;
+    config.coppaCompliantEnabled = false;
 
     //play store kids app
-    config.playStoreKidsAppEnabled = true;
+    config.playStoreKidsAppEnabled = false;
 
     // Add session callback parameters.
     AdTrace.addSessionCallbackParameter('scp_foo_1', 'scp_bar');

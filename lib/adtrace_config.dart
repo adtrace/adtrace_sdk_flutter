@@ -48,6 +48,7 @@ class AdTraceConfig {
   static const String AdRevenueSourceAdMostSource = 'admost_sdk';
   static const String AdRevenueSourceUnity = 'unity_sdk';
   static const String AdRevenueSourceHeliumChartboost = 'helium_chartboost_sdk';
+  static const String AdRevenueSourcePublisher = 'publisher_sdk';
 
   String _appToken;
   AdTraceEnvironment _environment;
@@ -69,6 +70,9 @@ class AdTraceConfig {
   bool? launchDeferredDeeplink;
   bool? needsCost;
   bool? preinstallTrackingEnabled;
+  bool? playStoreKidsAppEnabled;
+  bool? coppaCompliantEnabled;
+  bool? linkMeEnabled;
   String? sdkPrefix;
   String? userAgent;
   String? defaultTracker;
@@ -84,8 +88,6 @@ class AdTraceConfig {
   EventFailureCallback? eventFailureCallback;
   DeferredDeeplinkCallback? deferredDeeplinkCallback;
   ConversionValueUpdatedCallback? conversionValueUpdatedCallback;
-  bool? coppaCompliantEnabled;
-  bool? playStoreKidsAppEnabled;
 
   AdTraceConfig(this._appToken, this._environment) {
     _initCallbackHandlers();
@@ -213,6 +215,15 @@ class AdTraceConfig {
       configMap['preinstallTrackingEnabled'] =
           preinstallTrackingEnabled.toString();
     }
+    if (playStoreKidsAppEnabled != null) {
+      configMap['playStoreKidsAppEnabled'] = playStoreKidsAppEnabled.toString();
+    }
+    if (coppaCompliantEnabled != null) {
+      configMap['coppaCompliantEnabled'] = coppaCompliantEnabled.toString();
+    }
+    if (linkMeEnabled != null) {
+      configMap['linkMeEnabled'] = linkMeEnabled.toString();
+    }
     if (allowiAdInfoReading != null) {
       configMap['allowiAdInfoReading'] = allowiAdInfoReading.toString();
     }
@@ -268,12 +279,6 @@ class AdTraceConfig {
     if (conversionValueUpdatedCallback != null) {
       configMap['conversionValueUpdatedCallback'] =
           _conversionValueUpdatedCallbackName;
-    }
-    if (coppaCompliantEnabled != null) {
-      configMap['coppaCompliantEnabled'] = coppaCompliantEnabled.toString();
-    }
-    if (playStoreKidsAppEnabled != null) {
-      configMap['playStoreKidsAppEnabled'] = playStoreKidsAppEnabled.toString();
     }
 
     return configMap;
