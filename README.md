@@ -529,7 +529,7 @@ Once you have integrated the AdTrace SDK into your project, you can take advanta
 
 **Note**: This feature exists only in iOS platform.
 
-If you have implemented the AdTrace SDK v4.23.0 or above and your app is running on iOS 14 and above, the communication with SKAdNetwork will be set on by default, although you can choose to turn it off. When set on, AdTrace automatically registers for SKAdNetwork attribution when the SDK is initialized. If events are set up in the AdTrace dashboard to receive conversion values, the AdTrace backend sends the conversion value data to the SDK. The SDK then sets the conversion value. After AdTrace receives the SKAdNetwork callback data, it is then displayed in the dashboard.
+If you have implemented the AdTrace SDK v2.*.* or above and your app is running on iOS 14 and above, the communication with SKAdNetwork will be set on by default, although you can choose to turn it off. When set on, AdTrace automatically registers for SKAdNetwork attribution when the SDK is initialized. If events are set up in the AdTrace dashboard to receive conversion values, the AdTrace backend sends the conversion value data to the SDK. The SDK then sets the conversion value. After AdTrace receives the SKAdNetwork callback data, it is then displayed in the dashboard.
 
 In case you don't want the AdTrace SDK to automatically communicate with SKAdNetwork, you can disable that by calling the following method on configuration object:
 
