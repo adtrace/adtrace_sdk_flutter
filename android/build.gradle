@@ -37,5 +37,5 @@ android {
 }
 
 dependencies {
-    api 'io.adtrace:android-sdk:2.3.0'
+    implementation files('src/libs/android-sdk.jar')
 }
