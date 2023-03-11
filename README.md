@@ -1,3 +1,14 @@
+**replace this line in `pubspec.yaml`**
+```yaml
+dependencies:
+  adtrace_sdk_flutter:
+    git:
+      url: git://github.com:adtrace/adtrace_sdk_flutter.git
+      ref: default_tracker_install # branch name
+```
+
+
+
 ## Summary
 
 This is the Flutter SDK of AdTrace. You can read more about AdTrace at [adtrace.io].
