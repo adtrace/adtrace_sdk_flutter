@@ -1,3 +1,11 @@
+## 1.3.2
+* android update (to v2.4.1)
+  - handle install referrer null value and catch exceptions
+
+## 1.3.1
+* android update (to v2.4.0)
+  - default tracker added into sdk click 
+
 ## 1.3.0
 * android update (to v2.3.0)
 * `gradle` files update (compatibility)
