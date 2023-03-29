@@ -62,7 +62,6 @@ This is the Flutter SDK of AdTrace. You can read more about AdTrace at [adtrace.
     * [Google Play Services advertising identifier](#af-gps-adid)
     * [AdTrace device identifier](#af-adid)
 * [Set external device ID](#set-external-device-id)
-* [Pre-installed trackers](#af-pre-installed-trackers)
 * [Offline mode](#af-offline-mode)
 * [Disable tracking](#af-disable-tracking)
 * [Event buffering](#af-event-buffering)
@@ -95,7 +94,7 @@ You can add AdTrace SDK to your Flutter app by adding following to your `pubspec
 
 ```yaml
 dependencies:
-  adtrace_sdk_flutter: ^1.3.1
+  adtrace_sdk_flutter: ^1.3.2
 ```
 
 Then navigate to your project in the terminal and run:
@@ -827,7 +826,7 @@ If you want to use the AdTrace SDK to recognize users whose devices came with yo
   ```
   Default tracker: 'abc123'
   ```
-
+  
 ### <a id="af-offline-mode"></a>Offline mode
 
 You can put the AdTrace SDK in offline mode to suspend transmission to our servers, while retaining tracked data to be sent later. While in offline mode, all information is saved in a file, so be careful not to trigger too many events while in offline mode.
