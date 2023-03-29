@@ -94,7 +94,7 @@ You can add AdTrace SDK to your Flutter app by adding following to your `pubspec
 
 ```yaml
 dependencies:
-  adtrace_sdk_flutter: ^1.3.0
+  adtrace_sdk_flutter: ^1.3.2
 ```
 
 Then navigate to your project in the terminal and run:
@@ -809,7 +809,24 @@ If you want to use the external device ID in your business analytics, you can pa
 
 You can import existing external device IDs into AdTrace. This ensures that the backend matches future data to your existing device records. If you want to do this, please contact your AdTrace representative.
 
+### <a id="af-pre-installed-trackers"></a>Pre-installed trackers
 
+If you want to use the AdTrace SDK to recognize users whose devices came with your app pre-installed, follow these steps.
+
+- Create a new tracker in your [panel].
+- Set the default tracker of your config object:
+
+  ```dart
+  adtraceConfig.defaultTracker = '{TrackerToken}';
+  ```
+  Replace `{TrackerToken}` with the tracker token you created in step 1. Please note that the Dashboard displays a tracker URL (including `https://app.adtrace.io/`). In your source code, you should specify only the six-character token and not the entire URL.
+
+- Build and run your app. You should see a line like the following in your LogCat:
+
+  ```
+  Default tracker: 'abc123'
+  ```
+  
 ### <a id="af-offline-mode"></a>Offline mode
 
 You can put the AdTrace SDK in offline mode to suspend transmission to our servers, while retaining tracked data to be sent later. While in offline mode, all information is saved in a file, so be careful not to trigger too many events while in offline mode.
