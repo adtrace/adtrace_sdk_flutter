@@ -1,3 +1,8 @@
+## 1.3.1
+* android update (to v2.4.0)
+* `default_tracker` add for install
+
+
 ## 1.3.0
 * android update (to v2.3.0)
 * `gradle` files update (compatibility)

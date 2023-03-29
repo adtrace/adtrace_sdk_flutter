@@ -95,8 +95,9 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   // Platform messages are asynchronous, so we initialize in an async method.
   initPlatformState() async {
     AdTraceConfig config =
-        AdTraceConfig('09eu7dllf7md', AdTraceEnvironment.sandbox);
+        AdTraceConfig('cn2dajeoy3uu', AdTraceEnvironment.sandbox);
     config.logLevel = AdTraceLogLevel.verbose;
+    config.defaultTracker = 'x11upvh';
 
     config.attributionCallback = (AdTraceAttribution attributionChangedData) {
       print('[AdTrace]: Attribution changed!');
