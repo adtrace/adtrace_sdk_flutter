@@ -335,6 +335,8 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
                 adtraceConfig.setUrlStrategy(AdTraceConfig.URL_STRATEGY_CHINA);
             } else if (urlStrategy.equalsIgnoreCase("india")) {
                 adtraceConfig.setUrlStrategy(AdTraceConfig.URL_STRATEGY_INDIA);
+            } else if (urlStrategy.equalsIgnoreCase("cn")) {
+                adtraceConfig.setUrlStrategy(AdTraceConfig.URL_STRATEGY_CN);
             } else if (urlStrategy.equalsIgnoreCase("data-residency-eu")) {
                 adtraceConfig.setUrlStrategy(AdTraceConfig.DATA_RESIDENCY_EU);
             } else if (urlStrategy.equalsIgnoreCase("data-residency-tr")) {
