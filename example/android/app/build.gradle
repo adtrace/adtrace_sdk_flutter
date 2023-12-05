@@ -26,18 +26,17 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
     }
 
+
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "io.adtrace.sdk.flutter.adtrace_sdk_flutter_example"
-        minSdkVersion 16
-        targetSdkVersion 32
+        applicationId "io.adtrace.examples"
+        minSdkVersion flutter.minSdkVersion
+        targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -50,6 +49,8 @@ android {
 
         }
     }
+
+    namespace 'io.adtrace.examples'
 }
 
 flutter {
