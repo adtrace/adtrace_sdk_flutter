@@ -103,7 +103,6 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {//
     AdTraceConfig config =
         AdTraceConfig('cn2dajeoy3uu', AdTraceEnvironment.sandbox);
     config.logLevel = AdTraceLogLevel.verbose;
-    config.defaultTracker = 'x11upvh';
 
     config.attributionCallback = (AdTraceAttribution attributionChangedData) {
       print('[AdTrace]: Attribution changed!');
