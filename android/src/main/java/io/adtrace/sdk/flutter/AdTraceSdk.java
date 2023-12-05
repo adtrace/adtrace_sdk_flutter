@@ -44,6 +44,8 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.MethodCall;
 
+import static io.adtrace.sdk.flutter.AdTraceUtils.*;
+
 public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandler {
     private static String TAG = "AdTraceBridge";
     private static boolean launchDeferredDeeplink = true;
