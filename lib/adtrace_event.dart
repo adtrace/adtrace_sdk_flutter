@@ -8,6 +8,12 @@ import 'dart:convert';
 
 class AdTraceEvent {
   String _eventToken;
+  String? _currency;
+  String? receipt;
+  String? transactionId;
+  String? productId;
+  String? purchaseToken;
+  String? callbackId;
   num? _revenue;
   String? _currency;
   Map<String, String>? _callbackParameters;
@@ -45,6 +51,15 @@ class AdTraceEvent {
     }
     if (transactionId != null) {
       eventMap['transactionId'] = transactionId;
+    }
+    if (receipt != null) {
+      eventMap['receipt'] = receipt;
+    }
+    if (productId != null) {
+      eventMap['productId'] = productId;
+    }
+    if (purchaseToken != null) {
+      eventMap['purchaseToken'] = purchaseToken;
     }
     if (callbackId != null) {
       eventMap['callbackId'] = callbackId;
