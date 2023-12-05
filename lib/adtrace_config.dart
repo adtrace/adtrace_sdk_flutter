@@ -21,6 +21,7 @@ typedef void EventSuccessCallback(AdTraceEventSuccess successData);
 typedef void EventFailureCallback(AdTraceEventFailure failureData);
 typedef void DeferredDeeplinkCallback(String? uri);
 typedef void ConversionValueUpdatedCallback(num? conversionValue);
+typedef void Skad4ConversionValueUpdatedCallback(num? conversionValue, String? coarseValue, bool? lockWindow);
 
 class AdTraceConfig {
   static const MethodChannel _channel =
@@ -32,7 +33,9 @@ class AdTraceConfig {
   static const String _eventFailureCallbackName = 'adt-event-failure';
   static const String _deferredDeeplinkCallbackName = 'adt-deferred-deeplink';
   static const String _conversionValueUpdatedCallbackName =
-      'adt-conversion-value-updated';
+      'adj-conversion-value-updated';
+  static const String _skad4ConversionValueUpdatedCallbackName =
+      'adj-skad4-conversion-value-updated';
 
   static const String UrlStrategyIndia = 'india';
   static const String UrlStrategyChina = 'china';
@@ -88,6 +91,7 @@ class AdTraceConfig {
   EventFailureCallback? eventFailureCallback;
   DeferredDeeplinkCallback? deferredDeeplinkCallback;
   ConversionValueUpdatedCallback? conversionValueUpdatedCallback;
+  Skad4ConversionValueUpdatedCallback? skad4ConversionValueUpdatedCallback;
 
   AdTraceConfig(this._appToken, this._environment) {
     _initCallbackHandlers();
@@ -146,6 +150,19 @@ class AdTraceConfig {
               String? conversionValue = call.arguments['conversionValue'];
               if (conversionValue != null) {
                 conversionValueUpdatedCallback!(int.parse(conversionValue));
+              }
+            }
+            break;
+          case _skad4ConversionValueUpdatedCallbackName:
+            if (skad4ConversionValueUpdatedCallback != null) {
+              String? conversionValue = call.arguments['fineValue'];
+              String? coarseValue = call.arguments['coarseValue'];
+              String? lockWindow = call.arguments['lockWindow'];
+              if (conversionValue != null && coarseValue != null && lockWindow != null) {
+                skad4ConversionValueUpdatedCallback!(
+                  int.parse(conversionValue),
+                  coarseValue,
+                  lockWindow.toLowerCase() == 'true');
               }
             }
             break;
@@ -279,6 +296,10 @@ class AdTraceConfig {
     if (conversionValueUpdatedCallback != null) {
       configMap['conversionValueUpdatedCallback'] =
           _conversionValueUpdatedCallbackName;
+    }
+    if (skad4ConversionValueUpdatedCallback != null) {
+      configMap['skad4ConversionValueUpdatedCallback'] =
+          _skad4ConversionValueUpdatedCallbackName;
     }
 
     return configMap;
