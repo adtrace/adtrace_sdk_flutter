@@ -33,6 +33,7 @@ android {
     lintOptions {
         disable 'InvalidPackage'
     }
+    namespace 'io.adtrace.sdk.flutter'
 }
 
 dependencies {
