@@ -638,6 +638,22 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             }
         }
 
+        // Partner parameters.
+        if (eventMap.containsKey("partnerParameters")) {
+            String strPartnerParametersJson = (String) eventMap.get("partnerParameters");
+            try {
+                JSONObject jsonPartnerParameters = new JSONObject(strPartnerParametersJson);
+                JSONArray partnerParametersKeys = jsonPartnerParameters.names();
+                for (int i = 0; i < partnerParametersKeys.length(); ++i) {
+                    String key = partnerParametersKeys.getString(i);
+                    String value = jsonPartnerParameters.getString(key);
+                    event.addPartnerParameter(key, value);
+                }
+            } catch (JSONException e) {
+                Log.e(TAG, "Failed to parse event partner parameter! Details: " + e);
+            }
+        }
+
         // Event parameters.
         if (eventMap.containsKey("eventParameters")) {
             String strEventParametersJson = (String) eventMap.get("eventParameters");
