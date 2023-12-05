@@ -64,6 +64,7 @@ class AdTraceConfig {
   num? _secretId;
   bool? _skAdNetworkHandling;
 
+  num? attConsentWaitingInterval;
   double? delayStart;
   bool? isDeviceKnown;
   bool? sendInBackground;
@@ -279,6 +280,9 @@ class AdTraceConfig {
     }
     if (delayStart != null) {
       configMap['delayStart'] = delayStart.toString();
+    }
+    if (attConsentWaitingInterval != null) {
+      configMap['attConsentWaitingInterval'] = attConsentWaitingInterval.toString();
     }
     if (attributionCallback != null) {
       configMap['attributionCallback'] = _attributionCallbackName;
