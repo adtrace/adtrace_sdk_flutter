@@ -13,6 +13,8 @@ import io.adtrace.sdk.AdTraceConfig;
 import io.adtrace.sdk.AdTraceEvent;
 import io.adtrace.sdk.AdTraceEventFailure;
 import io.adtrace.sdk.AdTraceEventSuccess;
+import io.adtrace.sdk.AdTracePurchase;
+import io.adtrace.sdk.AdTracePurchaseVerificationResult;
 import io.adtrace.sdk.AdTraceSessionFailure;
 import io.adtrace.sdk.AdTraceSessionSuccess;
 import io.adtrace.sdk.AdTracePlayStoreSubscription;
@@ -24,9 +26,9 @@ import io.adtrace.sdk.OnDeeplinkResponseListener;
 import io.adtrace.sdk.OnDeviceIdsRead;
 import io.adtrace.sdk.OnEventTrackingFailedListener;
 import io.adtrace.sdk.OnEventTrackingSucceededListener;
+import io.adtrace.sdk.OnPurchaseVerificationFinishedListener;
 import io.adtrace.sdk.OnSessionTrackingFailedListener;
 import io.adtrace.sdk.OnSessionTrackingSucceededListener;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -195,6 +197,12 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
                 break;
             case "getLastDeeplink":
                 getLastDeeplink(call, result);
+                break;
+            case "verifyPlayStorePurchase":
+                verifyPlayStorePurchase(call, result);
+                break;
+            case "verifyAppStorePurchase":
+                verifyAppStorePurchase(call, result);
                 break;
             case "setTestOptions":
                 setTestOptions(call, result);
@@ -1092,6 +1100,44 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
         result.success("Error. No getLastDeeplink for Android platform!");
     }
 
+    private void verifyPlayStorePurchase(final MethodCall call, final Result result) {
+        Map purchaseMap = (Map) call.arguments;
+        if (purchaseMap == null) {
+            return;
+        }
+
+        // Product ID.
+        String productId = null;
+        if (purchaseMap.containsKey("productId")) {
+            productId = (String) purchaseMap.get("productId");
+        }
+
+        // Purchase token.
+        String purchaseToken = null;
+        if (purchaseMap.containsKey("purchaseToken")) {
+            purchaseToken = (String) purchaseMap.get("purchaseToken");
+        }
+
+        // Create purchase instance.
+        AdTracePurchase purchase = new AdTracePurchase(productId, purchaseToken);
+
+        // Verify purchase.
+        AdTrace.verifyPurchase(purchase, new OnPurchaseVerificationFinishedListener() {
+            @Override
+            public void onVerificationFinished(AdTracePurchaseVerificationResult verificationResult) {
+                HashMap<String, String> adtracePurchaseMap = new HashMap<String, String>();
+                adtracePurchaseMap.put("code", String.valueOf(verificationResult.getCode()));
+                adtracePurchaseMap.put("verificationStatus", verificationResult.getVerificationStatus());
+                adtracePurchaseMap.put("message", verificationResult.getMessage());
+                result.success(adtracePurchaseMap);
+            }
+        });
+    }
+
+    private void verifyAppStorePurchase(final MethodCall call, final Result result) {
+        result.success("Error. No verifyAppStorePurchase for Android platform!");
+    }
+
     private void setTestOptions(final MethodCall call, final Result result) {
         AdTraceTestOptions testOptions = new AdTraceTestOptions();
         Map testOptionsMap = (Map) call.arguments;
@@ -1105,6 +1151,9 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
         if (testOptionsMap.containsKey("subscriptionUrl")) {
             testOptions.subscriptionUrl = (String) testOptionsMap.get("subscriptionUrl");
         }
+        if (testOptionsMap.containsKey("purchaseVerificationUrl")) {
+            testOptions.purchaseVerificationUrl = (String) testOptionsMap.get("purchaseVerificationUrl");
+        }
         if (testOptionsMap.containsKey("basePath")) {
             testOptions.basePath = (String) testOptionsMap.get("basePath");
         }
@@ -1113,6 +1162,9 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
         }
         if (testOptionsMap.containsKey("subscriptionPath")) {
             testOptions.subscriptionPath = (String) testOptionsMap.get("subscriptionPath");
+        }
+        if (testOptionsMap.containsKey("purchaseVerificationPath")) {
+            testOptions.purchaseVerificationPath = (String) testOptionsMap.get("purchaseVerificationPath");
         }
         // Kept for the record. Not needed anymore with test options extraction.
         // if (testOptionsMap.containsKey("useTestConnectionOptions")) {
