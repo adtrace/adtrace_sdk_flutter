@@ -16,6 +16,8 @@ class AdTraceAttribution {
   final String? costType;
   final num? costAmount;
   final String? costCurrency;
+  // Android only
+  final String? fbInstallReferrer;
 
   AdTraceAttribution({
     required this.trackerToken,
@@ -29,6 +31,7 @@ class AdTraceAttribution {
     required this.costType,
     required this.costAmount,
     required this.costCurrency,
+    required this.fbInstallReferrer,
   });
 
   factory AdTraceAttribution.fromMap(dynamic map) {
@@ -52,6 +55,7 @@ class AdTraceAttribution {
         costType: map['costType'],
         costAmount: parsedCostAmount != -1 ? parsedCostAmount : null,
         costCurrency: map['costCurrency'],
+        fbInstallReferrer: map['fbInstallReferrer'],
       );
     } catch (e) {
       throw Exception(
