@@ -60,31 +60,36 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {// need_for_implementation
   bool _isSdkEnabled = true;
 
   @override
   initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    // need_for_implementation
+    WidgetsBinding.instance!.addObserver(this);
     initPlatformState();
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    // need_for_implementation
+    WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
 
+  // need_for_implementation
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.inactive:
         break;
       case AppLifecycleState.resumed:
+      // need_for_implementation
         AdTrace.onResume();
         break;
       case AppLifecycleState.paused:
+      // need_for_implementation
         AdTrace.onPause();
         break;
       case AppLifecycleState.detached:
@@ -94,6 +99,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   initPlatformState() async {
+    // need_for_implementation
     AdTraceConfig config =
         AdTraceConfig('cn2dajeoy3uu', AdTraceEnvironment.sandbox);
     config.logLevel = AdTraceLogLevel.verbose;
@@ -292,6 +298,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     // config.playStoreKidsAppEnabled = true;
 
     // Start SDK.
+    // need_for_implementation
     AdTrace.start(config);
   }
 
