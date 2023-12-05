@@ -604,6 +604,18 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             event.setOrderId(orderId);
         }
 
+        // Product ID.
+        if (eventMap.containsKey("productId")) {
+            String productId = (String) eventMap.get("productId");
+            event.setProductId(productId);
+        }
+
+        // Purchase token.
+        if (eventMap.containsKey("purchaseToken")) {
+            String purchaseToken = (String) eventMap.get("purchaseToken");
+            event.setPurchaseToken(purchaseToken);
+        }
+
         // Callback ID.
         if (eventMap.containsKey("callbackId")) {
             String callbackId = (String) eventMap.get("callbackId");
