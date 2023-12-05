@@ -443,6 +443,7 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
                         adtraceAttributionMap.put("costAmount", adtraceAttribution.costAmount != null ?
                                 adtraceAttribution.costAmount.toString() : "");
                         adtraceAttributionMap.put("costCurrency", adtraceAttribution.costCurrency);
+                        adtraceAttributionMap.put("fbInstallReferrer", adtraceAttribution.fbInstallReferrer);
                         if (channel != null) {
                             channel.invokeMethod(dartMethodName, adtraceAttributionMap);
                         }
@@ -759,6 +760,7 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
         adtraceAttributionMap.put("costAmount", adtraceAttribution.costAmount != null ?
                 adtraceAttribution.costAmount.toString() : "");
         adtraceAttributionMap.put("costCurrency", adtraceAttribution.costCurrency);
+        adtraceAttributionMap.put("fbInstallReferrer", adtraceAttribution.fbInstallReferrer);
         result.success(adtraceAttributionMap);
     }
 
