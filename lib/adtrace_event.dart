@@ -15,16 +15,14 @@ class AdTraceEvent {
   String? purchaseToken;
   String? callbackId;
   num? _revenue;
-  String? _currency;
   Map<String, String>? _callbackParameters;
+  Map<String, String>? _partnerParameters;
   Map<String, String>? _eventParameters;
-
-  String? transactionId;
-  String? callbackId;
 
   AdTraceEvent(this._eventToken) {
     _callbackParameters = new Map<String, String>();
     _eventParameters = new Map<String, String>();
+    _partnerParameters = new Map<String,String>();
   }
 
   void setRevenue(num revenue, String currency) {
@@ -38,6 +36,10 @@ class AdTraceEvent {
 
   void addEventParameter(String key, String value) {
     _eventParameters![key] = value;
+  }
+
+  void addPartnerParameter(String key, String value) {
+    _partnerParameters![key] = value;
   }
 
   Map<String, String?> get toMap {
@@ -69,6 +71,9 @@ class AdTraceEvent {
     }
     if (_eventParameters!.length > 0) {
       eventMap['eventParameters'] = json.encode(_eventParameters);
+    }
+    if (_partnerParameters!.length > 0) {
+      eventMap['partnerParameters'] = json.encode(_partnerParameters);
     }
 
     return eventMap;
