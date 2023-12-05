@@ -103,12 +103,11 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
       print('[AdTrace]: Attribution changed!');
 
       if (attributionChangedData.trackerToken != null) {
-        print('[AdTrace]: Tracker token: ' +
-            attributionChangedData.trackerToken!);
+        print(
+            '[AdTrace]: Tracker token: ' + attributionChangedData.trackerToken!);
       }
       if (attributionChangedData.trackerName != null) {
-        print(
-            '[AdTrace]: Tracker name: ' + attributionChangedData.trackerName!);
+        print('[AdTrace]: Tracker name: ' + attributionChangedData.trackerName!);
       }
       if (attributionChangedData.campaign != null) {
         print('[AdTrace]: Campaign: ' + attributionChangedData.campaign!);
@@ -237,11 +236,13 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
       print('[AdTrace]: Received conversion value update: ' +
           conversionValue!.toString());
     };
-    // coppa compliant
-    config.coppaCompliantEnabled = false;
 
-    //play store kids app
-    config.playStoreKidsAppEnabled = false;
+    // config.skad4ConversionValueUpdatedCallback = (num? conversionValue, String? coarseValue, bool? lockWindow) {
+    //   print('[AdTrace]: Received conversion value update!');
+    //   print('[AdTrace]: Conversion value: ' + conversionValue!.toString());
+    //   print('[AdTrace]: Coarse value: ' + coarseValue!);
+    //   print('[AdTrace]: Lock window: ' + lockWindow!.toString());
+    // };
 
     // Add session callback parameters.
     AdTrace.addSessionCallbackParameter('scp_foo_1', 'scp_bar');
@@ -260,6 +261,35 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
     // Clear all session partner parameters.
     AdTrace.resetSessionPartnerParameters();
+
+    // Ask for tracking consent.
+    // AdTrace.requestTrackingAuthorizationWithCompletionHandler().then((status) {
+    //   print('[AdTrace]: Authorization status update!');
+    //   switch (status) {
+    //     case 0:
+    //       print(
+    //           '[AdTrace]: Authorization status update: ATTrackingManagerAuthorizationStatusNotDetermined');
+    //       break;
+    //     case 1:
+    //       print(
+    //           '[AdTrace]: Authorization status update: ATTrackingManagerAuthorizationStatusRestricted');
+    //       break;
+    //     case 2:
+    //       print(
+    //           '[AdTrace]: Authorization status update: ATTrackingManagerAuthorizationStatusDenied');
+    //       break;
+    //     case 3:
+    //       print(
+    //           '[AdTrace]: Authorization status update: ATTrackingManagerAuthorizationStatusAuthorized');
+    //       break;
+    //   }
+    // });
+
+    // COPPA compliance.
+    // config.coppaCompliantEnabled = true;
+
+    // Google Play Store kids apps.
+    // config.playStoreKidsAppEnabled = true;
 
     // Start SDK.
     AdTrace.start(config);
@@ -294,6 +324,11 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                 // Track callback event button.
                 Util.buildCupertinoButton('Track Callback Event',
                     () => AdTrace.trackEvent(Util.buildCallbackEvent())),
+                const Padding(padding: EdgeInsets.all(7.0)),
+
+                // Track event partner parameter button.
+                Util.buildCupertinoButton('Track Event Partner parameters',
+                        () => AdTrace.trackEvent(Util.buildPartnerParamsEvent())),
                 const Padding(padding: EdgeInsets.all(7.0)),
 
                 // Track value event button.
