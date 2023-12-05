@@ -297,6 +297,13 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             adtraceConfig.setCoppaCompliantEnabled(coppaCompliantEnabled);
         }
 
+        // Final attribution.
+        if (configMap.containsKey("finalAndroidAttributionEnabled")) {
+            String strFinalAndroidAttributionEnabled = (String) configMap.get("finalAndroidAttributionEnabled");
+            boolean finalAndroidAttributionEnabled = Boolean.parseBoolean(strFinalAndroidAttributionEnabled);
+            adtraceConfig.setFinalAttributionEnabled(finalAndroidAttributionEnabled);
+        }
+
         // Google Play Store kids apps.
         if (configMap.containsKey("playStoreKidsAppEnabled")) {
             String strPlayStoreKidsAppEnabled = (String) configMap.get("playStoreKidsAppEnabled");
