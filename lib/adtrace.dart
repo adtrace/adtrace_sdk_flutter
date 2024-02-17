@@ -225,6 +225,12 @@ class AdTrace {
     return AdTracePurchaseVerificationInfo.fromMap(appStorePurchaseMap);
   }
 
+  static Future<String?> processDeeplink(String deeplink) async {
+    final resolvedLink =
+    await _channel.invokeMethod('processDeeplink', {'deeplink': deeplink});
+    return resolvedLink;
+  }
+
   // For testing purposes only. Do not use in production.
   @visibleForTesting
   static void setTestOptions(final dynamic testOptions) {
