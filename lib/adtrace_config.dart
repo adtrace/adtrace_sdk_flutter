@@ -33,13 +33,14 @@ class AdTraceConfig {
   static const String _eventFailureCallbackName = 'adt-event-failure';
   static const String _deferredDeeplinkCallbackName = 'adt-deferred-deeplink';
   static const String _conversionValueUpdatedCallbackName =
-      'adj-conversion-value-updated';
+      'adt-conversion-value-updated';
   static const String _skad4ConversionValueUpdatedCallbackName =
-      'adj-skad4-conversion-value-updated';
+      'adt-skad4-conversion-value-updated';
 
   static const String UrlStrategyIndia = 'india';
   static const String UrlStrategyChina = 'china';
   static const String UrlStrategyCn = 'cn';
+  static const String UrlStrategyCnOnly = 'cn-only';
 
   static const String DataResidencyEU = 'data-residency-eu';
   static const String DataResidencyTR = 'data-residency-tr';
@@ -53,6 +54,8 @@ class AdTraceConfig {
   static const String AdRevenueSourceUnity = 'unity_sdk';
   static const String AdRevenueSourceHeliumChartboost = 'helium_chartboost_sdk';
   static const String AdRevenueSourcePublisher = 'publisher_sdk';
+  static const String AdRevenueSourceTopOn = 'topon_sdk';
+  static const String AdRevenueSourceAdx = 'adx_sdk';
 
   String _appToken;
   AdTraceEnvironment _environment;
@@ -79,6 +82,7 @@ class AdTraceConfig {
   bool? coppaCompliantEnabled;
   bool? linkMeEnabled;
   bool? finalAndroidAttributionEnabled;
+  bool? readDeviceInfoOnceEnabled;
   String? sdkPrefix;
   String? userAgent;
   String? defaultTracker;
@@ -86,6 +90,7 @@ class AdTraceConfig {
   String? urlStrategy;
   String? processName;
   String? preinstallFilePath;
+  String? fbAppId;
   AdTraceLogLevel? logLevel;
   AttributionCallback? attributionCallback;
   SessionSuccessCallback? sessionSuccessCallback;
@@ -216,6 +221,12 @@ class AdTraceConfig {
     if (externalDeviceId != null) {
       configMap['externalDeviceId'] = externalDeviceId;
     }
+    if (preinstallFilePath != null) {
+      configMap['preinstallFilePath'] = preinstallFilePath;
+    }
+    if (fbAppId != null) {
+      configMap['fbAppId'] = fbAppId;
+    }
     if (urlStrategy != null) {
       configMap['urlStrategy'] = urlStrategy;
     }
@@ -243,6 +254,9 @@ class AdTraceConfig {
     }
     if (finalAndroidAttributionEnabled != null) {
       configMap['finalAndroidAttributionEnabled'] = finalAndroidAttributionEnabled.toString();
+    }
+    if (readDeviceInfoOnceEnabled != null) {
+      configMap['readDeviceInfoOnceEnabled'] = readDeviceInfoOnceEnabled.toString();
     }
     if (linkMeEnabled != null) {
       configMap['linkMeEnabled'] = linkMeEnabled.toString();

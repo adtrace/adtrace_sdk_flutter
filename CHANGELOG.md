@@ -1,3 +1,8 @@
+## 1.4.1
+* android update (to v2.5.1)
+* iOS update (to v2.2.1)
+* `need_for_implementation` and `help_implementation` tags in example
+
 ## 1.4.0
 * android update (to v2.5.0)
 * support Re-targeting
