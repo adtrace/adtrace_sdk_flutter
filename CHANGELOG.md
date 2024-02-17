@@ -1,10 +1,13 @@
+## 1.4.1
+* android update (to v2.5.1)
+* iOS update (to v2.2.1)
+
 ## 1.4.0
 * android update (to v2.5.0)
 * support Re-targeting
 * add event partner parameters
 * update example project android module
 * more descriptive example project
-
 
 ## 1.3.2
 * android update (to v2.4.1)
