@@ -82,6 +82,7 @@ class AdTraceConfig {
   bool? coppaCompliantEnabled;
   bool? linkMeEnabled;
   bool? finalAndroidAttributionEnabled;
+  bool? readDeviceInfoOnceEnabled;
   String? sdkPrefix;
   String? userAgent;
   String? defaultTracker;
@@ -253,6 +254,9 @@ class AdTraceConfig {
     }
     if (finalAndroidAttributionEnabled != null) {
       configMap['finalAndroidAttributionEnabled'] = finalAndroidAttributionEnabled.toString();
+    }
+    if (readDeviceInfoOnceEnabled != null) {
+      configMap['readDeviceInfoOnceEnabled'] = readDeviceInfoOnceEnabled.toString();
     }
     if (linkMeEnabled != null) {
       configMap['linkMeEnabled'] = linkMeEnabled.toString();
