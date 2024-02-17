@@ -47,7 +47,7 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        // need_for_implementation
+        <!-- need_for_implementation -->
         <receiver
             android:name="io.adtrace.sdk.AdTraceReferrerReceiver"
             android:permission="android.permission.INSTALL_PACKAGES"

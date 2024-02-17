@@ -4,8 +4,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import static io.adtrace.sdk.flutter.AdTraceUtils.*;
-
 import io.adtrace.sdk.AdTrace;
 import io.adtrace.sdk.AdTraceAdRevenue;
 import io.adtrace.sdk.AdTraceAttribution;
@@ -13,11 +11,11 @@ import io.adtrace.sdk.AdTraceConfig;
 import io.adtrace.sdk.AdTraceEvent;
 import io.adtrace.sdk.AdTraceEventFailure;
 import io.adtrace.sdk.AdTraceEventSuccess;
-import io.adtrace.sdk.AdTracePurchase;
-import io.adtrace.sdk.AdTracePurchaseVerificationResult;
 import io.adtrace.sdk.AdTraceSessionFailure;
 import io.adtrace.sdk.AdTraceSessionSuccess;
 import io.adtrace.sdk.AdTracePlayStoreSubscription;
+import io.adtrace.sdk.AdTracePurchase;
+import io.adtrace.sdk.AdTracePurchaseVerificationResult;
 import io.adtrace.sdk.AdTraceThirdPartySharing;
 import io.adtrace.sdk.AdTraceTestOptions;
 import io.adtrace.sdk.LogLevel;
@@ -26,9 +24,10 @@ import io.adtrace.sdk.OnDeeplinkResponseListener;
 import io.adtrace.sdk.OnDeviceIdsRead;
 import io.adtrace.sdk.OnEventTrackingFailedListener;
 import io.adtrace.sdk.OnEventTrackingSucceededListener;
-import io.adtrace.sdk.OnPurchaseVerificationFinishedListener;
 import io.adtrace.sdk.OnSessionTrackingFailedListener;
 import io.adtrace.sdk.OnSessionTrackingSucceededListener;
+import io.adtrace.sdk.OnPurchaseVerificationFinishedListener;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -128,6 +127,9 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             case "getIdfa":
                 getIdfa(result);
                 break;
+            case "getIdfv":
+                getIdfv(result);
+                break;
             case "getGoogleAdId":
                 getGoogleAdId(result);
                 break;
@@ -205,6 +207,9 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
                 break;
             case "verifyAppStorePurchase":
                 verifyAppStorePurchase(call, result);
+                break;
+            case "processDeeplink":
+                processDeeplink(call, result);
                 break;
             case "setTestOptions":
                 setTestOptions(call, result);
@@ -306,6 +311,13 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             adtraceConfig.setFinalAttributionEnabled(finalAndroidAttributionEnabled);
         }
 
+        // Read Android device info only once.
+        if (configMap.containsKey("readDeviceInfoOnceEnabled")) {
+            String strReadDeviceInfoOnceEnabled = (String) configMap.get("readDeviceInfoOnceEnabled");
+            boolean readDeviceInfoOnceEnabled = Boolean.parseBoolean(strReadDeviceInfoOnceEnabled);
+            adtraceConfig.setReadDeviceInfoOnceEnabled(readDeviceInfoOnceEnabled);
+        }
+
         // Google Play Store kids apps.
         if (configMap.containsKey("playStoreKidsAppEnabled")) {
             String strPlayStoreKidsAppEnabled = (String) configMap.get("playStoreKidsAppEnabled");
@@ -337,6 +349,12 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             adtraceConfig.setPreinstallFilePath(preinstallFilePath);
         }
 
+        // META install referrer.
+        if (configMap.containsKey("fbAppId")) {
+            String fbAppId = (String) configMap.get("fbAppId");
+            adtraceConfig.setFbAppId(fbAppId);
+        }
+
         // URL strategy.
         if (configMap.containsKey("urlStrategy")) {
             String urlStrategy = (String) configMap.get("urlStrategy");
@@ -346,6 +364,8 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
                 adtraceConfig.setUrlStrategy(AdTraceConfig.URL_STRATEGY_INDIA);
             } else if (urlStrategy.equalsIgnoreCase("cn")) {
                 adtraceConfig.setUrlStrategy(AdTraceConfig.URL_STRATEGY_CN);
+            } else if (urlStrategy.equalsIgnoreCase("cn-only")) {
+                adtraceConfig.setUrlStrategy(AdTraceConfig.URL_STRATEGY_CN_ONLY);
             } else if (urlStrategy.equalsIgnoreCase("data-residency-eu")) {
                 adtraceConfig.setUrlStrategy(AdTraceConfig.DATA_RESIDENCY_EU);
             } else if (urlStrategy.equalsIgnoreCase("data-residency-tr")) {
@@ -657,8 +677,8 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
         }
 
         // Event parameters.
-        if (eventMap.containsKey("eventParameters")) {
-            String strEventParametersJson = (String) eventMap.get("eventParameters");
+        if (eventMap.containsKey("eventValueParameters")) {
+            String strEventParametersJson = (String) eventMap.get("eventValueParameters");
             try {
                 JSONObject jsonEventParameters = new JSONObject(strEventParametersJson);
                 JSONArray eventParametersKeys = jsonEventParameters.names();
@@ -746,6 +766,10 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
 
     private void getIdfa(final Result result) {
         result.success("Error. No IDFA on Android platform!");
+    }
+
+    private void getIdfv(final Result result) {
+        result.success("Error. No IDFV on Android platform!");
     }
 
     private void getGoogleAdId(final Result result) {
@@ -1105,10 +1129,10 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             String strPartnerSharingSettings = (String) thirdPartySharingMap.get("partnerSharingSettings");
             String[] arrayPartnerSharingSettings = strPartnerSharingSettings.split("__ADT__", -1);
             for (int i = 0; i < arrayPartnerSharingSettings.length; i += 3) {
-//                thirdPartySharing.addPartnerSharingSetting(
-//                    arrayPartnerSharingSettings[i],
-//                    arrayPartnerSharingSettings[i+1],
-//                    Boolean.parseBoolean(arrayPartnerSharingSettings[i+2]));
+                thirdPartySharing.addPartnerSharingSetting(
+                    arrayPartnerSharingSettings[i],
+                    arrayPartnerSharingSettings[i+1],
+                    Boolean.parseBoolean(arrayPartnerSharingSettings[i+2]));
             }
         }
 
@@ -1173,6 +1197,21 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
                 result.success(adtracePurchaseMap);
             }
         });
+    }
+
+    private void processDeeplink(final MethodCall call, final Result result) {
+//        Map urlParamsMap = (Map) call.arguments;
+//        String url = null;
+//        if (urlParamsMap.containsKey("deeplink")) {
+//            url = urlParamsMap.get("deeplink").toString();
+//        }
+//
+//        AdTrace.processDeeplink(Uri.parse(url), applicationContext, new OnDeeplinkResolvedListener() {
+//            @Override
+//            public void onDeeplinkResolved(String resolvedLink) {
+//                result.success(resolvedLink);
+//            }
+//        });
     }
 
     private void verifyAppStorePurchase(final MethodCall call, final Result result) {
