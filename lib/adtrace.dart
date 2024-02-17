@@ -15,7 +15,6 @@ import 'package:adtrace_sdk_flutter/adtrace_play_store_purchase.dart';
 import 'package:adtrace_sdk_flutter/adtrace_play_store_subscription.dart';
 import 'package:adtrace_sdk_flutter/adtrace_purchase_verification_info.dart';
 import 'package:adtrace_sdk_flutter/adtrace_third_party_sharing.dart';
-
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 
@@ -86,11 +85,6 @@ class AdTrace {
   static Future<String?> getIdfa() async {
     final String? idfa = await _channel.invokeMethod('getIdfa');
     return idfa;
-  }
-
-  static Future<String?> getIdfv() async {
-    final String? idfv = await _channel.invokeMethod('getIdfv');
-    return idfv;
   }
 
   static Future<String?> getAmazonAdId() async {
@@ -224,12 +218,6 @@ class AdTrace {
     final dynamic appStorePurchaseMap =
       await _channel.invokeMethod('verifyAppStorePurchase', purchase.toMap);
     return AdTracePurchaseVerificationInfo.fromMap(appStorePurchaseMap);
-  }
-
-  static Future<String?> processDeeplink(String deeplink) async {
-    final resolvedLink =
-    await _channel.invokeMethod('processDeeplink', {'deeplink': deeplink});
-    return resolvedLink;
   }
 
   // For testing purposes only. Do not use in production.

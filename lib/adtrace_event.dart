@@ -70,7 +70,7 @@ class AdTraceEvent {
       eventMap['callbackParameters'] = json.encode(_callbackParameters);
     }
     if (_eventParameters!.length > 0) {
-      eventMap['eventValueParameters'] = json.encode(_eventParameters);
+      eventMap['eventParameters'] = json.encode(_eventParameters);
     }
     if (_partnerParameters!.length > 0) {
       eventMap['partnerParameters'] = json.encode(_partnerParameters);
