@@ -33,9 +33,9 @@ class AdTraceConfig {
   static const String _eventFailureCallbackName = 'adt-event-failure';
   static const String _deferredDeeplinkCallbackName = 'adt-deferred-deeplink';
   static const String _conversionValueUpdatedCallbackName =
-      'adj-conversion-value-updated';
+      'adt-conversion-value-updated';
   static const String _skad4ConversionValueUpdatedCallbackName =
-      'adj-skad4-conversion-value-updated';
+      'adt-skad4-conversion-value-updated';
 
   static const String UrlStrategyIndia = 'india';
   static const String UrlStrategyChina = 'china';
@@ -54,6 +54,8 @@ class AdTraceConfig {
   static const String AdRevenueSourceUnity = 'unity_sdk';
   static const String AdRevenueSourceHeliumChartboost = 'helium_chartboost_sdk';
   static const String AdRevenueSourcePublisher = 'publisher_sdk';
+  static const String AdRevenueSourceTopOn = 'topon_sdk';
+  static const String AdRevenueSourceAdx = 'adx_sdk';
 
   String _appToken;
   AdTraceEnvironment _environment;
