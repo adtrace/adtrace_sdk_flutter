@@ -15,11 +15,12 @@ import 'package:adtrace_sdk_flutter/adtrace_play_store_purchase.dart';
 import 'package:adtrace_sdk_flutter/adtrace_play_store_subscription.dart';
 import 'package:adtrace_sdk_flutter/adtrace_purchase_verification_info.dart';
 import 'package:adtrace_sdk_flutter/adtrace_third_party_sharing.dart';
+
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 
 class AdTrace {
-  static const String _sdkPrefix = 'flutter1.4.0';
+  static const String _sdkPrefix = 'flutter1.4.1';
   static const MethodChannel _channel =
       const MethodChannel('io.adtrace.sdk/api');
 
