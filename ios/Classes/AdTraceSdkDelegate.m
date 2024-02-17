@@ -10,6 +10,7 @@ static NSString *dartEventSuccessCallback;
 static NSString *dartEventFailureCallback;
 static NSString *dartDeferredDeeplinkCallback;
 static NSString *dartConversionValueUpdatedCallback;
+static NSString *dartSkad4ConversionValueUpdatedCallback;
 
 @implementation AdTraceSdkDelegate
 
@@ -32,6 +33,7 @@ static NSString *dartConversionValueUpdatedCallback;
                              eventFailureCallback:(NSString *)swizzleEventFailureCallback
                          deferredDeeplinkCallback:(NSString *)swizzleDeferredDeeplinkCallback
                    conversionValueUpdatedCallback:(NSString *)swizzleConversionValueUpdatedCallback
+              skad4ConversionValueUpdatedCallback:(NSString *)swizzleSkad4ConversionValueUpdatedCallback
                      shouldLaunchDeferredDeeplink:(BOOL)shouldLaunchDeferredDeeplink
                                  andMethodChannel:(FlutterMethodChannel *)channel {
     
@@ -73,6 +75,11 @@ static NSString *dartConversionValueUpdatedCallback;
             [defaultInstance swizzleCallbackMethod:@selector(adtraceConversionValueUpdated:)
                                   swizzledSelector:@selector(adtraceConversionValueUpdatedWannabe:)];
             dartConversionValueUpdatedCallback = swizzleConversionValueUpdatedCallback;
+        }
+        if (swizzleSkad4ConversionValueUpdatedCallback != nil) {
+            [defaultInstance swizzleCallbackMethod:@selector(adtraceConversionValueUpdated:coarseValue:lockWindow:)
+                                  swizzledSelector:@selector(adtraceConversionValueUpdatedWannabe:coarseValue:lockWindow:)];
+            dartSkad4ConversionValueUpdatedCallback = swizzleSkad4ConversionValueUpdatedCallback;
         }
 
         [defaultInstance setShouldLaunchDeferredDeeplink:shouldLaunchDeferredDeeplink];
@@ -229,6 +236,22 @@ static NSString *dartConversionValueUpdatedCallback;
                                                                    forKeys:keys
                                                                      count:count];
     [self.channel invokeMethod:dartConversionValueUpdatedCallback arguments:conversionValueMap];
+}
+
+- (void)adtraceConversionValueUpdatedWannabe:(nullable NSNumber *)fineValue
+                                coarseValue:(nullable NSString *)coarseValue
+                                 lockWindow:(nullable NSNumber *)lockWindow {
+    NSMutableDictionary *conversionValueMap = [NSMutableDictionary dictionary];
+    if (![fineValue isKindOfClass:[NSNull class]] && fineValue != nil) {
+        [conversionValueMap setValue:[fineValue stringValue] forKey:@"fineValue"];
+    }
+    if (![coarseValue isKindOfClass:[NSNull class]] && coarseValue != nil) {
+        [conversionValueMap setValue:coarseValue forKey:@"coarseValue"];
+    }
+    if (![lockWindow isKindOfClass:[NSNull class]] && lockWindow != nil) {
+        [conversionValueMap setValue:[lockWindow stringValue] forKey:@"lockWindow"];
+    }
+    [self.channel invokeMethod:dartSkad4ConversionValueUpdatedCallback arguments:conversionValueMap];
 }
 
 - (void)swizzleCallbackMethod:(SEL)originalSelector

@@ -46,6 +46,8 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
         [self getAttribution:call withResult:result];
     } else if ([@"getIdfa" isEqualToString:call.method]) {
         [self getIdfa:call withResult:result];
+    } else if ([@"getIdfv" isEqualToString:call.method]) {
+        [self getIdfv:call withResult:result];
     } else if ([@"getGoogleAdId" isEqualToString:call.method]) {
         [self getGoogleAdId:call withResult:result];
     } else if ([@"getSdkVersion" isEqualToString:call.method]) {
@@ -111,6 +113,20 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
         result(@(isEnabled));
     } else if ([@"getAdid" isEqualToString:call.method]) {
         result([Adtrace adid]);
+    } else if ([@"checkForNewAttStatus" isEqualToString:call.method]) {
+         [Adtrace checkForNewAttStatus];
+    } else if ([@"getLastDeeplink" isEqualToString:call.method]) {
+         [self getLastDeeplink:call withResult:result];
+    } else if ([@"updateConversionValueWithErrorCallback" isEqualToString:call.method]) {
+        [self updateConversionValueWithErrorCallback:call withResult:result];
+    } else if ([@"updateConversionValueWithErrorCallbackSkad4" isEqualToString:call.method]) {
+        [self updateConversionValueWithErrorCallbackSkad4:call withResult:result];
+    } else if ([@"verifyAppStorePurchase" isEqualToString:call.method]) {
+        [self verifyAppStorePurchase:call withResult:result];
+    } else if ([@"verifyPlayStorePurchase" isEqualToString:call.method]) {
+        [self verifyAppStorePurchase:call withResult:result];
+    } else if ([@"processDeeplink" isEqualToString:call.method]) {
+        [self processDeeplink:call withResult:result];
     } else {
         result(FlutterMethodNotImplemented);
     }
@@ -131,14 +147,17 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     NSString *info3 = call.arguments[@"info3"];
     NSString *info4 = call.arguments[@"info4"];
     NSString *delayStart = call.arguments[@"delayStart"];
+    NSString *attConsentWaitingInterval = call.arguments[@"attConsentWaitingInterval"];
     NSString *isDeviceKnown = call.arguments[@"isDeviceKnown"];
     NSString *eventBufferingEnabled = call.arguments[@"eventBufferingEnabled"];
     NSString *sendInBackground = call.arguments[@"sendInBackground"];
     NSString *needsCost = call.arguments[@"needsCost"];
-    NSString *allowiAdInfoReading = call.arguments[@"allowiAdInfoReading"];
+    NSString *coppaCompliantEnabled = call.arguments[@"coppaCompliantEnabled"];
+    NSString *linkMeEnabled = call.arguments[@"linkMeEnabled"];
     NSString *allowAdServicesInfoReading = call.arguments[@"allowAdServicesInfoReading"];
     NSString *allowIdfaReading = call.arguments[@"allowIdfaReading"];
     NSString *skAdNetworkHandling = call.arguments[@"skAdNetworkHandling"];
+    NSString *readDeviceInfoOnceEnabled = call.arguments[@"readDeviceInfoOnceEnabled"];
     NSString *dartAttributionCallback = call.arguments[@"attributionCallback"];
     NSString *dartSessionSuccessCallback = call.arguments[@"sessionSuccessCallback"];
     NSString *dartSessionFailureCallback = call.arguments[@"sessionFailureCallback"];
@@ -146,6 +165,7 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     NSString *dartEventFailureCallback = call.arguments[@"eventFailureCallback"];
     NSString *dartDeferredDeeplinkCallback = call.arguments[@"deferredDeeplinkCallback"];
     NSString *dartConversionValueUpdatedCallback = call.arguments[@"conversionValueUpdatedCallback"];
+    NSString *dartSkad4ConversionValueUpdatedCallback = call.arguments[@"skad4ConversionValueUpdatedCallback"];
     BOOL allowSuppressLogLevel = NO;
     BOOL launchDeferredDeeplink = [call.arguments[@"launchDeferredDeeplink"] boolValue];
 
@@ -176,6 +196,16 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
         [adtraceConfig setEventBufferingEnabled:[eventBufferingEnabled boolValue]];
     }
 
+    // COPPA compliance.
+    if ([self isFieldValid:coppaCompliantEnabled]) {
+        [adtraceConfig setCoppaCompliantEnabled:[coppaCompliantEnabled boolValue]];
+    }
+
+    // LinkMe.
+    if ([self isFieldValid:linkMeEnabled]) {
+        [adtraceConfig setLinkMeEnabled:[linkMeEnabled boolValue]];
+    }
+
     // Default tracker.
     if ([self isFieldValid:defaultTracker]) {
         [adtraceConfig setDefaultTracker:defaultTracker];
@@ -197,6 +227,10 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
             [adtraceConfig setUrlStrategy:ADTUrlStrategyChina];
         } else if ([urlStrategy isEqualToString:@"india"]) {
             [adtraceConfig setUrlStrategy:ADTUrlStrategyIndia];
+        } else if ([urlStrategy isEqualToString:@"cn"]) {
+            [adtraceConfig setUrlStrategy:ADTUrlStrategyChina];
+        } else if ([urlStrategy isEqualToString:@"cn-only"]) {
+            [adtraceConfig setUrlStrategy:ADTUrlStrategyChina];
         } else if ([urlStrategy isEqualToString:@"data-residency-eu"]) {
             [adtraceConfig setUrlStrategy:ADTDataResidencyEU];
         } else if ([urlStrategy isEqualToString:@"data-residency-tr"]) {
@@ -216,11 +250,6 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
         [adtraceConfig setNeedsCost:[needsCost boolValue]];
     }
 
-    // Allow iAd info reading.
-    if ([self isFieldValid:allowiAdInfoReading]) {
-        [adtraceConfig setAllowiAdInfoReading:[allowiAdInfoReading boolValue]];
-    }
-
     // Allow AdServices info reading.
     if ([self isFieldValid:allowAdServicesInfoReading]) {
         [adtraceConfig setAllowAdServicesInfoReading:[allowAdServicesInfoReading boolValue]];
@@ -238,6 +267,11 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
         }
     }
 
+    // Read device info once.
+    if ([self isFieldValid:readDeviceInfoOnceEnabled]) {
+        [adtraceConfig setReadDeviceInfoOnceEnabled:[readDeviceInfoOnceEnabled boolValue]];
+    }
+
     // Set device known.
     if ([self isFieldValid:isDeviceKnown]) {
         [adtraceConfig setIsDeviceKnown:[isDeviceKnown boolValue]];
@@ -246,6 +280,11 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     // Delayed start.
     if ([self isFieldValid:delayStart]) {
         [adtraceConfig setDelayStart:[delayStart doubleValue]];
+    }
+
+    // ATT consent delay.
+    if ([self isFieldValid:attConsentWaitingInterval]) {
+        [adtraceConfig setAttConsentWaitingInterval:[attConsentWaitingInterval intValue]];
     }
 
     // App secret.
@@ -268,7 +307,8 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
         || dartEventSuccessCallback != nil
         || dartEventFailureCallback != nil
         || dartDeferredDeeplinkCallback != nil
-        || dartConversionValueUpdatedCallback != nil) {
+        || dartConversionValueUpdatedCallback != nil
+        || dartSkad4ConversionValueUpdatedCallback != nil) {
         [adtraceConfig setDelegate:
          [AdTraceSdkDelegate getInstanceWithSwizzleOfAttributionCallback:dartAttributionCallback
                                                  sessionSuccessCallback:dartSessionSuccessCallback
@@ -277,6 +317,7 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
                                                    eventFailureCallback:dartEventFailureCallback
                                                deferredDeeplinkCallback:dartDeferredDeeplinkCallback
                                          conversionValueUpdatedCallback:dartConversionValueUpdatedCallback
+                                    skad4ConversionValueUpdatedCallback:dartSkad4ConversionValueUpdatedCallback
                                            shouldLaunchDeferredDeeplink:launchDeferredDeeplink
                                                        andMethodChannel:self.channel]];
     }
@@ -292,9 +333,12 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     NSString *revenue = call.arguments[@"revenue"];
     NSString *currency = call.arguments[@"currency"];
     NSString *callbackId = call.arguments[@"callbackId"];
+    NSString *receipt = call.arguments[@"receipt"];
+    NSString *productId = call.arguments[@"productId"];
     NSString *transactionId = call.arguments[@"transactionId"];
     NSString *strCallbackParametersJson = call.arguments[@"callbackParameters"];
-    NSString *strPartnerParametersJson = call.arguments[@"eventParameters"];
+    NSString *strValueParametersJson = call.arguments[@"eventValueParameters"];
+    NSString *strPartnerParametersJson = call.arguments[@"partnerParameters"];
 
     // Create event object.
     ADTEvent *adtraceEvent = [ADTEvent eventWithEventToken:eventToken];
@@ -303,6 +347,18 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     if ([self isFieldValid:revenue]) {
         double revenueValue = [revenue doubleValue];
         [adtraceEvent setRevenue:revenueValue currency:currency];
+    }
+
+    // Receipt.
+    if ([self isFieldValid:receipt]) {
+        NSData *receiptValue;
+        receiptValue = [receipt dataUsingEncoding:NSUTF8StringEncoding];
+        [adtraceEvent setReceipt:receiptValue];
+    }
+
+    // Product ID.
+    if ([self isFieldValid:productId]) {
+        [adtraceEvent setProductId:productId];
     }
 
     // Transaction ID.
@@ -327,9 +383,21 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
         }
     }
 
-    // Value parameters.
+    // Partner parameters.
     if (strPartnerParametersJson != nil) {
-        NSData *valueParametersData = [strPartnerParametersJson dataUsingEncoding:NSUTF8StringEncoding];
+        NSData *partnerParametersData = [strPartnerParametersJson dataUsingEncoding:NSUTF8StringEncoding];
+        id partnerParametersJson = [NSJSONSerialization JSONObjectWithData:partnerParametersData
+                                                                   options:0
+                                                                     error:NULL];
+        for (id key in partnerParametersJson) {
+            NSString *value = [partnerParametersJson objectForKey:key];
+            [adtraceEvent addPartnerParameter:key value:value];
+        }
+    }
+
+    // Value parameters.
+    if (strValueParametersJson != nil) {
+        NSData *valueParametersData = [strValueParametersJson dataUsingEncoding:NSUTF8StringEncoding];
         id valueParametersJson = [NSJSONSerialization JSONObjectWithData:valueParametersData
                                                                    options:0
                                                                      error:NULL];
@@ -552,7 +620,7 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
         }
     }
 
-    // Track event.
+    // Track subscription.
     [Adtrace trackSubscription:subscription];
     result(nil);
 }
@@ -581,6 +649,11 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
 - (void)getIdfa:(FlutterMethodCall *)call withResult:(FlutterResult)result {
     NSString *idfa = [Adtrace idfa];
     result(idfa);
+}
+
+- (void)getIdfv:(FlutterMethodCall *)call withResult:(FlutterResult)result {
+    NSString *idfv = [Adtrace idfv];
+    result(idfv);
 }
 
 - (void)getGoogleAdId:(FlutterMethodCall *)call withResult:(FlutterResult)result {
@@ -615,6 +688,7 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
 - (void)trackThirdPartySharing:(FlutterMethodCall *)call withResult:(FlutterResult)result {
     NSNumber *isEnabled = call.arguments[@"isEnabled"];
     NSString *strGranularOptions = call.arguments[@"granularOptions"];
+    NSString *strPartnerSharingSettings = call.arguments[@"partnerSharingSettings"];
 
     // Create third party sharing object.
     ADTThirdPartySharing *adtraceThirdPartySharing = [[ADTThirdPartySharing alloc]
@@ -632,6 +706,18 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
         }
     }
 
+    // Partner sharing settings.
+    if (strPartnerSharingSettings != nil) {
+        NSArray *arrayPartnerSharingSettings = [strPartnerSharingSettings componentsSeparatedByString:@"__ADT__"];
+        if (arrayPartnerSharingSettings != nil) {
+            for (int i = 0; i < [arrayPartnerSharingSettings count]; i += 3) {
+                [adtraceThirdPartySharing addPartnerSharingSetting:[arrayPartnerSharingSettings objectAtIndex:i]
+                                                              key:[arrayPartnerSharingSettings objectAtIndex:i+1]
+                                                            value:[[arrayPartnerSharingSettings objectAtIndex:i+2] boolValue]];
+            }
+        }
+    }
+
     // Track third party sharing.
     [Adtrace trackThirdPartySharing:adtraceThirdPartySharing];
     result(nil);
@@ -645,11 +731,113 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     result(nil);
 }
 
+- (void)getLastDeeplink:(FlutterMethodCall *)call withResult:(FlutterResult)result {
+    NSURL *lastDeeplink = [Adtrace lastDeeplink];
+    if (![self isFieldValid:lastDeeplink]) {
+        result(nil);
+    } else {
+        result([lastDeeplink absoluteString]);
+    }
+}
+
+- (void)updateConversionValueWithErrorCallback:(FlutterMethodCall *)call withResult:(FlutterResult)result {
+    NSString *conversionValue = call.arguments[@"conversionValue"];
+    if ([self isFieldValid:conversionValue]) {
+        [Adtrace updatePostbackConversionValue:[conversionValue intValue]
+                            completionHandler:^(NSError * _Nullable error) {
+            result([error localizedDescription]);
+        }];
+    }
+}
+
+- (void)updateConversionValueWithErrorCallbackSkad4:(FlutterMethodCall *)call withResult:(FlutterResult)result {
+    NSString *conversionValue = call.arguments[@"conversionValue"];
+    NSString *coarseValue = call.arguments[@"coarseValue"];
+    NSString *lockWindow = call.arguments[@"lockWindow"];
+    if ([self isFieldValid:conversionValue] &&
+        [self isFieldValid:coarseValue] &&
+        [self isFieldValid:lockWindow]) {
+        [Adtrace updatePostbackConversionValue:[conversionValue intValue]
+                                  coarseValue:coarseValue
+                                   lockWindow:(BOOL)lockWindow
+                            completionHandler:^(NSError * _Nullable error) {
+            result([error localizedDescription]);
+        }];
+    }
+}
+
+- (void)verifyPlayStorePurchase:(FlutterMethodCall *)call withResult:(FlutterResult)result {
+    result([FlutterError errorWithCode:@"non_existing_method"
+                               message:@"verifyPlayStorePurchase not available for iOS platform"
+                               details:nil]);
+}
+
+- (void)verifyAppStorePurchase:(FlutterMethodCall *)call withResult:(FlutterResult)result {
+    NSString *receipt = call.arguments[@"receipt"];
+    NSString *productId = call.arguments[@"productId"];
+    NSString *transactionId = call.arguments[@"transactionId"];
+
+    // Receipt.
+    NSData *receiptValue;
+    if ([self isFieldValid:receipt]) {
+        receiptValue = [receipt dataUsingEncoding:NSUTF8StringEncoding];
+    }
+
+    // Create purchase instance.
+    ADTPurchase *purchase = [[ADTPurchase alloc] initWithTransactionId:transactionId
+                                                             productId:productId
+                                                            andReceipt:receiptValue];
+
+    // Verify purchase.
+    [Adtrace verifyPurchase:purchase
+         completionHandler:^(ADTPurchaseVerificationResult * _Nonnull verificationResult) {
+        NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+        if (verificationResult == nil) {
+            result(dictionary);
+        }
+
+        [self addValueOrEmpty:verificationResult.verificationStatus
+                      withKey:@"verificationStatus"
+                 toDictionary:dictionary];
+        [self addValueOrEmpty:[NSString stringWithFormat:@"%d", verificationResult.code]
+                      withKey:@"code"
+                 toDictionary:dictionary];
+        [self addValueOrEmpty:verificationResult.message
+                      withKey:@"message"
+                 toDictionary:dictionary];
+        result(dictionary);
+    }];
+}
+
+- (void)processDeeplink:(FlutterMethodCall *)call withResult:(FlutterResult)result {
+    NSString *deeplink = call.arguments[@"deeplink"];
+    if ([self isFieldValid:deeplink]) {
+        NSURL *nsUrl;
+        if ([NSString instancesRespondToSelector:@selector(stringByAddingPercentEncodingWithAllowedCharacters:)]) {
+            nsUrl = [NSURL URLWithString:[deeplink stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLFragmentAllowedCharacterSet]]];
+        } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            nsUrl = [NSURL URLWithString:[deeplink stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+        }
+#pragma clang diagnostic pop
+
+        [Adtrace processDeeplink:nsUrl completionHandler:^(NSString * _Nonnull resolvedLink) {
+            if (![self isFieldValid:resolvedLink]) {
+                result(nil);
+            } else {
+                result(resolvedLink);
+            }
+        }];
+    }
+}
+
 - (void)setTestOptions:(FlutterMethodCall *)call withResult:(FlutterResult)result {
     AdtraceTestOptions *testOptions = [[AdtraceTestOptions alloc] init];
     NSString *baseUrl = call.arguments[@"baseUrl"];
     NSString *gdprUrl = call.arguments[@"gdprUrl"];
     NSString *subscriptionUrl = call.arguments[@"subscriptionUrl"];
+    NSString *purchaseVerificationUrl = call.arguments[@"purchaseVerificationUrl"];
     NSString *extraPath = call.arguments[@"extraPath"];
     NSString *timerIntervalInMilliseconds = call.arguments[@"timerIntervalInMilliseconds"];
     NSString *timerStartInMilliseconds = call.arguments[@"timerStartInMilliseconds"];
@@ -658,7 +846,6 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     NSString *teardown = call.arguments[@"teardown"];
     NSString *deleteState = call.arguments[@"deleteState"];
     NSString *noBackoffWait = call.arguments[@"noBackoffWait"];
-    NSString *iAdFrameworkEnabled = call.arguments[@"iAdFrameworkEnabled"];
     NSString *adServicesFrameworkEnabled = call.arguments[@"adServicesFrameworkEnabled"];
 
     if ([self isFieldValid:baseUrl]) {
@@ -669,6 +856,9 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     }
     if ([self isFieldValid:subscriptionUrl]) {
         testOptions.subscriptionUrl = subscriptionUrl;
+    }
+    if ([self isFieldValid:purchaseVerificationUrl]) {
+        testOptions.purchaseVerificationUrl = purchaseVerificationUrl;
     }
     if ([self isFieldValid:extraPath]) {
         testOptions.extraPath = extraPath;
@@ -696,9 +886,6 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
     }
     if ([self isFieldValid:noBackoffWait]) {
         testOptions.noBackoffWait = [noBackoffWait boolValue];
-    }
-    if ([self isFieldValid:iAdFrameworkEnabled]) {
-        testOptions.iAdFrameworkEnabled = [iAdFrameworkEnabled boolValue];
     }
     if ([self isFieldValid:adServicesFrameworkEnabled]) {
         testOptions.adServicesFrameworkEnabled = [adServicesFrameworkEnabled boolValue];

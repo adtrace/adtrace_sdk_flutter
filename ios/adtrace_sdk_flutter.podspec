@@ -14,5 +14,5 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '8.0'
 
   s.dependency 'Flutter'
-  s.dependency 'Adtrace-sdk','2.1.0'
+  s.dependency 'Adtrace-sdk','2.2.1'
 end
