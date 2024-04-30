@@ -550,7 +550,12 @@ AdTrace.updateConversionValue(6);
 
 ### <a id="af-push-token"></a>Push token (uninstall tracking)
 
-Push tokens are used for Audience Builder and client callbacks, and they are required for uninstall and reinstall tracking.
+**Important**: 
+
+[Firebase Cloud Messaging Legacy APIs is deprecated and will be removed in June 2024](https://firebase.google.com/docs/cloud-messaging/migrate-v1). in order to enable AdTrace to actively measure uninstalls, you need to Migrate to HTTP V1. in order to do that [apply REQUIRED steps](https://github.com/adtrace/adtrace_sdk_android?tab=readme-ov-file#af-uninstall-tracking) and upload the **JSON** file containing required information to AdTrace panel.
+
+
+Push tokens are used for uninstall and reinstall tracking.
 
 To send us the push notification token, add the following call to AdTrace once you have obtained your token or when ever it's value is changed:
 
