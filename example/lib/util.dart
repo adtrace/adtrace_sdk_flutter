@@ -80,6 +80,13 @@ class Util {
     return event;
   }
 
+  static AdTraceEvent buildPartnerParamsEvent() {
+    AdTraceEvent event = AdTraceEvent(EVENT_TOKEN_CALLBACK);
+    event.addPartnerParameter('key1', 'value1');
+    event.addPartnerParameter('key2', 'value2');
+    return event;
+  }
+
   static AdTraceEvent buildEventValueParams() {
     AdTraceEvent event = AdTraceEvent(EVENT_TOKEN_PARTNER);
     event.addEventParameter('foo1', 'bar1');

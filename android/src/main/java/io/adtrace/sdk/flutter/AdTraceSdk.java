@@ -4,8 +4,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import static io.adtrace.sdk.flutter.AdTraceUtils.*;
-
 import io.adtrace.sdk.AdTrace;
 import io.adtrace.sdk.AdTraceAdRevenue;
 import io.adtrace.sdk.AdTraceAttribution;
@@ -16,6 +14,8 @@ import io.adtrace.sdk.AdTraceEventSuccess;
 import io.adtrace.sdk.AdTraceSessionFailure;
 import io.adtrace.sdk.AdTraceSessionSuccess;
 import io.adtrace.sdk.AdTracePlayStoreSubscription;
+import io.adtrace.sdk.AdTracePurchase;
+import io.adtrace.sdk.AdTracePurchaseVerificationResult;
 import io.adtrace.sdk.AdTraceThirdPartySharing;
 import io.adtrace.sdk.AdTraceTestOptions;
 import io.adtrace.sdk.LogLevel;
@@ -26,6 +26,7 @@ import io.adtrace.sdk.OnEventTrackingFailedListener;
 import io.adtrace.sdk.OnEventTrackingSucceededListener;
 import io.adtrace.sdk.OnSessionTrackingFailedListener;
 import io.adtrace.sdk.OnSessionTrackingSucceededListener;
+import io.adtrace.sdk.OnPurchaseVerificationFinishedListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,6 +42,8 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.MethodCall;
+
+import static io.adtrace.sdk.flutter.AdTraceUtils.*;
 
 public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandler {
     private static String TAG = "AdTraceBridge";
@@ -124,6 +127,9 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             case "getIdfa":
                 getIdfa(result);
                 break;
+            case "getIdfv":
+                getIdfv(result);
+                break;
             case "getGoogleAdId":
                 getGoogleAdId(result);
                 break;
@@ -195,6 +201,15 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
                 break;
             case "getLastDeeplink":
                 getLastDeeplink(call, result);
+                break;
+            case "verifyPlayStorePurchase":
+                verifyPlayStorePurchase(call, result);
+                break;
+            case "verifyAppStorePurchase":
+                verifyAppStorePurchase(call, result);
+                break;
+            case "processDeeplink":
+                processDeeplink(call, result);
                 break;
             case "setTestOptions":
                 setTestOptions(call, result);
@@ -289,6 +304,20 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             adtraceConfig.setCoppaCompliantEnabled(coppaCompliantEnabled);
         }
 
+        // Final attribution.
+        if (configMap.containsKey("finalAndroidAttributionEnabled")) {
+            String strFinalAndroidAttributionEnabled = (String) configMap.get("finalAndroidAttributionEnabled");
+            boolean finalAndroidAttributionEnabled = Boolean.parseBoolean(strFinalAndroidAttributionEnabled);
+            adtraceConfig.setFinalAttributionEnabled(finalAndroidAttributionEnabled);
+        }
+
+        // Read Android device info only once.
+        if (configMap.containsKey("readDeviceInfoOnceEnabled")) {
+            String strReadDeviceInfoOnceEnabled = (String) configMap.get("readDeviceInfoOnceEnabled");
+            boolean readDeviceInfoOnceEnabled = Boolean.parseBoolean(strReadDeviceInfoOnceEnabled);
+            adtraceConfig.setReadDeviceInfoOnceEnabled(readDeviceInfoOnceEnabled);
+        }
+
         // Google Play Store kids apps.
         if (configMap.containsKey("playStoreKidsAppEnabled")) {
             String strPlayStoreKidsAppEnabled = (String) configMap.get("playStoreKidsAppEnabled");
@@ -320,6 +349,12 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             adtraceConfig.setPreinstallFilePath(preinstallFilePath);
         }
 
+        // META install referrer.
+        if (configMap.containsKey("fbAppId")) {
+            String fbAppId = (String) configMap.get("fbAppId");
+            adtraceConfig.setFbAppId(fbAppId);
+        }
+
         // URL strategy.
         if (configMap.containsKey("urlStrategy")) {
             String urlStrategy = (String) configMap.get("urlStrategy");
@@ -327,6 +362,10 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
                 adtraceConfig.setUrlStrategy(AdTraceConfig.URL_STRATEGY_CHINA);
             } else if (urlStrategy.equalsIgnoreCase("india")) {
                 adtraceConfig.setUrlStrategy(AdTraceConfig.URL_STRATEGY_INDIA);
+            } else if (urlStrategy.equalsIgnoreCase("cn")) {
+                adtraceConfig.setUrlStrategy(AdTraceConfig.URL_STRATEGY_CN);
+            } else if (urlStrategy.equalsIgnoreCase("cn-only")) {
+                adtraceConfig.setUrlStrategy(AdTraceConfig.URL_STRATEGY_CN_ONLY);
             } else if (urlStrategy.equalsIgnoreCase("data-residency-eu")) {
                 adtraceConfig.setUrlStrategy(AdTraceConfig.DATA_RESIDENCY_EU);
             } else if (urlStrategy.equalsIgnoreCase("data-residency-tr")) {
@@ -426,6 +465,7 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
                         adtraceAttributionMap.put("costAmount", adtraceAttribution.costAmount != null ?
                                 adtraceAttribution.costAmount.toString() : "");
                         adtraceAttributionMap.put("costCurrency", adtraceAttribution.costCurrency);
+                        adtraceAttributionMap.put("fbInstallReferrer", adtraceAttribution.fbInstallReferrer);
                         if (channel != null) {
                             channel.invokeMethod(dartMethodName, adtraceAttributionMap);
                         }
@@ -586,6 +626,18 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             event.setOrderId(orderId);
         }
 
+        // Product ID.
+        if (eventMap.containsKey("productId")) {
+            String productId = (String) eventMap.get("productId");
+            event.setProductId(productId);
+        }
+
+        // Purchase token.
+        if (eventMap.containsKey("purchaseToken")) {
+            String purchaseToken = (String) eventMap.get("purchaseToken");
+            event.setPurchaseToken(purchaseToken);
+        }
+
         // Callback ID.
         if (eventMap.containsKey("callbackId")) {
             String callbackId = (String) eventMap.get("callbackId");
@@ -608,9 +660,25 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             }
         }
 
+        // Partner parameters.
+        if (eventMap.containsKey("partnerParameters")) {
+            String strPartnerParametersJson = (String) eventMap.get("partnerParameters");
+            try {
+                JSONObject jsonPartnerParameters = new JSONObject(strPartnerParametersJson);
+                JSONArray partnerParametersKeys = jsonPartnerParameters.names();
+                for (int i = 0; i < partnerParametersKeys.length(); ++i) {
+                    String key = partnerParametersKeys.getString(i);
+                    String value = jsonPartnerParameters.getString(key);
+                    event.addPartnerParameter(key, value);
+                }
+            } catch (JSONException e) {
+                Log.e(TAG, "Failed to parse event partner parameter! Details: " + e);
+            }
+        }
+
         // Event parameters.
-        if (eventMap.containsKey("eventParameters")) {
-            String strEventParametersJson = (String) eventMap.get("eventParameters");
+        if (eventMap.containsKey("eventValueParameters")) {
+            String strEventParametersJson = (String) eventMap.get("eventValueParameters");
             try {
                 JSONObject jsonEventParameters = new JSONObject(strEventParametersJson);
                 JSONArray eventParametersKeys = jsonEventParameters.names();
@@ -700,6 +768,10 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
         result.success("Error. No IDFA on Android platform!");
     }
 
+    private void getIdfv(final Result result) {
+        result.success("Error. No IDFV on Android platform!");
+    }
+
     private void getGoogleAdId(final Result result) {
         AdTrace.getGoogleAdId(applicationContext, new OnDeviceIdsRead() {
             @Override
@@ -742,6 +814,7 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
         adtraceAttributionMap.put("costAmount", adtraceAttribution.costAmount != null ?
                 adtraceAttribution.costAmount.toString() : "");
         adtraceAttributionMap.put("costCurrency", adtraceAttribution.costCurrency);
+        adtraceAttributionMap.put("fbInstallReferrer", adtraceAttribution.fbInstallReferrer);
         result.success(adtraceAttributionMap);
     }
 
@@ -1056,10 +1129,10 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             String strPartnerSharingSettings = (String) thirdPartySharingMap.get("partnerSharingSettings");
             String[] arrayPartnerSharingSettings = strPartnerSharingSettings.split("__ADT__", -1);
             for (int i = 0; i < arrayPartnerSharingSettings.length; i += 3) {
-//                thirdPartySharing.addPartnerSharingSetting(
-//                    arrayPartnerSharingSettings[i],
-//                    arrayPartnerSharingSettings[i+1],
-//                    Boolean.parseBoolean(arrayPartnerSharingSettings[i+2]));
+                thirdPartySharing.addPartnerSharingSetting(
+                    arrayPartnerSharingSettings[i],
+                    arrayPartnerSharingSettings[i+1],
+                    Boolean.parseBoolean(arrayPartnerSharingSettings[i+2]));
             }
         }
 
@@ -1092,6 +1165,59 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
         result.success("Error. No getLastDeeplink for Android platform!");
     }
 
+    private void verifyPlayStorePurchase(final MethodCall call, final Result result) {
+        Map purchaseMap = (Map) call.arguments;
+        if (purchaseMap == null) {
+            return;
+        }
+
+        // Product ID.
+        String productId = null;
+        if (purchaseMap.containsKey("productId")) {
+            productId = (String) purchaseMap.get("productId");
+        }
+
+        // Purchase token.
+        String purchaseToken = null;
+        if (purchaseMap.containsKey("purchaseToken")) {
+            purchaseToken = (String) purchaseMap.get("purchaseToken");
+        }
+
+        // Create purchase instance.
+        AdTracePurchase purchase = new AdTracePurchase(productId, purchaseToken);
+
+        // Verify purchase.
+        AdTrace.verifyPurchase(purchase, new OnPurchaseVerificationFinishedListener() {
+            @Override
+            public void onVerificationFinished(AdTracePurchaseVerificationResult verificationResult) {
+                HashMap<String, String> adtracePurchaseMap = new HashMap<String, String>();
+                adtracePurchaseMap.put("code", String.valueOf(verificationResult.getCode()));
+                adtracePurchaseMap.put("verificationStatus", verificationResult.getVerificationStatus());
+                adtracePurchaseMap.put("message", verificationResult.getMessage());
+                result.success(adtracePurchaseMap);
+            }
+        });
+    }
+
+    private void processDeeplink(final MethodCall call, final Result result) {
+//        Map urlParamsMap = (Map) call.arguments;
+//        String url = null;
+//        if (urlParamsMap.containsKey("deeplink")) {
+//            url = urlParamsMap.get("deeplink").toString();
+//        }
+//
+//        AdTrace.processDeeplink(Uri.parse(url), applicationContext, new OnDeeplinkResolvedListener() {
+//            @Override
+//            public void onDeeplinkResolved(String resolvedLink) {
+//                result.success(resolvedLink);
+//            }
+//        });
+    }
+
+    private void verifyAppStorePurchase(final MethodCall call, final Result result) {
+        result.success("Error. No verifyAppStorePurchase for Android platform!");
+    }
+
     private void setTestOptions(final MethodCall call, final Result result) {
         AdTraceTestOptions testOptions = new AdTraceTestOptions();
         Map testOptionsMap = (Map) call.arguments;
@@ -1105,6 +1231,9 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
         if (testOptionsMap.containsKey("subscriptionUrl")) {
             testOptions.subscriptionUrl = (String) testOptionsMap.get("subscriptionUrl");
         }
+        if (testOptionsMap.containsKey("purchaseVerificationUrl")) {
+            testOptions.purchaseVerificationUrl = (String) testOptionsMap.get("purchaseVerificationUrl");
+        }
         if (testOptionsMap.containsKey("basePath")) {
             testOptions.basePath = (String) testOptionsMap.get("basePath");
         }
@@ -1113,6 +1242,9 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
         }
         if (testOptionsMap.containsKey("subscriptionPath")) {
             testOptions.subscriptionPath = (String) testOptionsMap.get("subscriptionPath");
+        }
+        if (testOptionsMap.containsKey("purchaseVerificationPath")) {
+            testOptions.purchaseVerificationPath = (String) testOptionsMap.get("purchaseVerificationPath");
         }
         // Kept for the record. Not needed anymore with test options extraction.
         // if (testOptionsMap.containsKey("useTestConnectionOptions")) {

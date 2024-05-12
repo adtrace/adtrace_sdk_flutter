@@ -8,17 +8,21 @@ import 'dart:convert';
 
 class AdTraceEvent {
   String _eventToken;
-  num? _revenue;
   String? _currency;
-  Map<String, String>? _callbackParameters;
-  Map<String, String>? _eventParameters;
-
+  String? receipt;
   String? transactionId;
+  String? productId;
+  String? purchaseToken;
   String? callbackId;
+  num? _revenue;
+  Map<String, String>? _callbackParameters;
+  Map<String, String>? _partnerParameters;
+  Map<String, String>? _eventParameters;
 
   AdTraceEvent(this._eventToken) {
     _callbackParameters = new Map<String, String>();
     _eventParameters = new Map<String, String>();
+    _partnerParameters = new Map<String,String>();
   }
 
   void setRevenue(num revenue, String currency) {
@@ -34,6 +38,10 @@ class AdTraceEvent {
     _eventParameters![key] = value;
   }
 
+  void addPartnerParameter(String key, String value) {
+    _partnerParameters![key] = value;
+  }
+
   Map<String, String?> get toMap {
     Map<String, String?> eventMap = {'eventToken': _eventToken};
 
@@ -46,6 +54,15 @@ class AdTraceEvent {
     if (transactionId != null) {
       eventMap['transactionId'] = transactionId;
     }
+    if (receipt != null) {
+      eventMap['receipt'] = receipt;
+    }
+    if (productId != null) {
+      eventMap['productId'] = productId;
+    }
+    if (purchaseToken != null) {
+      eventMap['purchaseToken'] = purchaseToken;
+    }
     if (callbackId != null) {
       eventMap['callbackId'] = callbackId;
     }
@@ -53,7 +70,10 @@ class AdTraceEvent {
       eventMap['callbackParameters'] = json.encode(_callbackParameters);
     }
     if (_eventParameters!.length > 0) {
-      eventMap['eventParameters'] = json.encode(_eventParameters);
+      eventMap['eventValueParameters'] = json.encode(_eventParameters);
+    }
+    if (_partnerParameters!.length > 0) {
+      eventMap['partnerParameters'] = json.encode(_partnerParameters);
     }
 
     return eventMap;

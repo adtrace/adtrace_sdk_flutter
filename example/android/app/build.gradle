@@ -26,30 +26,48 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
     }
 
+
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "io.adtrace.sdk.flutter.adtrace_sdk_flutter_example"
-        minSdkVersion 16
-        targetSdkVersion 32
+        applicationId "io.adtrace.examples"
+        minSdkVersion flutter.minSdkVersion
+        targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
 
     buildTypes {
         release {
+            // help_implementation
+            // use these options when AdTrace is not working properly in release mode
+
+            // add 'android/app/proguard.pro file content to your proguard file (if it does not exists,create one!)
+            // and use proguard file like below
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            // due to release obfuscation and shrinking, set these options as below
+//            shrinkResources false
+//            minifyEnabled false
+
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
-
         }
     }
+
+    // use this when you get build errors
+    /*
+    lint {
+        checkReleaseBuilds false
+        disable 'InvalidPackage'
+    }
+    */
+    namespace 'io.adtrace.examples'
 }
 
 flutter {
@@ -57,6 +75,7 @@ flutter {
 }
 
 dependencies {
+    // need_for_implementation
     implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
     implementation 'com.android.installreferrer:installreferrer:2.2'
 }

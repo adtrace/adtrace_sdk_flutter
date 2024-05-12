@@ -6,17 +6,21 @@
 import 'dart:async';
 
 import 'package:adtrace_sdk_flutter/adtrace_ad_revenue.dart';
+import 'package:adtrace_sdk_flutter/adtrace_app_store_purchase.dart';
 import 'package:adtrace_sdk_flutter/adtrace_app_store_subscription.dart';
 import 'package:adtrace_sdk_flutter/adtrace_attribution.dart';
 import 'package:adtrace_sdk_flutter/adtrace_config.dart';
 import 'package:adtrace_sdk_flutter/adtrace_event.dart';
+import 'package:adtrace_sdk_flutter/adtrace_play_store_purchase.dart';
 import 'package:adtrace_sdk_flutter/adtrace_play_store_subscription.dart';
+import 'package:adtrace_sdk_flutter/adtrace_purchase_verification_info.dart';
 import 'package:adtrace_sdk_flutter/adtrace_third_party_sharing.dart';
+
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 
 class AdTrace {
-  static const String _sdkPrefix = 'flutter1.3.2';
+  static const String _sdkPrefix = 'flutter1.4.1';
   static const MethodChannel _channel =
       const MethodChannel('io.adtrace.sdk/api');
 
@@ -82,6 +86,11 @@ class AdTrace {
   static Future<String?> getIdfa() async {
     final String? idfa = await _channel.invokeMethod('getIdfa');
     return idfa;
+  }
+
+  static Future<String?> getIdfv() async {
+    final String? idfv = await _channel.invokeMethod('getIdfv');
+    return idfv;
   }
 
   static Future<String?> getAmazonAdId() async {
@@ -184,6 +193,43 @@ class AdTrace {
   static Future<String?> getLastDeeplink() async {
     final String? deeplink = await _channel.invokeMethod('getLastDeeplink');
     return deeplink;
+  }
+
+  static Future<String?> updateConversionValueWithErrorCallback(int conversionValue) async {
+    final String? error = await _channel.invokeMethod(
+        'updateConversionValueWithErrorCallback', {'conversionValue': conversionValue});
+    return error;
+  }
+
+  static Future<String?> updateConversionValueWithErrorCallbackSkad4(
+    int conversionValue,
+    String coarseValue,
+    bool lockWindow) async {
+    final String? error = await _channel.invokeMethod(
+        'updateConversionValueWithErrorCallbackSkad4', {'conversionValue': conversionValue,
+                                                   'coarseValue': coarseValue,
+                                                   'lockWindow': lockWindow});
+    return error;
+  }
+
+  static Future<AdTracePurchaseVerificationInfo?> verifyPlayStorePurchase(
+    AdTracePlayStorePurchase purchase) async {
+    final dynamic playStorePurchaseMap =
+      await _channel.invokeMethod('verifyPlayStorePurchase', purchase.toMap);
+    return AdTracePurchaseVerificationInfo.fromMap(playStorePurchaseMap);
+  }
+
+  static Future<AdTracePurchaseVerificationInfo?> verifyAppStorePurchase(
+    AdTraceAppStorePurchase purchase) async {
+    final dynamic appStorePurchaseMap =
+      await _channel.invokeMethod('verifyAppStorePurchase', purchase.toMap);
+    return AdTracePurchaseVerificationInfo.fromMap(appStorePurchaseMap);
+  }
+
+  static Future<String?> processDeeplink(String deeplink) async {
+    final resolvedLink =
+    await _channel.invokeMethod('processDeeplink', {'deeplink': deeplink});
+    return resolvedLink;
   }
 
   // For testing purposes only. Do not use in production.
