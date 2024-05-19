@@ -91,6 +91,7 @@ class AdTraceConfig {
   String? processName;
   String? preinstallFilePath;
   String? fbAppId;
+  String? resetSDKForAppTokenChange;
   AdTraceLogLevel? logLevel;
   AttributionCallback? attributionCallback;
   SessionSuccessCallback? sessionSuccessCallback;
@@ -226,6 +227,9 @@ class AdTraceConfig {
     }
     if (fbAppId != null) {
       configMap['fbAppId'] = fbAppId;
+    }
+    if(resetSDKForAppTokenChange != null) {
+      configMap['resetSDKForAppTokenChange'] = resetSDKForAppTokenChange;
     }
     if (urlStrategy != null) {
       configMap['urlStrategy'] = urlStrategy;
