@@ -355,6 +355,12 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             adtraceConfig.setFbAppId(fbAppId);
         }
 
+        // Reset SDK ForAppToken Change.
+        if (configMap.containsKey("appVersionForAppTokenChange")) {
+            String appVersionForAppTokenChange = (String) configMap.get("appVersionForAppTokenChange");
+            adtraceConfig.setAppVersionAppTokenChanged(appVersionForAppTokenChange);
+        }
+
         // URL strategy.
         if (configMap.containsKey("urlStrategy")) {
             String urlStrategy = (String) configMap.get("urlStrategy");
