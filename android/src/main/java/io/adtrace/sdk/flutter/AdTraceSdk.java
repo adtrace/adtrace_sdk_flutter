@@ -356,9 +356,9 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
         }
 
         // Reset SDK ForAppToken Change.
-        if (configMap.containsKey("resetSDKForAppTokenChange")) {
-            String resetSDKForAppTokenChange = (String) configMap.get("resetSDKForAppTokenChange");
-            adtraceConfig.setAppVersionAppTokenChanged(resetSDKForAppTokenChange);
+        if (configMap.containsKey("appVersionForAppTokenChange")) {
+            String appVersionForAppTokenChange = (String) configMap.get("appVersionForAppTokenChange");
+            adtraceConfig.setAppVersionAppTokenChanged(appVersionForAppTokenChange);
         }
 
         // URL strategy.
