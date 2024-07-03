@@ -21,7 +21,8 @@ typedef void EventSuccessCallback(AdTraceEventSuccess successData);
 typedef void EventFailureCallback(AdTraceEventFailure failureData);
 typedef void DeferredDeeplinkCallback(String? uri);
 typedef void ConversionValueUpdatedCallback(num? conversionValue);
-typedef void Skad4ConversionValueUpdatedCallback(num? conversionValue, String? coarseValue, bool? lockWindow);
+typedef void Skad4ConversionValueUpdatedCallback(
+    num? conversionValue, String? coarseValue, bool? lockWindow);
 
 class AdTraceConfig {
   static const MethodChannel _channel =
@@ -37,14 +38,10 @@ class AdTraceConfig {
   static const String _skad4ConversionValueUpdatedCallbackName =
       'adt-skad4-conversion-value-updated';
 
-  static const String UrlStrategyIndia = 'india';
-  static const String UrlStrategyChina = 'china';
-  static const String UrlStrategyCn = 'cn';
-  static const String UrlStrategyCnOnly = 'cn-only';
+  static const String UrlStrategyIR = 'ir';
+  static const String UrlStrategyMobi = 'mobi';
 
-  static const String DataResidencyEU = 'data-residency-eu';
-  static const String DataResidencyTR = 'data-residency-tr';
-  static const String DataResidencyUS = 'data-residency-us';
+  static const String DataResidencyIR = 'data-residency-ir';
 
   static const String AdRevenueSourceAppLovinMAX = "applovin_max_sdk";
   static const String AdRevenueSourceMopub = 'mopub';
@@ -166,11 +163,11 @@ class AdTraceConfig {
               String? conversionValue = call.arguments['fineValue'];
               String? coarseValue = call.arguments['coarseValue'];
               String? lockWindow = call.arguments['lockWindow'];
-              if (conversionValue != null && coarseValue != null && lockWindow != null) {
-                skad4ConversionValueUpdatedCallback!(
-                  int.parse(conversionValue),
-                  coarseValue,
-                  lockWindow.toLowerCase() == 'true');
+              if (conversionValue != null &&
+                  coarseValue != null &&
+                  lockWindow != null) {
+                skad4ConversionValueUpdatedCallback!(int.parse(conversionValue),
+                    coarseValue, lockWindow.toLowerCase() == 'true');
               }
             }
             break;
@@ -253,10 +250,12 @@ class AdTraceConfig {
       configMap['coppaCompliantEnabled'] = coppaCompliantEnabled.toString();
     }
     if (finalAndroidAttributionEnabled != null) {
-      configMap['finalAndroidAttributionEnabled'] = finalAndroidAttributionEnabled.toString();
+      configMap['finalAndroidAttributionEnabled'] =
+          finalAndroidAttributionEnabled.toString();
     }
     if (readDeviceInfoOnceEnabled != null) {
-      configMap['readDeviceInfoOnceEnabled'] = readDeviceInfoOnceEnabled.toString();
+      configMap['readDeviceInfoOnceEnabled'] =
+          readDeviceInfoOnceEnabled.toString();
     }
     if (linkMeEnabled != null) {
       configMap['linkMeEnabled'] = linkMeEnabled.toString();
@@ -296,7 +295,8 @@ class AdTraceConfig {
       configMap['delayStart'] = delayStart.toString();
     }
     if (attConsentWaitingInterval != null) {
-      configMap['attConsentWaitingInterval'] = attConsentWaitingInterval.toString();
+      configMap['attConsentWaitingInterval'] =
+          attConsentWaitingInterval.toString();
     }
     if (attributionCallback != null) {
       configMap['attributionCallback'] = _attributionCallbackName;
