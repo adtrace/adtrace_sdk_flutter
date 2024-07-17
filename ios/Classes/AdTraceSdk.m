@@ -223,20 +223,12 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
 
     // URL strategy.
     if ([self isFieldValid:urlStrategy]) {
-        if ([urlStrategy isEqualToString:@"china"]) {
-            [adtraceConfig setUrlStrategy:ADTUrlStrategyChina];
-        } else if ([urlStrategy isEqualToString:@"india"]) {
-            [adtraceConfig setUrlStrategy:ADTUrlStrategyIndia];
-        } else if ([urlStrategy isEqualToString:@"cn"]) {
-            [adtraceConfig setUrlStrategy:ADTUrlStrategyChina];
-        } else if ([urlStrategy isEqualToString:@"cn-only"]) {
-            [adtraceConfig setUrlStrategy:ADTUrlStrategyChina];
-        } else if ([urlStrategy isEqualToString:@"data-residency-eu"]) {
-            [adtraceConfig setUrlStrategy:ADTDataResidencyEU];
-        } else if ([urlStrategy isEqualToString:@"data-residency-tr"]) {
-            [adtraceConfig setUrlStrategy:ADTDataResidencyTR];
-        } else if ([urlStrategy isEqualToString:@"data-residency-us"]) {
-            [adtraceConfig setUrlStrategy:ADTDataResidencyUS];
+        if ([urlStrategy isEqualToString:@"ir"]) {
+            [adtraceConfig setUrlStrategy:ADTUrlStrategyIR];
+        } else if ([urlStrategy isEqualToString:@"mobi"]) {
+            [adtraceConfig setUrlStrategy:ADTUrlStrategyMobi];
+        } else if ([urlStrategy isEqualToString:@"data-residency-ir"]) {
+            [adtraceConfig setUrlStrategy:ADTDataResidencyIR];
         }
     }
 
