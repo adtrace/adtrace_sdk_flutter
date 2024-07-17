@@ -358,20 +358,12 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
         // URL strategy.
         if (configMap.containsKey("urlStrategy")) {
             String urlStrategy = (String) configMap.get("urlStrategy");
-            if (urlStrategy.equalsIgnoreCase("china")) {
-                adtraceConfig.setUrlStrategy(AdTraceConfig.URL_STRATEGY_CHINA);
-            } else if (urlStrategy.equalsIgnoreCase("india")) {
-                adtraceConfig.setUrlStrategy(AdTraceConfig.URL_STRATEGY_INDIA);
-            } else if (urlStrategy.equalsIgnoreCase("cn")) {
-                adtraceConfig.setUrlStrategy(AdTraceConfig.URL_STRATEGY_CN);
-            } else if (urlStrategy.equalsIgnoreCase("cn-only")) {
-                adtraceConfig.setUrlStrategy(AdTraceConfig.URL_STRATEGY_CN_ONLY);
-            } else if (urlStrategy.equalsIgnoreCase("data-residency-eu")) {
-                adtraceConfig.setUrlStrategy(AdTraceConfig.DATA_RESIDENCY_EU);
-            } else if (urlStrategy.equalsIgnoreCase("data-residency-tr")) {
-                adtraceConfig.setUrlStrategy(AdTraceConfig.DATA_RESIDENCY_TR);
-            } else if (urlStrategy.equalsIgnoreCase("data-residency-us")) {
-                adtraceConfig.setUrlStrategy(AdTraceConfig.DATA_RESIDENCY_US);
+            if (urlStrategy.equalsIgnoreCase("ir")) {
+                adtraceConfig.setUrlStrategy(AdTraceConfig.URL_STRATEGY_IR);
+            } else if (urlStrategy.equalsIgnoreCase("mobi")) {
+                adtraceConfig.setUrlStrategy(AdTraceConfig.URL_STRATEGY_MOBI);
+            } else if (urlStrategy.equalsIgnoreCase("data-residency-ir")) {
+                adtraceConfig.setUrlStrategy(AdTraceConfig.DATA_RESIDENCY_IR);
             }
         }
 
