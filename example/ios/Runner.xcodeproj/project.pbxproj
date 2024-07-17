@@ -48,6 +48,9 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B0C754342C3BEC23009DB853 /* libAdtrace-sdk.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libAdtrace-sdk.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0C754362C3BF47A009DB853 /* libadtrace_sdk_flutter.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libadtrace_sdk_flutter.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0C754382C3BF492009DB853 /* libAdtrace-sdk.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libAdtrace-sdk.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D596F83C6DA5C1C36F3297DC /* libPods-Runner.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Runner.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -120,6 +123,9 @@
 		BB61239553423F3F2934E324 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B0C754382C3BF492009DB853 /* libAdtrace-sdk.a */,
+				B0C754362C3BF47A009DB853 /* libadtrace_sdk_flutter.a */,
+				B0C754342C3BEC23009DB853 /* libAdtrace-sdk.a */,
 				D596F83C6DA5C1C36F3297DC /* libPods-Runner.a */,
 			);
 			name = Frameworks;
@@ -132,7 +138,6 @@
 				623CF073A20EEC9CD6CFD430 /* Pods-Runner.release.xcconfig */,
 				7244DC05FC7ED21E581F4300 /* Pods-Runner.profile.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -166,7 +171,7 @@
 		97C146E61CF9000F007C117D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 1510;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					97C146ED1CF9000F007C117D = {
@@ -221,7 +226,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed_and_thin";
+			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed_and_thin\n";
 		};
 		9740EEB61CF901F6004384FC /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -236,7 +241,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
+			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build\n";
 		};
 		ADF32629C1460AAE64A4C6BE /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

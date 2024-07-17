@@ -1,3 +1,8 @@
+## 1.5.0
+* android update (to v2.6.0)
+* iOS update (to v2.3.0)
+- update URL strategies and Data residency
+
 ## 1.4.1
 * android update (to v2.5.1)
 * iOS update (to v2.2.1)
