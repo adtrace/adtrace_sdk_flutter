@@ -60,44 +60,13 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {// need_for_implementation
+class _MyHomePageState extends State<MyHomePage> {
   bool _isSdkEnabled = true;
 
   @override
   initState() {
     super.initState();
-    // need_for_implementation
-    WidgetsBinding.instance.addObserver(this);
     initPlatformState();
-  }
-
-  @override
-  void dispose() {
-    // need_for_implementation
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  // need_for_implementation
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    switch (state) {
-      case AppLifecycleState.inactive:
-        break;
-      case AppLifecycleState.resumed:
-      // need_for_implementation
-        AdTrace.onResume();
-        break;
-      case AppLifecycleState.paused:
-      // need_for_implementation
-        AdTrace.onPause();
-        break;
-      case AppLifecycleState.detached:
-        break;
-      case AppLifecycleState.hidden:
-        // TODO: Handle this case.
-        break;
-    }
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -299,8 +268,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {//
     // Google Play Store kids apps.
     // config.playStoreKidsAppEnabled = true;
 
-    // Start SDK.
-    // need_for_implementation
+    // Sessions are tracked automatically. Do not observe app lifecycle
+    // or call AdTrace.onResume / AdTrace.onPause.
     AdTrace.start(config);
   }
 
