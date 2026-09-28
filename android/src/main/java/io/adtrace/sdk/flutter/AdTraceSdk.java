@@ -69,9 +69,9 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
     }
 
     // ActivityAware
+    // Android SDK 3.0.0 tracks sessions through SystemLifecycle.
     @Override
     public void onAttachedToActivity(ActivityPluginBinding binding) {
-        AdTrace.onResume();
     }
 
     @Override
@@ -85,7 +85,6 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
 
     @Override
     public void onDetachedFromActivity() {
-        AdTrace.onPause();
     }
 
     @Override
@@ -584,9 +583,8 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             }
         }
 
-        // Start SDK.
+        // Start SDK. Session tracking starts from SystemLifecycle.
         AdTrace.onCreate(adtraceConfig);
-        AdTrace.onResume();
         result.success(null);
     }
 
