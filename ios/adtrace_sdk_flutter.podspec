@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name                  = 'adtrace_sdk_flutter'
-  s.version               = '1.5.0'
+  s.version               = '3.0.0'
   s.summary               = 'AdTrace Flutter SDK for iOS platform'
   s.description           = <<-DESC
                                  AdTrace Flutter SDK for iOS platform.
@@ -11,8 +11,8 @@ Pod::Spec.new do |s|
   s.source                = { :git => '.' }
   s.source_files          = 'Classes/**/*'
   s.public_header_files   = 'Classes/**/*.h'
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '12.0'
 
   s.dependency 'Flutter'
-  s.dependency 'Adtrace-sdk','2.3.0'
+  s.dependency 'Adtrace-sdk','3.0.0'
 end

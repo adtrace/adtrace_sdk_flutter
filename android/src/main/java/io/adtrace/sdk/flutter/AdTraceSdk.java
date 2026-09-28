@@ -69,9 +69,9 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
     }
 
     // ActivityAware
+    // Android SDK 3.0.0 tracks sessions through SystemLifecycle.
     @Override
     public void onAttachedToActivity(ActivityPluginBinding binding) {
-        AdTrace.onResume();
     }
 
     @Override
@@ -85,7 +85,6 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
 
     @Override
     public void onDetachedFromActivity() {
-        AdTrace.onPause();
     }
 
     @Override
@@ -355,6 +354,12 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             adtraceConfig.setFbAppId(fbAppId);
         }
 
+        // Reset SDK ForAppToken Change.
+        if (configMap.containsKey("appVersionForAppTokenChange")) {
+            String appVersionForAppTokenChange = (String) configMap.get("appVersionForAppTokenChange");
+            adtraceConfig.setAppVersionAppTokenChanged(appVersionForAppTokenChange);
+        }
+
         // URL strategy.
         if (configMap.containsKey("urlStrategy")) {
             String urlStrategy = (String) configMap.get("urlStrategy");
@@ -364,7 +369,7 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
                 adtraceConfig.setUrlStrategy(AdTraceConfig.URL_STRATEGY_MOBI);
             } else if (urlStrategy.equalsIgnoreCase("data-residency-ir")) {
                 adtraceConfig.setUrlStrategy(AdTraceConfig.DATA_RESIDENCY_IR);
-            }
+            } 
         }
 
         // User agent.
@@ -578,9 +583,8 @@ public class AdTraceSdk implements FlutterPlugin, ActivityAware, MethodCallHandl
             }
         }
 
-        // Start SDK.
+        // Start SDK. Session tracking starts from SystemLifecycle.
         AdTrace.onCreate(adtraceConfig);
-        AdTrace.onResume();
         result.success(null);
     }
 

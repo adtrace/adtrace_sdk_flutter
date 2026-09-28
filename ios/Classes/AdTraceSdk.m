@@ -229,7 +229,7 @@ static NSString * const CHANNEL_API_NAME = @"io.adtrace.sdk/api";
             [adtraceConfig setUrlStrategy:ADTUrlStrategyMobi];
         } else if ([urlStrategy isEqualToString:@"data-residency-ir"]) {
             [adtraceConfig setUrlStrategy:ADTDataResidencyIR];
-        }
+        } 
     }
 
     // Background tracking.

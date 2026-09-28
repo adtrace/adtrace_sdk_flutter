@@ -88,6 +88,8 @@ class AdTraceConfig {
   String? processName;
   String? preinstallFilePath;
   String? fbAppId;
+  /// WARNING: Pay close attention when setting this value, as it may have a serious effect on your data. CONTACT OUR SUPPORT for more details.
+  String? appVersionForAppTokenChange;
   AdTraceLogLevel? logLevel;
   AttributionCallback? attributionCallback;
   SessionSuccessCallback? sessionSuccessCallback;
@@ -223,6 +225,9 @@ class AdTraceConfig {
     }
     if (fbAppId != null) {
       configMap['fbAppId'] = fbAppId;
+    }
+    if(appVersionForAppTokenChange != null) {
+      configMap['appVersionForAppTokenChange'] = appVersionForAppTokenChange;
     }
     if (urlStrategy != null) {
       configMap['urlStrategy'] = urlStrategy;
