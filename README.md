@@ -210,6 +210,8 @@ As of v2.0.2, the AdTrace SDK supports install tracking on Huawei devices with H
 
 #### <a id="qs-ios-frameworks"></a>[iOS] Link additional frameworks
 
+The Flutter plugin depends on Adtrace iOS SDK 3.0.0 and requires **iOS 12.0** or later. Set your app's iOS deployment target to 12.0 or higher. The privacy manifest (`PrivacyInfo.xcprivacy`) is included by the `Adtrace-sdk` pod.
+
 Make sure that following iOS frameworks are linked with your iOS app:
 
 * `iAd.framework` - in case you are running iAd campaigns

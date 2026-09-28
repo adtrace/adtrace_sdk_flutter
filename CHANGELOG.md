@@ -1,3 +1,8 @@
+## 3.0.0
+* iOS update (to v3.0.0)
+  - minimum iOS deployment target raised to 12.0
+  - PrivacyInfo.xcprivacy is packaged with Adtrace-sdk 3.0.0
+
 ## 1.5.0
 * android update (to v2.6.0)
 * iOS update (to v2.3.0)
