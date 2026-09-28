@@ -11,8 +11,8 @@ Pod::Spec.new do |s|
   s.source                = { :git => '.' }
   s.source_files          = 'Classes/**/*'
   s.public_header_files   = 'Classes/**/*.h'
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '12.0'
 
   s.dependency 'Flutter'
-  s.dependency 'Adtrace-sdk','2.3.0'
+  s.dependency 'Adtrace-sdk','3.0.0'
 end
