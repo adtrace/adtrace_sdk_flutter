@@ -16,6 +16,7 @@ This is the Flutter SDK of AdTrace. You can read more about AdTrace at [adtrace.
         * [[Android] Google Play Referrer API](#qs-gpr-api)
         * [[Android] Google Play Store intent](#qs-gps-intent)
         * [[Android] Huawei Referrer API](#qs-hr-api)
+        * [[Android] Myket Install Referrer](#qs-myket-referrer)
         * [[iOS] Link additional frameworks](#qs-ios-frameworks)
 * [Integrate the SDK into your app](#qs-integrate-sdk)
     * [Basic setup](#qs-basic-setup)
@@ -208,6 +209,22 @@ If you are already using a different broadcast receiver for the `INSTALL_REFERRE
 
 As of v2.0.2, the AdTrace SDK supports install tracking on Huawei devices with Huawei App Gallery version 10.4 and higher. No additional integration steps are needed to start using the Huawei Referrer API.
 
+#### <a id="qs-myket-referrer"></a>[Android] Myket Install Referrer
+
+To attribute installs from Myket, add the optional plugin in the app's `android/app/build.gradle`. Do not add it unless the app is distributed on Myket.
+
+```gradle
+repositories {
+    maven { url "https://maven.myket.ir" }
+}
+
+dependencies {
+    implementation 'io.adtrace:android-sdk-plugin-myket:3.0.0'
+}
+```
+
+When the plugin is present, AdTrace reads the Myket install referrer on the first session and sends it as an `sdk_click` with `referrer_api=myket`. ProGuard rules for the Myket binder ship with the plugin.
+
 #### <a id="qs-ios-frameworks"></a>[iOS] Link additional frameworks
 
 The Flutter plugin depends on Adtrace iOS SDK 3.0.0 and requires **iOS 12.0** or later. Set your app's iOS deployment target to 12.0 or higher. The privacy manifest (`PrivacyInfo.xcprivacy`) is included by the `Adtrace-sdk` pod.
@@ -251,60 +268,17 @@ We use this environment to distinguish between real traffic and test traffic fro
 
 ### <a id="qs-session-tracking"></a>Session tracking
 
-**Note**: This step is **really important** and please **make sure that you implement it properly in your app**. By implementing it, you will enable proper session tracking by the AdTrace SDK in your app.
+Session tracking is automatic on iOS and, with Android SDK 3.0.0, on Android as well. Call `AdTrace.start` and do not call `AdTrace.onResume()` or `AdTrace.onPause()` in a normal app. The Android SDK registers activity lifecycle callbacks itself.
 
-Session tracking for iOS platform is supported out of the box, but in order to perform it properly on Android platform, it requires a bit of additional work described in chapter below.
+`AdTrace.onResume()` and `AdTrace.onPause()` remain available only for special cases where Android does not deliver normal activity lifecycle events, such as an input-method service.
 
 ### <a id="qs-session-tracking-android"></a>Session tracking in Android
 
-On Android platform, it is important for you to hook up into app activity lifecycle methods and make a call to `AdTrace.onResume()` when ever app enters foreground and a call to `AdTrace.onPause()` when ever app leaves foreground. You can do this globally or per widget (call these method upon each transition from one widget to another). For example:
+No extra lifecycle code is required. `AdTrace.start` is enough:
 
 ```dart
-class AdTraceExampleApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'AdTrace Flutter Example App',
-      home: new MainScreen(),
-    );
-  }
-}
-
-class MainScreen extends StatefulWidget {
-  @override
-  State createState() => new MainScreenState();
-}
-
-class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
-  @override
-  initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    initPlatformState(); // <-- Initialise SDK in here.
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    switch (state) {
-      case AppLifecycleState.inactive:
-        break;
-      case AppLifecycleState.resumed:
-        AdTrace.onResume();
-        break;
-      case AppLifecycleState.paused:
-        AdTrace.onPause();
-        break;
-      case AppLifecycleState.suspending:
-        break;
-    }
-  }
-}
+AdTraceConfig config = new AdTraceConfig('{YourAppToken}', AdTraceEnvironment.sandbox);
+AdTrace.start(config);
 ```
 
 ### <a id="qs-sdk-signature"></a>SDK signature
