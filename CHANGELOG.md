@@ -1,10 +1,12 @@
 ## 3.0.0
+* Flutter SDK version raised to 3.0.0
 * iOS update (to v3.0.0)
   - minimum iOS deployment target raised to 12.0
   - PrivacyInfo.xcprivacy is packaged with Adtrace-sdk 3.0.0
 * android update (to v3.0.0)
   - minimum Android SDK raised to 21
-  - session tracking is automatic; a normal app should not call `onResume` / `onPause`
+  - session tracking follows the Android SDK `SystemLifecycle`; the Flutter plugin no longer forwards activity `onResume` / `onPause`
+  - a normal app should call `AdTrace.start` only. `AdTrace.onResume()` and `AdTrace.onPause()` stay for cases where Android does not deliver activity lifecycle events
   - optional Myket Install Referrer plugin (`android-sdk-plugin-myket`)
 
 ## 1.5.0
